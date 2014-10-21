@@ -1,0 +1,7 @@
+scif_bind to port 1556 success
+conect to node 1 success
+About to send 8 bytes
+Just sent 8 bytes
+TIME: 7 us 0.000007 sec
+scif_close success
+======== Program Success ========
