@@ -1,0 +1,17 @@
+# Ignore all #
+####################
+*
+
+# Unignore all with extension#
+####################
+!*.*
+
+# Unignore all dir #
+####################
+!*/
+
+# Compiled Source #
+####################
+*.o
+*.com
+*.so
