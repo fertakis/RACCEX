@@ -14,6 +14,13 @@
 #define TCP_BACKLOG 5
 
 #define HELLO_THERE "Hello there!"
+#define MESSAGE_LENGTH 1000
+
+struct phi_cmd {
+    int type;
+    char *arg;
+    int out;
+};
 
 #endif /* _COMMON_H */
 

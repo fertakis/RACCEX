@@ -23,13 +23,20 @@
 
 #include "common.h"
 
-/* Convert a buffer to upercase */
-void toupper_buf(char *buf, size_t n)
+/* Insist untill all of the data has been read */
+ssize_t insist_read(int fd, void *buf, size_t cnt)
 {
-	size_t i;
+    ssize_t ret;
+    size_t orig_cnt = cnt;
 
-	for (i = 0; i < n; i++)
-		buf[i] = toupper(buf[i]);
+    while (cnt > 0) {
+        ret = read(fd, buf, cnt);
+        if(ret <=0)
+            return ret;
+        buf += ret;
+        cnt -= ret;
+    }
+    return orig_cnt;
 }
 
 /* Insist until all of the data has been written */

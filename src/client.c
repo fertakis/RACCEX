@@ -23,6 +23,21 @@
 
 #include "common.h"
 
+/* Insist untill all of the data has been read */
+ssize_t insist_read(int fd, void *buf, size_t cnt)
+{
+    ssize_t ret;
+    size_t orig_cnt = cnt;
+
+    while (cnt > 0) {
+        ret = read(fd, buf, cnt);
+        if(ret <=0)
+            return ret;
+        buf += ret;
+        cnt -= ret;
+    }
+    return orig_cnt;
+}
 /* Insist until all of the data has been written */
 ssize_t insist_write(int fd, const void *buf, size_t cnt)
 {
@@ -44,10 +59,11 @@ int main(int argc, char *argv[])
 {
 	int sd, port;
 	ssize_t n;
-	char buf[100];
+	char *buf;
 	char *hostname;
 	struct hostent *hp;
 	struct sockaddr_in sa;
+    struct phi_cmd *cmd;
 
 	if (argc != 3) {
 		fprintf(stderr, "Usage: %s hostname port\n", argv[0]);
@@ -80,16 +96,28 @@ int main(int argc, char *argv[])
 	}
 	fprintf(stderr, "Connected.\n");
 
-	/* Be careful with buffer overruns, ensure NUL-termination */
+	/* Be careful with buffer overruns, ensure NUL-termination 
 	strncpy(buf, HELLO_THERE, sizeof(buf));
-	buf[sizeof(buf) - 1] = '\0';
+	buf[sizeof(buf) - 1] = '\0';*/
 
-	/* Say something... */
-	if (insist_write(sd, buf, strlen(buf)) != strlen(buf)) {
+    //Initialise command
+    cmd = (struct phi_cmd *)malloc(sizeof(struct phi_cmd));
+
+    //test for scif_open();
+    cmd->type = 1;
+
+	/* Send command */
+	if (insist_write(sd, cmd, sizeof(cmd)) != sizeof(cmd)) {
 		perror("write");
 		exit(1);
 	}
-	fprintf(stdout, "I said:\n%s\nRemote says:\n", buf);
+
+    /* Read output */
+    if (insist_read(sd, cmd, sizeof(cmd)) != sizeof(cmd)) {
+		perror("read");
+		exit(1);
+	}
+	fprintf(stdout, "I send command type:\n%s\nRemote responded with scif fd \n", cmd->type, cmd->out);
 	fflush(stdout);
 
 	/*
@@ -102,7 +130,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* Read answer and write it to standard output */
-	for (;;) {
+	/*for (;;) {
 		n = read(sd, buf, sizeof(buf));
 
 		if (n < 0) {
@@ -117,7 +145,7 @@ int main(int argc, char *argv[])
 			perror("write");
 			exit(1);
 		}
-	}
+	}*/
 
 	fprintf(stderr, "\nDone.\n");
 	return 0;
