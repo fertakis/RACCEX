@@ -16,6 +16,8 @@
 #define HELLO_THERE "Hello there!"
 #define MESSAGE_LENGTH 1000
 
+
+//Needs review for output usage
 struct phi_cmd {
     int type;
     char *arg;

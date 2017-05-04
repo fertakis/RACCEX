@@ -59,7 +59,6 @@ int main(int argc, char *argv[])
 {
 	int sd, port;
 	ssize_t n;
-	char *buf;
 	char *hostname;
 	struct hostent *hp;
 	struct sockaddr_in sa;
@@ -111,6 +110,8 @@ int main(int argc, char *argv[])
 		perror("write");
 		exit(1);
 	}
+    
+    fprintf(stderr,"command send sucesfully\n");
 
     /* Read output */
     if (insist_read(sd, cmd, sizeof(cmd)) != sizeof(cmd)) {

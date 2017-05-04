@@ -13,6 +13,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <scif.h>
 
 #include <sys/time.h>
 #include <sys/types.h>
@@ -58,13 +59,14 @@ ssize_t insist_write(int fd, const void *buf, size_t cnt)
 
 int main(void)
 {
-	char buf[100];
+    struct phi_cmd *cmd;
 	char addrstr[INET_ADDRSTRLEN];
 	int sd, newsd;
 	ssize_t n;
 	socklen_t len;
 	struct sockaddr_in sa;
 	
+    cmd = (struct phi_cmd *)malloc(sizeof(struct phi_cmd));
 	/* Make sure a broken connection doesn't kill us */
 	signal(SIGPIPE, SIG_IGN);
 
@@ -111,7 +113,7 @@ int main(void)
 
 		/* We break out of the loop when the remote peer goes away */
 		for (;;) {
-			n = read(newsd, buf, sizeof(buf));
+			n = read(newsd, cmd, sizeof(cmd));
 			if (n <= 0) {
 				if (n < 0)
 					perror("read from remote peer failed");
@@ -119,8 +121,21 @@ int main(void)
 					fprintf(stderr, "Peer went away\n");
 				break;
 			}
-			toupper_buf(buf, n);
-			if (insist_write(newsd, buf, n) != n) {
+            
+            switch(cmd->type) {
+                case 1 :
+                    fprintf(stderr,"scif_init()\n");
+                    if((cmd->out = scif_open()) < 0 ) {
+                        perror("scif_open()");
+                        exit(1);
+                    }
+                    break;
+                default:
+                    fprintf(stderr,"Command not recognised\n");
+                    cmd->out = -1;
+                    break;
+            }
+			if (insist_write(newsd, cmd, n) != n) {
 				perror("write to remote peer failed");
 				break;
 			}
