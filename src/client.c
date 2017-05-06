@@ -104,6 +104,7 @@ int main(int argc, char *argv[])
 
     //test for scif_open();
     cmd->type = 1;
+    cmd->out = 2 ;
 
 	/* Send command */
 	if (insist_write(sd, cmd, sizeof(cmd)) != sizeof(cmd)) {
@@ -118,7 +119,7 @@ int main(int argc, char *argv[])
 		perror("read");
 		exit(1);
 	}
-	fprintf(stdout, "I send command type:\n%s\nRemote responded with scif fd \n", cmd->type, cmd->out);
+	fprintf(stdout, "I send command type:\n%d\nRemote responded with scif fd %d\n", cmd->type, cmd->out);
 	fflush(stdout);
 
 	/*

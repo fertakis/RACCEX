@@ -19,9 +19,8 @@
 
 //Needs review for output usage
 struct phi_cmd {
-    int type;
+    int type,out;
     char *arg;
-    int out;
 };
 
 #endif /* _COMMON_H */
