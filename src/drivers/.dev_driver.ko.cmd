@@ -1,0 +1,1 @@
+cmd_/home/fertakis/Documents/Thesis/remotephiexec/src/drivers/dev_driver.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/fertakis/Documents/Thesis/remotephiexec/src/drivers/dev_driver.ko /home/fertakis/Documents/Thesis/remotephiexec/src/drivers/dev_driver.o /home/fertakis/Documents/Thesis/remotephiexec/src/drivers/dev_driver.mod.o
