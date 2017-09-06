@@ -9,5 +9,5 @@ message PhiCmd {
 
 message PhiDevice {
 	required string name = 1;
-	required bool is_buy = 2 [default = false];
+	required bool is_busy = 2 [default = false];
 }
