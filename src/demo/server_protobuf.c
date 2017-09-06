@@ -21,23 +21,25 @@
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
-
+#include "amessage.pb-c.h"
 #include "common.h"
+
+#define MAX_MSG_SIZE 1024
 
 /* Insist untill all of the data has been read */
 ssize_t insist_read(int fd, void *buf, size_t cnt)
 {
-    ssize_t ret;
-    size_t orig_cnt = cnt;
+	ssize_t ret;
+	size_t orig_cnt = cnt;
 
-    while (cnt > 0) {
-        ret = read(fd, buf, cnt);
-        if(ret <=0)
-            return ret;
-        buf += ret;
-        cnt -= ret;
-    }
-    return orig_cnt;
+	while (cnt > 0) {
+		ret = read(fd, buf, cnt);
+		if(ret <=0)
+			return ret;
+		buf += ret;
+		cnt -= ret;
+	}
+	return orig_cnt;
 }
 
 /* Insist until all of the data has been written */
@@ -45,13 +47,13 @@ ssize_t insist_write(int fd, const void *buf, size_t cnt)
 {
 	ssize_t ret;
 	size_t orig_cnt = cnt;
-	
+
 	while (cnt > 0) {
-	        ret = write(fd, buf, cnt);
-	        if (ret < 0)
-	                return ret;
-	        buf += ret;
-	        cnt -= ret;
+		ret = write(fd, buf, cnt);
+		if (ret < 0)
+			return ret;
+		buf += ret;
+		cnt -= ret;
 	}
 
 	return orig_cnt;
@@ -59,15 +61,13 @@ ssize_t insist_write(int fd, const void *buf, size_t cnt)
 
 int main(void)
 {
-    struct phi_cmd *cmd;
+	AMessage *msg;
 	char addrstr[INET_ADDRSTRLEN];
 	int sd, newsd;
-	scif_epd_t endp;
 	ssize_t n;
 	socklen_t len;
 	struct sockaddr_in sa;
-	
-    	cmd = (struct phi_cmd *)malloc(sizeof(struct phi_cmd));
+
 	/* Make sure a broken connection doesn't kill us */
 	signal(SIGPIPE, SIG_IGN);
 
@@ -110,11 +110,13 @@ int main(void)
 			exit(1);
 		}
 		fprintf(stderr, "Incoming connection from %s:%d\n",
-			addrstr, ntohs(sa.sin_port));
+				addrstr, ntohs(sa.sin_port));
 
+		uint8_t buf[MAX_MSG_SIZE];
+		size_t msg_len;
 		/* We break out of the loop when the remote peer goes away */
 		for (;;) {
-			n = read(newsd, cmd, sizeof(cmd));
+			n = read(newsd, buf, MAX_MSG_SIZE);
 			if (n <= 0) {
 				if (n < 0)
 					perror("read from remote peer failed");
@@ -122,30 +124,23 @@ int main(void)
 					fprintf(stderr, "Peer went away\n");
 				break;
 			}
-            
-            switch(cmd->type) {
-                case 1 :
-                    fprintf(stderr,"scif_init()\n");
-                    if((endp = scif_open()) < 0 ) {
-                        perror("scif_open()");
-                        exit(1);
-                    }
-		    fprintf(stderr, "scif_open() returned %d\n",endp);
-		    cmd->type = (int) endp;
-		    cmd->out = (int) endp;
-		    cmd->out = 78;
-		    fprintf(stderr, "cmd->out=%d\n",cmd->out);
-                    break;
-                default:
-                    fprintf(stderr,"Command not recognised\n");
-                    cmd->out = -1;
-                    break;
-            }
-			fprintf(stderr, "sizeof(cmd)=%d",sizeof(cmd));
-			if (insist_write(newsd, cmd, n) != n) {
-				perror("write to remote peer failed");
-				break;
+			msg_len = n;
+			// Unpack the message using protobuf-c.
+			msg = amessage__unpack(NULL, msg_len, buf);	
+			if (msg == NULL)
+			{
+				fprintf(stderr, "error unpacking incoming message\n");
+				exit(1);
 			}
+
+			// display the message's fields.
+			printf("Received: a=%d",msg->a);  // required field
+			if (msg->has_b)                   // handle optional field
+				printf("  b=%d",msg->b);
+			printf("\n");
+
+			// Free the unpacked message
+			amessage__free_unpacked(msg, NULL);
 		}
 		/* Make sure we don't leak open files */
 		if (close(newsd) < 0)
