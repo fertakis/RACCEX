@@ -40,7 +40,7 @@ ssize_t insist_read(int fd, void *buf, size_t cnt)
     return orig_cnt;
 }
 /* Insist until all of the data has been written */
-ssize_t insist_write(int fd, const void *buf, size_t cnt)
+ssize_t insist_write(int fd, void *buf, size_t cnt)
 {
     ssize_t ret;
     size_t orig_cnt = cnt;
@@ -104,22 +104,21 @@ int main(int argc, char *argv[])
        buf[sizeof(buf) - 1] = '\0';*/
 
     //Initialise command
-    msg.a = atoi(argv[1]);
-    if (argc == 3) { msg.has_b = 1; msg.b = atoi(argv[2]); }
+    msg.a = atoi(argv[3]);
+    if (argc == 5) { msg.has_b = 1; msg.b = atoi(argv[4]); }
     len = amessage__get_packed_size(&msg);
 
     buf = malloc(len);
     amessage__pack(&msg,buf);
 
     /* Send command */
-    if (insist_write(sd, msg, sizeof(msg)) != sizeof(msg)) {
+    if (insist_write(sd, buf, sizeof(buf)) != sizeof(buf)) {
         perror("write");
         exit(1);
     }
 
     fprintf(stderr,"command send sucesfully\n");
 
-    fprintf(stdout, "I send command type:\n%d\nRemote responded with scif fd %d\n", cmd->type, cmd->out);
     fflush(stdout);
 
     /*

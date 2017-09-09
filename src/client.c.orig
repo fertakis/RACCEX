@@ -23,6 +23,8 @@
 
 #include "common.h"
 
+<<<<<<< HEAD
+=======
 int init_client(const char *s_ip, const char *s_port)
 {
 	int sd ;
@@ -55,3 +57,4 @@ int init_client(const char *s_ip, const char *s_port)
 
 	return sd;
 }
+>>>>>>> 7f13b0cd6091204b1c016411589118faeb3c29ef
