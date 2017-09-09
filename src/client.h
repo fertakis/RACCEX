@@ -1,9 +1,9 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-typedef struct unitofwork {
+typedef struct _unitofwork {
 	int id;
- 	int sock_fd;
-} uow;
+ 	int socket_fd;
+} unitofwork ;
 
 #endif /* CLIENT_H */
