@@ -97,7 +97,7 @@ scif_get_driver_version(void)
 
     //initialise socket & establish connection
     establish_connection(&uow);
-    //send cmd
+    //prepare & send cmd
 
     //receive resutls
 
