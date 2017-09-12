@@ -52,3 +52,41 @@ size_t encode_message(void **result, int msg_type, void *payload) {
 
 	return buf_size;
 }
+
+ssize_t send_message (int socket_fd, void *buffer, size_t len)
+{
+    printf("Sending %zu bytes...\n",len);
+    return insist_write(socket_fd, buffer, len);
+}
+
+/* Insist untill all of the data has been read */
+ssize_t insist_read(int fd, void *buf, size_t cnt)
+{
+    ssize_t ret;
+    size_t orig_cnt = cnt;
+
+    while (cnt > 0) {
+        ret = read(fd, buf, cnt);
+        if(ret <=0)
+            return ret;
+        buf += ret;
+        cnt -= ret;
+    }
+    return orig_cnt;
+}
+/* Insist until all of the data has been written */
+ssize_t insist_write(int fd, const void *buf, size_t cnt)
+{
+	ssize_t ret;
+	size_t orig_cnt = cnt;
+	
+	while (cnt > 0) {
+	        ret = write(fd, buf, cnt);
+	        if (ret < 0)
+	                return ret;
+	        buf += ret;
+	        cnt -= ret;
+	}
+
+	return orig_cnt;
+}

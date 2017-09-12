@@ -98,7 +98,11 @@ scif_get_driver_version(void)
     //initialise socket & establish connection
     establish_connection(&uow);
     //prepare & send cmd
-
+    if(send_cuda_cmd(uow.socket_fd, NULL, 0, PHI_CMD) == -1) 
+    {
+        fprintf(stderr, "Error sending PHI cmd!\n");
+        exit(EXIT_FAILURE);
+    }
     //receive resutls
 
 	return scif_version;

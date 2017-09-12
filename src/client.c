@@ -90,5 +90,8 @@ int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)
         return -1;
     send_message(socket_fd, buf, len);
 
+    free(buf);
+
     return 0;
 }
+
