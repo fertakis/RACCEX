@@ -76,39 +76,45 @@ static unitofwork uow;
 
 static uint8_t scif_version_mismatch;
 
-static int
+	static int
 scif_get_driver_version(void)
 {
+	int res_code;
+	void *result = NULL;
 	/*int scif_version;
-	scif_epd_t fd;
+	  scif_epd_t fd;
 
-	if ((fd = open(DEVICE_NODE, O_RDWR)) < 0)
-		return -1;
-	scif_version = ioctl(fd, SCIF_GET_VERSION);
-	if (scif_version < 0) {
-		close(fd);
-		return -1;
+	  if ((fd = open(DEVICE_NODE, O_RDWR)) < 0)
+	  return -1;
+	  scif_version = ioctl(fd, SCIF_GET_VERSION);
+	  if (scif_version < 0) {
+	  close(fd);
+	  return -1;
+	  }
+	  close(fd);*/
+
+	//initialise parameters
+	init_params(&uow);
+
+	//initialise socket & establish connection
+	establish_connection(&uow);
+	//prepare & send cmd
+	if(send_phi_cmd(uow.socket_fd, NULL, 0, PHI_CMD) == -1) 
+	{
+		fprintf(stderr, "Error sending PHI cmd!\n");
+		exit(EXIT_FAILURE);
 	}
-	close(fd);*/
+	//receive resutls
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == PHI_SUCCESS) {
+		uow.version = *(uint64_t *) result;
+		free(result);
+	}
 
-
-    //initialise parameters
-    init_params(&uow);
-
-    //initialise socket & establish connection
-    establish_connection(&uow);
-    //prepare & send cmd
-    if(send_cuda_cmd(uow.socket_fd, NULL, 0, PHI_CMD) == -1) 
-    {
-        fprintf(stderr, "Error sending PHI cmd!\n");
-        exit(EXIT_FAILURE);
-    }
-    //receive resutls
-
-	return scif_version;
+	return uow.version;
 }
 
-scif_epd_t
+	scif_epd_t
 scif_open(void)
 {
 	scif_epd_t fd;
@@ -129,7 +135,7 @@ scif_open(void)
 }
 only_version(scif_open, 0, 0)
 
-int
+	int
 scif_close(scif_epd_t epd)
 {
 	if (close(epd))
@@ -138,7 +144,7 @@ scif_close(scif_epd_t epd)
 }
 only_version(scif_close, 0, 0)
 
-int
+	int
 scif_bind(scif_epd_t epd, uint16_t pn)
 {
 	int pni = pn;
@@ -150,7 +156,7 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 }
 only_version(scif_bind, 0, 0)
 
-int
+	int
 scif_listen(scif_epd_t epd, int backlog)
 {
 	if (ioctl(epd, SCIF_LISTEN, backlog) < 0)
@@ -160,7 +166,7 @@ scif_listen(scif_epd_t epd, int backlog)
 }
 only_version(scif_listen, 0, 0)
 
-int
+	int
 scif_connect(scif_epd_t epd, struct scif_portID *dst)
 {
 	struct scifioctl_connect req;
@@ -180,7 +186,7 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 }
 only_version(scif_connect, 0, 0)
 
-int
+	int
 scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int flags)
 {
 	struct scifioctl_accept req;
@@ -220,22 +226,22 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 }
 only_version(scif_accept, 0, 0)
 
-int
+	int
 scif_send(scif_epd_t epd, void *msg, int len, int flags)
 {
 	struct scifioctl_msg send_msg =
-		{ .msg = msg, .len = len, .flags = flags };
+	{ .msg = msg, .len = len, .flags = flags };
 	if (ioctl(epd, SCIF_SEND, &send_msg) < 0)
 		return -1;
 	return send_msg.out_len;
 }
 only_version(scif_send, 0, 0)
 
-int
+	int
 scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 {
 	struct scifioctl_msg recv_msg =
-		{ .msg = msg, .len = len, .flags = flags };
+	{ .msg = msg, .len = len, .flags = flags };
 
 	if (ioctl(epd, SCIF_RECV, &recv_msg) < 0)
 		return -1;
@@ -243,13 +249,13 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 }
 only_version(scif_recv, 0, 0)
 
-off_t
+	off_t
 scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
-				int prot, int flags)
+		int prot, int flags)
 {
 	struct scifioctl_reg reg =
 	{ .addr = addr, .len = len, .offset = offset,
-			.prot = prot, .flags = flags };
+		.prot = prot, .flags = flags };
 
 	if (ioctl(epd, SCIF_REG, &reg) < 0)
 		return -1;
@@ -257,11 +263,11 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 }
 only_version(scif_register, 0, 0)
 
-int
+	int
 scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 {
 	struct scifioctl_unreg unreg =
-		{ .len = len, .offset = offset};
+	{ .len = len, .offset = offset};
 
 	if (ioctl(epd, SCIF_UNREG, &unreg) < 0)
 		return -1;
@@ -269,21 +275,21 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 }
 only_version(scif_unregister, 0, 0)
 
-void*
+	void*
 scif_mmap(void *addr, size_t len, int prot, int flags, scif_epd_t epd, off_t offset)
 {
 	return mmap(addr, len, prot, (flags | MAP_SHARED), (int)epd, offset);
 }
 only_version(scif_mmap, 0, 0)
 
-int
+	int
 scif_munmap(void *addr, size_t len)
 {
 	return munmap(addr, len);
 }
 only_version(scif_munmap, 0, 0)
 
-int
+	int
 scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags)
 {
 	struct scifioctl_copy copy =
@@ -295,7 +301,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 }
 only_version(scif_readfrom, 0, 0)
 
-int
+	int
 scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags)
 {
 	struct scifioctl_copy copy =
@@ -307,7 +313,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 }
 only_version(scif_writeto, 0, 0)
 
-int
+	int
 scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
 	struct scifioctl_copy copy =
@@ -319,7 +325,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 }
 only_version(scif_vreadfrom, 0, 0)
 
-int
+	int
 scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
 	struct scifioctl_copy copy =
@@ -331,7 +337,7 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 }
 only_version(scif_vwriteto, 0, 0)
 
-int
+	int
 scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 {
 	struct scifioctl_fence_mark fence_mark =
@@ -343,7 +349,7 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 }
 only_version(scif_fence_mark, 0, 0)
 
-int
+	int
 scif_fence_wait(scif_epd_t epd, int mark)
 {
 	if (ioctl(epd, SCIF_FENCE_WAIT, mark) < 0)
@@ -352,9 +358,9 @@ scif_fence_wait(scif_epd_t epd, int mark)
 }
 only_version(scif_fence_wait, 0, 0)
 
-int
+	int
 scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
-	off_t roff, uint64_t rval, int flags)
+		off_t roff, uint64_t rval, int flags)
 {
 	struct scifioctl_fence_signal signal =
 	{.loff = loff, .lval = lval, .roff = roff,
@@ -367,7 +373,7 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 }
 only_version(scif_fence_signal, 0, 0)
 
-int
+	int
 scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 {
 	scif_epd_t fd;
@@ -387,7 +393,7 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 }
 only_version(scif_get_nodeIDs, 0, 0)
 
-int
+	int
 scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 {
 	return poll((struct pollfd*)ufds, nfds, timeout_msecs);

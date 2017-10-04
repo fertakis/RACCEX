@@ -53,10 +53,69 @@ size_t encode_message(void **result, int msg_type, void *payload) {
 	return buf_size;
 }
 
+int deserialise_message(void **result, void **payload, void *serialised_msg, uint32_t ser_msg_len)
+{
+	Cookie *msg;
+
+	printf("Deserialising message data...\n");
+	msg = cookie__unpack(NULL, ser_msg_len, (uint8_t *)serialised_msg);
+	if (msg == NULL) {
+		fprintf(stderr, "message unpacking failed\n");
+		return -1;
+	}
+	
+	switch (msg->type) {
+		case PHI_CMD:
+			printf("--------------\nIs PHI_CMD\n");
+			*payload = msg.phi_cmd;
+			break;
+		case PHI_CMD_RESULT:
+			printf("--------------\nIs PHI_CMD_RESULT\n");
+			*payload = msg.phi_cmd;
+			break;
+	}
+	
+	// We can't call this here unless we make a *deep* copy of the
+	// message payload...
+	//cookie__free_unpacked(msg, NULL);
+	*result = msg; 
+
+	return msg->type;
+
+}
+
+void free_deserialised_message(void *msg) {
+	printf("Freeing allocated memory for message...\n");
+	cookie__free_unpacked((Cookie *)msg, NULL);
+}
+
 ssize_t send_message (int socket_fd, void *buffer, size_t len)
 {
     printf("Sending %zu bytes...\n",len);
     return insist_write(socket_fd, buffer, len);
+}
+
+uint32_t receive_message(void **serialised_msg, int socket_fd) {
+	void *buf;
+	uint32_t msg_len;
+	int ret = 0;
+
+	buf = malloc_safe(sizeof(uint32_t));
+	
+	// read message length
+	insist_read(socket_fd, buf, sizeof(uint32_t));
+
+	msg_len = ntohl(*(uint32_t *)buf);
+	printf("Going to read a message of %u bytes...\n", msg_len);
+	
+	buf = realloc(buffer, msg_len);
+	
+	// read message
+	insist_read(socket_fd, buf, msg_len);
+	
+	*serialised_msg = buf;
+
+	return msg_len;
 }
 
 /* Insist untill all of the data has been read */

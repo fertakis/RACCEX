@@ -95,3 +95,42 @@ int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)
     return 0;
 }
 
+void get_phi_cmd_result(void ** result, int socket_fd)
+{
+	PhiCmd *cmd;
+	size_t len;
+	void *buf = NULL, *payload = NULL, *deserialised_message=NULL;
+	int res_code;
+	
+	printf("Waiting result from PHI Server...\n");
+	len = receive_message(&buf, socket_fd);
+	if(len > 0)
+		deserialise_message(&deserialised_message, &payload, buf, len);
+	else {
+		fprintf(stderr, "Problem receiving server response.\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	if(payload == NULL) {
+		fprintf(stderr, "Problem deserialising message.\n");
+		exit(EXIT_FAILURE);
+	} else {
+		cmd = payload;
+		res_code = cmd->int_args[0];
+		printf("Server responded: \n| result code: %d\n", res_code); 
+		if (cmd->n_uint_args > 0) {
+			*result = malloc_safe(sizeof(uint64_t));
+			memcpy(*result, &cmd->uint_args[0], sizeof(uint64_t));
+			printf("| result: 0x%" PRIx64 "\n", *(uint64_t *) *result);
+		} else if (cmd->n_extra_args > 0) {
+			*result = malloc_safe(cmd->extra_args[0].len);
+			memcpy(*result, cmd->extra_args[0].data, cmd->extra_args[0].len);
+			printf("| result: (bytes)\n");
+		}
+		free_decoded_message(dec_msg);
+	}
+	
+	if(buf != NULL)
+		free(buf);
+	return res_code;
+}
