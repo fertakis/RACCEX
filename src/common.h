@@ -23,3 +23,5 @@ enum  cmd_type_enum {
 	RESULT,
     INIT
 };
+
+int get_server_connection_config(char *server_ip, char *server_port);

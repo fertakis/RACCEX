@@ -22,7 +22,7 @@
 #include "common.pb-c.h"
 
 
-size_t encode_message(void **result, int msg_type, void *payload) {
+size_t serialise_message(void **result, int msg_type, void *payload) {
 	size_t buf_size;
 	uint32_t msg_length, msg_len_n;
 	Cookie message = COOKIE__INIT;
