@@ -13,7 +13,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <netdb.h>
-
+#include <scif.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -22,6 +22,8 @@
 #include <netinet/in.h>
 
 #include "common.h"
+#include "phi_errors.h"
+
 
 int process_phi_cmd(void **result, void *cmd_ptr, void *free_list, void *busy_list, void **client_list, void **client_handle) {
 	int phi_result = 0, arg_count = 0;
@@ -39,17 +41,29 @@ int process_phi_cmd(void **result, void *cmd_ptr, void *free_list, void *busy_li
 
 	gdprintf("Processing PHI_CMD\n");
 	switch(cmd->type) {
-		case INIT:
-			/*gdprintf("Executing cuInit...\n");
-			get_client_handle(client_handle, client_list, cmd->int_args[0]);
+		case VERSION:
+			printf("Executing get_driver_version...\n");
+			uint_res = scif_get_driver_version();
+			res_type = UINT;
+			break;
+			/*get_client_handle(client_handle, client_list, cmd->int_args[0]);
 			uint_res = ((client_node *) *client_handle)->id;
 			// cuInit() should have already been executed by the server 
 			// by that point...
 			//cuda_result = cuda_err_print(cuInit(cmd->uint_args[0]), 0);
 			cuda_result = CUDA_SUCCESS;
 			res_type = UINT;*/
+		case OPEN:
+			printf("Executing scif_open() ... \n");
+			scif_epd_t endp;
+			if((endp = scif_open()) < 0)
+			{
+				perror("scif_open");
+				phi_result = SCIF_OPEN_FAIL;
+			} else 
+				phi_result = SCIF_SUCCESS;
+			res_tpye = UINT;
 			break;
-		case DEVICE_GET:
 			/*gdprintf("Executing cuDeviceGet...\n");
 			if (update_device_of_client(&uint_res, free_list, cmd->int_args[0], *client_handle) < 0)
 				cuda_result = CUDA_ERROR_INVALID_DEVICE;
@@ -57,7 +71,6 @@ int process_phi_cmd(void **result, void *cmd_ptr, void *free_list, void *busy_li
 				cuda_result = CUDA_SUCCESS;
 
 			res_type = UINT;*/
-			break;
 		case DEVICE_GET_COUNT:
 			/*gdprintf("Executing cuDeviceGetCount...\n");
 			cuda_result = get_device_count_for_client(&uint_res);

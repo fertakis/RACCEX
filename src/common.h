@@ -24,4 +24,31 @@ enum  cmd_type_enum {
     INIT
 };
 
+enum {
+	PHI_CMD = 0;
+	VERSION,
+	OPEN,
+	CLOSE,
+	BIND,
+	LISTEN,
+	CONNECT,
+	ACCEPT,
+	SEND,
+	RECV,
+	REGISTER,
+	UNREGISTER,
+	MMAP,
+	MUNMAP,
+	READ_FROM,
+	WRITE_TO,
+	VREAD_FROM,
+	VWRITE_TO,
+	FENCE_MARK,
+	FENCE_WAIT,
+	FENCE_SIGNAL,
+	GET_NODE_IDS,
+	POLL,
+	LIB_INIT
+};
+
 int get_server_connection_config(char *server_ip, char *server_port);
