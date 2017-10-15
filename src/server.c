@@ -22,6 +22,9 @@
 #include <netinet/in.h>
 
 #include "common.h"
+#include "communication.h"
+#include "process.h"
+#include "common.pb-c.h"
 
 int init_server_net(const char *port, struct sockaddr_in *sa) 
 {
@@ -62,7 +65,7 @@ int main(int argc, char *argv[]) {
 	struct sockaddr_in sa;
 	char server_ip[16] /* IPv4 */, server_port[6], *local_port,client_host[NI_MAXHOST], client_serv[NI_MAXSERV], addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
-	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL, *free_list=NULL, *busy_list=NULL, *client_list=NULL, *client_handle=NULL;
+	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL ;
 	uint32_t msg_length;
 
 	if (argc > 2) {
@@ -120,25 +123,25 @@ int main(int argc, char *argv[]) {
 					break;
 			}
 
-			print_clients(client_list);
-			print_cuda_devices(free_list, busy_list);
+			//print_clients(client_list);
+			//print_cuda_devices(free_list, busy_list);
 
 			if (msg != NULL) {
 				free(msg);
 				msg = NULL;
 			}
 			if (des_msg != NULL) {
-				free_decoded_message(des_msg);
+				free_deserialised_message(des_msg);
 				des_msg = NULL;
 				// payload should be invalid now
 				payload = NULL;
 			}
 
 			if (resp_type != -1) {
-				gdprintf("Sending result\n");
-				pack_cuda_cmd(&payload, result, arg_cnt, CUDA_CMD_RESULT);
-				msg_length = encode_message(&msg, resp_type, payload);
-				send_message(client_sock_fd, msg, msg_length);
+				printf("Packing and Sending result\n");
+				pack_phi_cmd(&payload, result, arg_cnt, PHI_CMD_RESULT);
+				msg_length = serialise_message(&msg, resp_type, payload);
+				send_message(client_sfd, msg, msg_length);
 
 				if (result != NULL) {
 					// should be more freeing here...
@@ -152,17 +155,18 @@ int main(int argc, char *argv[]) {
 				msg = NULL;
 			}
 
+			/*CHECK TO SEE IF CLIENT IS FINISHED
 			if (get_client_status(client_handle) == 0) {
 				// TODO: freeing
 				printf("\n--------------\nClient finished.\n\n");
 				break;
-			}
+			}*/
 		}
 	}
 	close(client_sfd);
 
-	if (client_list != NULL)
-		free_cdn_list(client_list);
+	/*if (client_list != NULL)
+		free_cdn_list(client_list);*/
 
 	return EXIT_FAILURE;
 }
