@@ -25,26 +25,21 @@
 #include "phi_errors.h"
 
 
-int process_phi_cmd(void **result, void *cmd_ptr, void *free_list, void *busy_list, void **client_list, void **client_handle) {
-	int phi_result = 0, arg_count = 0;
+int process_phi_cmd(void **result, void *cmd_ptr) {
+	int phi_result = 0, int_res,arg_count = 0;
 	PhiCmd *cmd = cmd_ptr;
-	uint64_t uint_res = 0, tmp_ptr = 0;
+	uint64_t uint_res = 0; 
 	void *extra_args = NULL, *res_data = NULL;
 	size_t extra_args_size = 0, res_length = 0;
-	uow **res = NULL;
+	var *res = NULL;
 	var_type res_type;
-
-	if (*client_handle == NULL && cmd->type != INIT) {
-		fprintf(stderr, "process_phi_cmd: Invalid client handle\n");
-		return -1;
-	}
-
+	
 	gdprintf("Processing PHI_CMD\n");
 	switch(cmd->type) {
 		case VERSION:
 			printf("Executing get_driver_version...\n");
-			uint_res = scif_get_driver_version();
-			res_type = UINT;
+			int_res = scif_get_driver_version();
+			res_type = INT;
 			break;
 			/*get_client_handle(client_handle, client_list, cmd->int_args[0]);
 			uint_res = ((client_node *) *client_handle)->id;
@@ -57,86 +52,119 @@ int process_phi_cmd(void **result, void *cmd_ptr, void *free_list, void *busy_li
 			printf("Executing scif_open() ... \n");
 			scif_epd_t endp;
 			if((endp = scif_open()) < 0)
-			{
 				perror("scif_open");
+			else 
+				phi_result = endp;
+			res_type = UINT;
+			break;
+		case CLOSE:
+			printf("Executing scif_close() ... \n");
+			//TODO: scif_close call goes here...
+			scif_epd_t endp = (scif_epd_t)cmd->uint_args[0];
+			if(scif_close(endp)<0)
+			{
+				perror("scif_close");
 				phi_result = SCIF_OPEN_FAIL;
 			} else 
 				phi_result = SCIF_SUCCESS;
-			res_tpye = UINT;
 			break;
-			/*gdprintf("Executing cuDeviceGet...\n");
-			if (update_device_of_client(&uint_res, free_list, cmd->int_args[0], *client_handle) < 0)
-				cuda_result = CUDA_ERROR_INVALID_DEVICE;
-			else
-				cuda_result = CUDA_SUCCESS;
-
-			res_type = UINT;*/
-		case DEVICE_GET_COUNT:
-			/*gdprintf("Executing cuDeviceGetCount...\n");
-			cuda_result = get_device_count_for_client(&uint_res);
-			res_type = UINT;*/
-			break;
-		case DEVICE_GET_NAME:
-			/*gdprintf("Executing cuDeviceGetName...\n");
-			cuda_result = get_device_name_for_client(&extra_args, &extra_args_size, cmd->int_args[0], cmd->uint_args[0]);*/
-			break;
-		/*case CONTEXT_CREATE:
-			gdprintf("Executing cuCtxCreate...\n");
-			cuda_result = assign_device_to_client(cmd->uint_args[1], free_list, busy_list, *client_handle);
-			if (cuda_result	< 0)
-				break; // Handle appropriately in client.
-
-			cuda_result = create_context_of_client(&uint_res, cmd->uint_args[0], cmd->uint_args[1], *client_handle);
 			res_type = UINT;
+		case BIND:
+			printf("Executing scif_bind() ... \n");
+			//TODO: scif_bind call goes here...
 			break;
-		case CONTEXT_DESTROY:
-			gdprintf("Executing cuCtxDestroy...\n");
-			// We assume that only one context per device is created
-			cuda_result = destroy_context_of_client(&tmp_ptr, cmd->uint_args[0], *client_handle);
-			if (cuda_result == CUDA_SUCCESS) {
-				free_device_from_client(tmp_ptr, free_list, busy_list, *client_handle);
-				if (cmd->n_uint_args > 1 && cmd->uint_args[1] == 1) {
-					del_client_of_list(*client_handle);
-					*client_handle = NULL;
-					//((client_node *) *client_handle)->status = 0;
-				}
-			}
+		case LISTEN:
+			printf("Executing scif_listen() ... \n");
+			//TODO: scif_listen call goes here...
 			break;
-		case MODULE_LOAD:
-			gdprintf("Executing cuModuleLoad...\n");
-			//print_file_as_hex(cmd->extra_args[0].data, cmd->extra_args[0].len);
-			cuda_result = load_module_of_client(&uint_res, &(cmd->extra_args[0]), *client_handle);
-			res_type = UINT;
+		case CONNECT:
+			printf("Executing scif_connect() ... \n");
+			//TODO: scif_connect call goes here...
 			break;
-		case MODULE_GET_FUNCTION:
-			gdprintf("Executing cuModuleGetFuction...\n");
-			cuda_result = get_module_function_of_client(&uint_res, cmd->uint_args[0], cmd->str_args[0], *client_handle);
-			res_type = UINT;
+		case ACCEPT:
+			printf("Executing scif_accept() ... \n");
+			//TODO: scif_accept call goes here...
 			break;
-		case MEMORY_ALLOCATE:
-			gdprintf("Executing cuMemAlloc...\n");
-			cuda_result = memory_allocate_for_client(&uint_res, cmd->uint_args[0]);
-			res_type = UINT;
+		case SEND:
+			printf("Executing scif_send() ... \n");
+			//TODO: scif_send call goes here...
 			break;
-		case MEMORY_FREE:
-			gdprintf("Executing cuMemFree...\n");
-			cuda_result = memory_free_for_client(cmd->uint_args[0]);
+		case RECV:
+			printf("Executing scif_recv() ... \n");
+			//TODO: scif_recv call goes here...
 			break;
-		case MEMCPY_HOST_TO_DEV:
-			gdprintf("Executing cuMemcpyHtoD...\n");
-			cuda_result = memcpy_host_to_dev_for_client(cmd->uint_args[0], cmd->extra_args[0].data, cmd->extra_args[0].len);
+		case REGISTER:
+			printf("Executing scif_register() ... \n");
+			//TODO: scif_register call goes here...
 			break;
-		case MEMCPY_DEV_TO_HOST:
-			gdprintf("Executing cuMemcpyDtoH...\n");
-			cuda_result = memcpy_dev_to_host_for_client(&extra_args, &extra_args_size, cmd->uint_args[0], cmd->uint_args[1]);
+		case UNREGISTER:
+			printf("Executing scif_unregister() ... \n");
+			//TODO: scif_unregister call goes here...
 			break;
-		case LAUNCH_KERNEL:
-			gdprintf("Executing cuLaunchKernel...\n");
-			cuda_result = launch_kernel_of_client(cmd->uint_args, cmd->n_uint_args, cmd->extra_args, cmd->n_extra_args);
-			break;*/
+		case MMAP:
+			printf("Executing scif_mmap() ... \n");
+			//TODO: scif_mmap call goes here...
+			break;
+		case MUNMAP:
+			printf("Executing scif_munmap() ... \n");
+			//TODO: scif_munmap call goes here...
+			break;
+		case READ_FROM:
+			printf("Executing scif_read_from() ... \n");
+			//TODO: scif_read_from call goes here...
+			break;
+		case WRITE_TO:
+			printf("Executing scif_write_to() ... \n");
+			//TODO: scif_write_to call goes here...
+			break;
+		case VREAD_FROM:
+			printf("Executing scif_vread_from() ... \n");
+			//TODO: scif_vread_from call goes here...
+			break;
+		case VWRITE_TO:
+			printf("Executing scif_vwrite_to) ... \n");
+			//TODO: scif_vwrite_to call goes here...
+			break;
+		case FENCE_MARK:
+			printf("Executing scif_fence_mark() ... \n");
+			//TODO: scif_fence_mark call goes here...
+			break;
+		case FENCE_WAIT:
+			printf("Executing scif_fence_wait() ... \n");
+			//TODO: scif_fence_wait call goes here...
+			break;
+		case FENCE_SIGNAL:
+			printf("Executing scif_fence_signal) ... \n");
+			//TODO: scif_fence_signal call goes here...
+			break;
+		case GET_NODE_IDS:
+			printf("Executing scif_get_node_ids) ... \n");
+			//TODO: scif_get_node_ids call goes here...
+			break;
+		case POLL:
+			printf("Executing scif_poll() ... \n");
+			//TODO: scif_poll call goes here...
+			break;
+		case LIB_INIT:
+			printf("Executing scif_lib_init() ... \n");
+			//TODO: scif_lib_init call goes here...
+			break;	
 	}
 
-	if (res_type == UINT) {
+	res = (res *)malloc_safe(sizeof(res));
+	res->type = res_type;
+	res->elements = 1;
+	switch(res->type) {
+		case INT:
+			res->length = sizeof(int);
+			break;
+		//TODO: Complete switch cases	
+	}
+	res->data = malloc_safe(res->length);
+	memcpy(res->data, &phi_result,res->length);
+	*result = res	
+
+	/*if (res_type == UINT) {
 		res_length = sizeof(uint64_t);
 		res_data = &uint_res;
 	} else if (extra_args_size != 0) {	
@@ -166,7 +194,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, void *free_list, void *busy_li
 	res[0]->data = malloc_safe(res[0]->length);
 	memcpy(res[0]->data, &cuda_result, res[0]->length);
 
-	*result = res;
+	*result = res;*/
 
 	if (extra_args != NULL)
 		free(extra_args);

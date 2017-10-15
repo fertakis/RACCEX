@@ -13,19 +13,15 @@ typedef enum var_type_enum {
 
 typedef struct var_struct {
     var_type type;
+    size_t length;
     void *data;
 } var;
 
-enum  cmd_type_enum {
-	PHI_CMD=0,
+enum {
+	PHI_CMD = 0,
 	PHI_CMD_RESULT,
 	TEST,
-	RESULT,
-    INIT
-};
-
-enum {
-	PHI_CMD = 0;
+	INIT,
 	VERSION,
 	OPEN,
 	CLOSE,

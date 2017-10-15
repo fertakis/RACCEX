@@ -117,10 +117,10 @@ int main(int argc, char *argv[]) {
 					arg_cnt = process_phi_cmd(&result, payload, free_list, busy_list, &client_list, &client_handle);
 					resp_type = PHI_CMD_RESULT;
 					break;
-				case PHI_DEVICE_QUERY:
+				/*case PHI_DEVICE_QUERY:
 					process_cuda_device_query(&result, free_list, busy_list);
 					resp_type = PHI_DEVICE_LIST;
-					break;
+					break;*/
 			}
 
 			//print_clients(client_list);
