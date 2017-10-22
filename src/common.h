@@ -14,6 +14,7 @@ typedef enum var_type_enum {
 typedef struct var_struct {
     var_type type;
     size_t length;
+    size_t elements;
     void *data;
 } var;
 
@@ -46,6 +47,11 @@ enum {
 	POLL,
 	LIB_INIT
 };
+
+enum phi_result_code{
+	PHI_SUCCESS=0,
+	PHI_ERROR
+}
 
 int get_server_connection_config(char *server_ip, char *server_port);
 
