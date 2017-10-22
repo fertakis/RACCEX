@@ -1,22 +1,34 @@
+###################################################
+#
+# Makefile
+# Remote Intel PHI Execution
+#
+# Konstantinos Fertakis <kfertak@cslab.ece.ntua.gr>
+#
+###################################################
+
 CC = gcc
-CFLAGS = -I/usr/local/include
-LIBS = -L/usr/local/lib -lprotobuf-c
+ICC = /various/common_tools/intel-icc-and-tools/bin/icc
 
-all: client server
+CFLAGS = -Wall
+#ICFLAGS = $(CFLAGS) -g -mmic -lscif
+CFLAGS += -g
+# CFLAGS += -O2 -fomit-frame-pointer -finline-functions
 
-client: client_proto_example.o amessage.pb-c.o
-	$(CC) -o client client_proto_example.o amessage.pb-c.o $(LIBS)
+#set ICC license file
+#export INTEL_LICENSE_FILE=/various/common_tools/intel-icc-and-tools/licenses/
 
-server: server.o amessage.pb-c.o
-	$(CC) -o server server_protobuf.o amessage.pb-c.o $(LIBS)
+LIBS = 
 
-client.o: 
-	$(CC) -c $(CFLAGS) client_proto_example.c
-server.o:
-	$(CC) -c $(CFLAGS) server_protobuf.c
-amessage.pb-c.o:
-	$(CC) -c $(CFLAGS) amessage.pb-c.c
+BINS = server client
 
-.PHONY: clean
+all: $(BINS)
+
+server: server.c common.h
+	$(CC) $(CFLAGS) -lscif -o $@ $< $(LIBS)
+
+client: client.c common.h
+	$(CC) $(CFLAGS) -o $@ $< $(LIBS)
+
 clean:
-	rm -f *.o client server
+	rm -f *.o *~ $(BINS)
