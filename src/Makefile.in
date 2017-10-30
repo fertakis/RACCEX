@@ -99,14 +99,14 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_libscifapiwrapper_so_OBJECTS = libscifapiwrapper.$(OBJEXT) \
-	process.$(OBJEXT) ommon.$(OBJEXT) communication.$(OBJEXT) \
+	process.$(OBJEXT) common.$(OBJEXT) protocol.$(OBJEXT) \
 	client.$(OBJEXT) common.pb-c.$(OBJEXT)
 libscifapiwrapper_so_OBJECTS = $(am_libscifapiwrapper_so_OBJECTS)
 libscifapiwrapper_so_LDADD = $(LDADD)
 am_server_OBJECTS = server.$(OBJEXT) process.$(OBJEXT) \
-	common.$(OBJEXT) communication.$(OBJEXT)
+	common.$(OBJEXT) protocol.$(OBJEXT)
 server_OBJECTS = $(am_server_OBJECTS)
-server_LDADD = $(LDADD)
+server_DEPENDENCIES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -261,11 +261,12 @@ AM_CFLAGS = -I$(PROTOBUF_C_CFLAGS) -L$(PROTOBUF_C_LIBDIR) -I@builddir@ \
 	-I/usr/include/google $(DEBUG_CFLAGS) -I@builddir@
 BUILT_SOURCES = @srcdir@/common.pb-c.c @srcdir@/common.pb-c.h
 server_SOURCES = server.c process.c process.h common.h common.c \
-	communication.c ommunication.h common.pb-c common.pc-c.h
+	protocol.c protocol.h common.pb-c common.pc-c.h
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h \
-	common.h ommon.c communication.c communication.h client.c \
-	client.h common.pb-c.c common.pb-c.h
+	common.h common.c protocol.c protocol.h client.c client.h \
+	common.pb-c.c common.pb-c.h
 CLEANFILES = @builddir@/common.pb-c.c @builddir@/common.pb-c.h
+server_LDADD = $(PROTOBUF_C_LIBS) 
 EXTRA_DIST = common.proto
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -281,9 +282,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/Makefile
+	  $(AUTOMAKE) --foreign src/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -361,10 +362,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.pb-c.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/communication.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscifapiwrapper.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ommon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/process.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/protocol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server.Po@am__quote@
 
 .c.o:

@@ -1,0 +1,92 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BINS	Makefile	/^BINS = server client$/;"	m
+BYTES	common.h	/^    BYTES$/;"	e	enum:var_type_enum
+CC	Makefile	/^CC = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -Wall$/;"	m
+CLIENT_H	client.h	2;"	d
+DEFAULT_SERVER_IP	common.h	4;"	d
+DEFAULT_SERVER_PORT	common.h	5;"	d
+DEVICE_NODE	libscifapiwrapper.c	53;"	d	file:
+ICC	Makefile	/^ICC = \/various\/common_tools\/intel-icc-and-tools\/bin\/icc$/;"	m
+INIT	common.h	/^    INIT$/;"	e	enum:cmd_type_enum
+INT	common.h	/^    INT,$/;"	e	enum:var_type_enum
+LIBS	Makefile	/^LIBS = $/;"	m
+PHI_CMD	common.h	/^	PHI_CMD=0,$/;"	e	enum:cmd_type_enum
+PHI_CMD_RESULT	common.h	/^	PHI_CMD_RESULT,$/;"	e	enum:cmd_type_enum
+RESULT	common.h	/^	RESULT,$/;"	e	enum:cmd_type_enum
+STRING	common.h	/^    STRING,$/;"	e	enum:var_type_enum
+TEST	common.h	/^	TEST,$/;"	e	enum:cmd_type_enum
+UINT	common.h	/^    UINT,$/;"	e	enum:var_type_enum
+V	libscifapiwrapper.c	65;"	d	file:
+__V	libscifapiwrapper.c	59;"	d	file:
+___str	libscifapiwrapper.c	62;"	d	file:
+__str	libscifapiwrapper.c	61;"	d	file:
+__symver	libscifapiwrapper.c	57;"	d	file:
+__symver_tag	libscifapiwrapper.c	55;"	d	file:
+_unitofwork	client.h	/^typedef struct _unitofwork {$/;"	s
+cmd_type_enum	common.h	/^enum  cmd_type_enum {$/;"	g
+compatible_version	libscifapiwrapper.c	67;"	d	file:
+data	common.h	/^    void *data;$/;"	m	struct:var_struct
+default_version	libscifapiwrapper.c	69;"	d	file:
+deserialise_message	communication.c	/^int deserialise_message(void **result, void **payload, void *serialised_msg, uint32_t ser_msg_len)$/;"	f
+encode_message	communication.c	/^size_t encode_message(void **result, int msg_type, void *payload) {$/;"	f
+establish_connection	client.c	/^void establish_connection(unitofwork *uow) {$/;"	f
+free_deserialised_message	communication.c	/^void free_deserialised_message(void *msg) {$/;"	f
+get_phi_cmd_result	client.c	/^void get_phi_cmd_result(void ** result, int socket_fd)$/;"	f
+get_server_connection_config	common.c	/^int get_server_connection_config(char *server_ip, char *server_port)$/;"	f
+id	client.h	/^	int id;$/;"	m	struct:_unitofwork
+init_client_connection	client.c	/^int init_client_connection(const char *s_ip, const char *s_port)$/;"	f
+init_params	client.c	/^void init_params(unitofwork *uow) {$/;"	f
+init_server	server.c	/^int init_server(char *port, struct addrinfo *addr) {$/;"	f
+init_server_net	server.c	/^int init_server_net(const char *port, struct addrinfo *addr) $/;"	f
+insist_read	client_proto_example.c	/^ssize_t insist_read(int fd, void *buf, size_t cnt)$/;"	f
+insist_read	communication.c	/^ssize_t insist_read(int fd, void *buf, size_t cnt)$/;"	f
+insist_write	client_proto_example.c	/^ssize_t insist_write(int fd, const void *buf, size_t cnt)$/;"	f
+insist_write	communication.c	/^ssize_t insist_write(int fd, const void *buf, size_t cnt)$/;"	f
+main	client_proto_example.c	/^int main(int argc, char *argv[])$/;"	f
+main	server.c	/^int main(int argc, char *argv[]) {$/;"	f
+only_version	libscifapiwrapper.c	71;"	d	file:
+pack_phi_cmd	common.c	/^int pack_phi_cmd(void **payload, var **args, size_t arg_cnt, int type)$/;"	f
+process_phi_cmd	process.c	/^int process_phi_cmd(void **result, void *cmd_ptr, void *free_list, void *busy_list, void **client_list, void **client_handle) {$/;"	f
+receive_message	communication.c	/^uint32_t receive_message(void **serialised_msg, int socket_fd) {$/;"	f
+scif_accept	libscifapiwrapper.c	/^scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int flags)$/;"	f
+scif_bind	libscifapiwrapper.c	/^scif_bind(scif_epd_t epd, uint16_t pn)$/;"	f
+scif_close	libscifapiwrapper.c	/^scif_close(scif_epd_t epd)$/;"	f
+scif_connect	libscifapiwrapper.c	/^scif_connect(scif_epd_t epd, struct scif_portID *dst)$/;"	f
+scif_fence_mark	libscifapiwrapper.c	/^scif_fence_mark(scif_epd_t epd, int flags, int *mark)$/;"	f
+scif_fence_signal	libscifapiwrapper.c	/^scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,$/;"	f
+scif_fence_wait	libscifapiwrapper.c	/^scif_fence_wait(scif_epd_t epd, int mark)$/;"	f
+scif_get_driver_version	libscifapiwrapper.c	/^scif_get_driver_version(void)$/;"	f	file:
+scif_get_nodeIDs	libscifapiwrapper.c	/^scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)$/;"	f
+scif_lib_init	libscifapiwrapper.c	/^__attribute__ ((constructor)) static void scif_lib_init(void)$/;"	f	file:
+scif_listen	libscifapiwrapper.c	/^scif_listen(scif_epd_t epd, int backlog)$/;"	f
+scif_mmap	libscifapiwrapper.c	/^scif_mmap(void *addr, size_t len, int prot, int flags, scif_epd_t epd, off_t offset)$/;"	f
+scif_munmap	libscifapiwrapper.c	/^scif_munmap(void *addr, size_t len)$/;"	f
+scif_open	libscifapiwrapper.c	/^scif_open(void)$/;"	f
+scif_poll	libscifapiwrapper.c	/^scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)$/;"	f
+scif_readfrom	libscifapiwrapper.c	/^scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags)$/;"	f
+scif_recv	libscifapiwrapper.c	/^scif_recv(scif_epd_t epd, void *msg, int len, int flags)$/;"	f
+scif_register	libscifapiwrapper.c	/^scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,$/;"	f
+scif_send	libscifapiwrapper.c	/^scif_send(scif_epd_t epd, void *msg, int len, int flags)$/;"	f
+scif_unregister	libscifapiwrapper.c	/^scif_unregister(scif_epd_t epd, off_t offset, size_t len)$/;"	f
+scif_version_mismatch	libscifapiwrapper.c	/^static uint8_t scif_version_mismatch;$/;"	v	file:
+scif_vreadfrom	libscifapiwrapper.c	/^scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)$/;"	f
+scif_vwriteto	libscifapiwrapper.c	/^scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)$/;"	f
+scif_writeto	libscifapiwrapper.c	/^scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags)$/;"	f
+send_message	communication.c	/^ssize_t send_message (int socket_fd, void *buffer, size_t len)$/;"	f
+send_phi_cmd	client.c	/^int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)$/;"	f
+server_ip	common.c	/^char *server_ip;$/;"	v
+server_port	common.c	/^char *server_port;$/;"	v
+socket_fd	client.h	/^ 	int socket_fd;$/;"	m	struct:_unitofwork
+type	common.h	/^    var_type type;$/;"	m	struct:var_struct
+unitofwork	client.h	/^} unitofwork ;$/;"	t	typeref:struct:_unitofwork
+uow	libscifapiwrapper.c	/^static unitofwork uow;$/;"	v	file:
+var	common.h	/^} var;$/;"	t	typeref:struct:var_struct
+var_struct	common.h	/^typedef struct var_struct {$/;"	s
+var_type	common.h	/^} var_type;$/;"	t	typeref:enum:var_type_enum
+var_type_enum	common.h	/^typedef enum var_type_enum {$/;"	g

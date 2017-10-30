@@ -4,11 +4,11 @@ AM_CFLAGS = -I$(PROTOBUF_C_CFLAGS) -L$(PROTOBUF_C_LIBDIR) -I@builddir@ -I/usr/in
 
 BUILT_SOURCES = @srcdir@/common.pb-c.c @srcdir@/common.pb-c.h
 
-server_SOURCES = server.c process.c process.h common.h common.c communication.c
-server_SOURCES += ommunication.h common.pb-c common.pc-c.h
+server_SOURCES = server.c process.c process.h common.h common.c protocol.c
+server_SOURCES += protocol.h common.pb-c common.pc-c.h
 
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h common.h
-libscifapiwrapper_so_SOURCES += ommon.c communication.c communication.h client.c client.h common.pb-c.c common.pb-c.h
+libscifapiwrapper_so_SOURCES += common.c protocol.c protocol.h client.c client.h common.pb-c.c common.pb-c.h
 
 common.pb-c.c: @srcdir@/common.proto
 	 $(PROTOC_C) --proto_path=@srcdir@ --c_out=. @srcdir@/common.proto
@@ -20,8 +20,10 @@ common.pb-c.h: @srcdir@/common.pb-c.c
 	else :; fi
 
 CLEANFILES = @builddir@/common.pb-c.c @builddir@/common.pb-c.h
+
+server_LDADD = $(PROTOBUF_C_LIBS) 
+
 EXTRA_DIST = common.proto
 
 AM_CFLAGS += -I@builddir@
-
 

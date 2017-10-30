@@ -99,14 +99,14 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_libscifapiwrapper_so_OBJECTS = libscifapiwrapper.$(OBJEXT) \
-	process.$(OBJEXT) ommon.$(OBJEXT) communication.$(OBJEXT) \
+	process.$(OBJEXT) common.$(OBJEXT) protocol.$(OBJEXT) \
 	client.$(OBJEXT) common.pb-c.$(OBJEXT)
 libscifapiwrapper_so_OBJECTS = $(am_libscifapiwrapper_so_OBJECTS)
 libscifapiwrapper_so_LDADD = $(LDADD)
 am_server_OBJECTS = server.$(OBJEXT) process.$(OBJEXT) \
-	common.$(OBJEXT) communication.$(OBJEXT)
+	common.$(OBJEXT) protocol.$(OBJEXT)
 server_OBJECTS = $(am_server_OBJECTS)
-server_LDADD = $(LDADD)
+server_DEPENDENCIES =
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -163,12 +163,12 @@ ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/fertakis/repos/remotePhiExec/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/fertakis/repos/remotephiexec/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /home/fertakis/repos/remotePhiExec/missing autoconf
-AUTOHEADER = ${SHELL} /home/fertakis/repos/remotePhiExec/missing autoheader
-AUTOMAKE = ${SHELL} /home/fertakis/repos/remotePhiExec/missing automake-1.15
+AUTOCONF = ${SHELL} /home/fertakis/repos/remotephiexec/missing autoconf
+AUTOHEADER = ${SHELL} /home/fertakis/repos/remotephiexec/missing autoheader
+AUTOMAKE = ${SHELL} /home/fertakis/repos/remotephiexec/missing automake-1.15
 AWK = mawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -194,7 +194,7 @@ LDFLAGS =  -L/usr/lib
 LIBOBJS = 
 LIBS = -lprotobuf-c 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/fertakis/repos/remotePhiExec/missing makeinfo
+MAKEINFO = ${SHELL} /home/fertakis/repos/remotephiexec/missing makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
 PACKAGE = remotephiexec
@@ -213,10 +213,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = 
 VERSION = 0.1.0
-abs_builddir = /home/fertakis/repos/remotePhiExec/src
-abs_srcdir = /home/fertakis/repos/remotePhiExec/src
-abs_top_builddir = /home/fertakis/repos/remotePhiExec
-abs_top_srcdir = /home/fertakis/repos/remotePhiExec
+abs_builddir = /home/fertakis/repos/remotephiexec/src
+abs_srcdir = /home/fertakis/repos/remotephiexec/src
+abs_top_builddir = /home/fertakis/repos/remotephiexec
+abs_top_srcdir = /home/fertakis/repos/remotephiexec
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
@@ -236,7 +236,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/fertakis/repos/remotePhiExec/install-sh
+install_sh = ${SHELL} /home/fertakis/repos/remotephiexec/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -261,11 +261,12 @@ AM_CFLAGS = -I$(PROTOBUF_C_CFLAGS) -L$(PROTOBUF_C_LIBDIR) -I. \
 	-I/usr/include/google $(DEBUG_CFLAGS) -I.
 BUILT_SOURCES = ./common.pb-c.c ./common.pb-c.h
 server_SOURCES = server.c process.c process.h common.h common.c \
-	communication.c ommunication.h common.pb-c common.pc-c.h
+	protocol.c protocol.h common.pb-c common.pc-c.h
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h \
-	common.h ommon.c communication.c communication.h client.c \
-	client.h common.pb-c.c common.pb-c.h
+	common.h common.c protocol.c protocol.h client.c client.h \
+	common.pb-c.c common.pb-c.h
 CLEANFILES = ./common.pb-c.c ./common.pb-c.h
+server_LDADD = $(PROTOBUF_C_LIBS) 
 EXTRA_DIST = common.proto
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -281,9 +282,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/Makefile
+	  $(AUTOMAKE) --foreign src/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -361,10 +362,9 @@ distclean-compile:
 include ./$(DEPDIR)/client.Po
 include ./$(DEPDIR)/common.Po
 include ./$(DEPDIR)/common.pb-c.Po
-include ./$(DEPDIR)/communication.Po
 include ./$(DEPDIR)/libscifapiwrapper.Po
-include ./$(DEPDIR)/ommon.Po
 include ./$(DEPDIR)/process.Po
+include ./$(DEPDIR)/protocol.Po
 include ./$(DEPDIR)/server.Po
 
 .c.o:

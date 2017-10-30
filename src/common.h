@@ -4,6 +4,10 @@
 #define DEFAULT_SERVER_IP "localhost"
 #define DEFAULT_SERVER_PORT "8888"
 
+/* Compile-time options */
+#define TCP_PORT    35001
+#define TCP_BACKLOG 5
+
 typedef enum var_type_enum {
     INT,
     UINT,
@@ -23,7 +27,7 @@ enum {
 	PHI_CMD_RESULT,
 	TEST,
 	INIT,
-	VERSION,
+	GET_VERSION,
 	OPEN,
 	CLOSE,
 	BIND,
@@ -51,7 +55,7 @@ enum {
 enum phi_result_code{
 	PHI_SUCCESS=0,
 	PHI_ERROR
-}
+};
 
 int get_server_connection_config(char *server_ip, char *server_port);
 

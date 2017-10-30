@@ -1,6 +1,6 @@
 /*
- * client.c
- * Client application for Remote Intel PHI Execution
+ * protocol.c
+ * Communication Protocol Infrastructure for Remote Intel PHI Execution
  *
  * Konstantinos Fertakis <kfertak@cslab.ece.ntua.gr>
  */

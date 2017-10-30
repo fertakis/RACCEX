@@ -22,7 +22,7 @@
 #include <netinet/in.h>
 
 #include "common.h"
-#include "communication.h"
+#include "protocol.h"
 #include "process.h"
 #include "common.pb-c.h"
 
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
 			printf("Processing message\n");
 			switch (msg_type) {
 				case PHI_CMD:
-					arg_cnt = process_phi_cmd(&result, payload, free_list, busy_list, &client_list, &client_handle);
+					arg_cnt = process_phi_cmd(&result, payload);
 					resp_type = PHI_CMD_RESULT;
 					break;
 				/*case PHI_DEVICE_QUERY:

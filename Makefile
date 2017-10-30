@@ -183,8 +183,8 @@ ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
-am__DIST_COMMON = $(srcdir)/Makefile.in AUTHORS COPYING ChangeLog \
-	INSTALL NEWS README compile depcomp install-sh missing
+am__DIST_COMMON = $(srcdir)/Makefile.in AUTHORS COPYING ChangeLog NEWS \
+	README compile depcomp install-sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -227,12 +227,12 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/fertakis/repos/remotePhiExec/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/fertakis/repos/remotephiexec/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /home/fertakis/repos/remotePhiExec/missing autoconf
-AUTOHEADER = ${SHELL} /home/fertakis/repos/remotePhiExec/missing autoheader
-AUTOMAKE = ${SHELL} /home/fertakis/repos/remotePhiExec/missing automake-1.15
+AUTOCONF = ${SHELL} /home/fertakis/repos/remotephiexec/missing autoconf
+AUTOHEADER = ${SHELL} /home/fertakis/repos/remotephiexec/missing autoheader
+AUTOMAKE = ${SHELL} /home/fertakis/repos/remotephiexec/missing automake-1.15
 AWK = mawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -258,7 +258,7 @@ LDFLAGS =  -L/usr/lib
 LIBOBJS = 
 LIBS = -lprotobuf-c 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/fertakis/repos/remotePhiExec/missing makeinfo
+MAKEINFO = ${SHELL} /home/fertakis/repos/remotephiexec/missing makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
 PACKAGE = remotephiexec
@@ -277,10 +277,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = 
 VERSION = 0.1.0
-abs_builddir = /home/fertakis/repos/remotePhiExec
-abs_srcdir = /home/fertakis/repos/remotePhiExec
-abs_top_builddir = /home/fertakis/repos/remotePhiExec
-abs_top_srcdir = /home/fertakis/repos/remotePhiExec
+abs_builddir = /home/fertakis/repos/remotephiexec
+abs_srcdir = /home/fertakis/repos/remotephiexec
+abs_top_builddir = /home/fertakis/repos/remotephiexec
+abs_top_srcdir = /home/fertakis/repos/remotephiexec
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
@@ -300,7 +300,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/fertakis/repos/remotePhiExec/install-sh
+install_sh = ${SHELL} /home/fertakis/repos/remotephiexec/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -332,15 +332,15 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
-	      echo ' cd $(srcdir) && $(AUTOMAKE) --gnu'; \
-	      $(am__cd) $(srcdir) && $(AUTOMAKE) --gnu \
+	      echo ' cd $(srcdir) && $(AUTOMAKE) --foreign'; \
+	      $(am__cd) $(srcdir) && $(AUTOMAKE) --foreign \
 		&& exit 0; \
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu Makefile
+	  $(AUTOMAKE) --foreign Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
