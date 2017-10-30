@@ -22,6 +22,7 @@
 #include <netinet/in.h>
 
 #include "common.h"
+#include "common.pb-c.h"
 
 char *server_ip;
 char *server_port;
@@ -59,7 +60,7 @@ int pack_phi_cmd(void **payload, var **args, size_t arg_cnt, int type)
     phi_cmd__init(cmd);
 
     cmd->type = type;
-    cmd->arg_cnt = arg_cnt;
+    cmd->arg_count = arg_cnt;
 
     for (i = 0; i < arg_cnt; i++) {	
         switch (args[i]->type) {

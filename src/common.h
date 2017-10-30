@@ -57,6 +57,12 @@ enum phi_result_code{
 	PHI_ERROR
 };
 
+enum scif_return_codes {
+	SCIF_SUCCESS=0,
+	SCIF_OPEN_FAIL
+};
+
+
 int get_server_connection_config(char *server_ip, char *server_port);
 
 

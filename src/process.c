@@ -23,7 +23,7 @@
 
 #include "common.h"
 #include "phi_errors.h"
-
+#include "common.pb-c.h"
 
 int process_phi_cmd(void **result, void *cmd_ptr) {
 	int phi_result = 0, int_res,arg_count = 0;
@@ -33,30 +33,32 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 	size_t extra_args_size = 0, res_length = 0;
 	var *res = NULL;
 	var_type res_type;
-	
+
 	gdprintf("Processing PHI_CMD\n");
-	switch(cmd->type) {
-		case VERSION:
+	switch((int)cmd->type) {
+		case GET_VERSION:
 			printf("Executing get_driver_version...\n");
 			int_res = scif_get_driver_version();
 			res_type = INT;
 			break;
 			/*get_client_handle(client_handle, client_list, cmd->int_args[0]);
-			uint_res = ((client_node *) *client_handle)->id;
+			  uint_res = ((client_node *) *client_handle)->id;
 			// cuInit() should have already been executed by the server 
 			// by that point...
 			//cuda_result = cuda_err_print(cuInit(cmd->uint_args[0]), 0);
 			cuda_result = CUDA_SUCCESS;
 			res_type = UINT;*/
 		case OPEN:
-			printf("Executing scif_open() ... \n");
-			scif_epd_t endp;
-			if((endp = scif_open()) < 0)
-				perror("scif_open");
-			else 
-				phi_result = endp;
-			res_type = UINT;
-			break;
+			{
+				printf("Executing scif_open() ... \n");
+				scif_epd_t endp;
+				if((endp = scif_open()) < 0)
+					perror("scif_open");
+				else 
+					phi_result = endp;
+				res_type = UINT;
+				break;
+			}
 		case CLOSE:
 			printf("Executing scif_close() ... \n");
 			//TODO: scif_close call goes here...
@@ -151,53 +153,53 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			break;	
 	}
 
-	res = (res *)malloc_safe(sizeof(res));
+	res = (var *)malloc_safe(sizeof(var));
 	res->type = res_type;
 	res->elements = 1;
 	switch(res->type) {
 		case INT:
 			res->length = sizeof(int);
 			break;
-		//TODO: Complete switch cases	
+			//TODO: Complete switch cases	
 	}
 	res->data = malloc_safe(res->length);
 	memcpy(res->data, &phi_result,res->length);
-	*result = res	
+	*result = res;	
 
-	/*if (res_type == UINT) {
-		res_length = sizeof(uint64_t);
-		res_data = &uint_res;
-	} else if (extra_args_size != 0) {	
-		res_type = BYTES;
-		res_length = extra_args_size;
-		res_data = extra_args;
-	}
+		/*if (res_type == UINT) {
+		  res_length = sizeof(uint64_t);
+		  res_data = &uint_res;
+		  } else if (extra_args_size != 0) {	
+		  res_type = BYTES;
+		  res_length = extra_args_size;
+		  res_data = extra_args;
+		  }
 
 
-	if (res_length > 0) {
-		res = malloc_safe(sizeof(*res) * 2);
-		res[1] = malloc_safe(sizeof(**res));
-		res[1]->type = res_type;
-		res[1]->elements = 1;
-		res[1]->length = res_length;
-		res[1]->data = malloc_safe(res_length);
-		memcpy(res[1]->data, res_data, res_length);
-		arg_count = 2;
-	} else {
-		res = malloc_safe(sizeof(*res));
-		arg_count = 1;
-	}
-	res[0] = malloc_safe(sizeof(**res));
-	res[0]->type = INT;
-	res[0]->elements = 1;
-	res[0]->length = sizeof(int);
-	res[0]->data = malloc_safe(res[0]->length);
-	memcpy(res[0]->data, &cuda_result, res[0]->length);
+		  if (res_length > 0) {
+		  res = malloc_safe(sizeof(*res) * 2);
+		  res[1] = malloc_safe(sizeof(**res));
+		  res[1]->type = res_type;
+		  res[1]->elements = 1;
+		  res[1]->length = res_length;
+		  res[1]->data = malloc_safe(res_length);
+		  memcpy(res[1]->data, res_data, res_length);
+		  arg_count = 2;
+		  } else {
+		  res = malloc_safe(sizeof(*res));
+		  arg_count = 1;
+		  }
+		  res[0] = malloc_safe(sizeof(**res));
+		  res[0]->type = INT;
+		  res[0]->elements = 1;
+		  res[0]->length = sizeof(int);
+		  res[0]->data = malloc_safe(res[0]->length);
+		  memcpy(res[0]->data, &cuda_result, res[0]->length);
 
-	*result = res;*/
+		 *result = res;*/
 
-	if (extra_args != NULL)
-		free(extra_args);
+		if (extra_args != NULL)
+			free(extra_args);
 
 	return arg_count;
 }
@@ -239,5 +241,5 @@ int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {
 	}
 
 	*payload = cmd;
-	return 0
+	return 0;
 }

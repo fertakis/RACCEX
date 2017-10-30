@@ -21,6 +21,37 @@
 #include "client.h"
 #include "common.pb-c.h"
 
+/* Insist untill all of the data has been read */
+ssize_t insist_read(int fd, void *buf, size_t cnt)
+{
+    ssize_t ret;
+    size_t orig_cnt = cnt;
+
+    while (cnt > 0) {
+        ret = read(fd, buf, cnt);
+        if(ret <=0)
+            return ret;
+        buf += ret;
+        cnt -= ret;
+    }
+    return orig_cnt;
+}
+/* Insist until all of the data has been written */
+ssize_t insist_write(int fd, const void *buf, size_t cnt)
+{
+	ssize_t ret;
+	size_t orig_cnt = cnt;
+	
+	while (cnt > 0) {
+	        ret = write(fd, buf, cnt);
+	        if (ret < 0)
+	                return ret;
+	        buf += ret;
+	        cnt -= ret;
+	}
+
+	return orig_cnt;
+}
 
 size_t serialise_message(void **result, int msg_type, void *payload) {
 	size_t buf_size;
@@ -67,11 +98,11 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 	switch (msg->type) {
 		case PHI_CMD:
 			printf("--------------\nIs PHI_CMD\n");
-			*payload = msg.phi_cmd;
+			*payload = msg->phi_cmd;
 			break;
 		case PHI_CMD_RESULT:
 			printf("--------------\nIs PHI_CMD_RESULT\n");
-			*payload = msg.phi_cmd;
+			*payload = msg->phi_cmd;
 			break;
 	}
 	
@@ -108,7 +139,7 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 	msg_len = ntohl(*(uint32_t *)buf);
 	printf("Going to read a message of %u bytes...\n", msg_len);
 	
-	buf = realloc(buffer, msg_len);
+	buf = realloc(buf, msg_len);
 	
 	// read message
 	insist_read(socket_fd, buf, msg_len);
@@ -116,36 +147,4 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 	*serialised_msg = buf;
 
 	return msg_len;
-}
-
-/* Insist untill all of the data has been read */
-ssize_t insist_read(int fd, void *buf, size_t cnt)
-{
-    ssize_t ret;
-    size_t orig_cnt = cnt;
-
-    while (cnt > 0) {
-        ret = read(fd, buf, cnt);
-        if(ret <=0)
-            return ret;
-        buf += ret;
-        cnt -= ret;
-    }
-    return orig_cnt;
-}
-/* Insist until all of the data has been written */
-ssize_t insist_write(int fd, const void *buf, size_t cnt)
-{
-	ssize_t ret;
-	size_t orig_cnt = cnt;
-	
-	while (cnt > 0) {
-	        ret = write(fd, buf, cnt);
-	        if (ret < 0)
-	                return ret;
-	        buf += ret;
-	        cnt -= ret;
-	}
-
-	return orig_cnt;
 }
