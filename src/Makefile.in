@@ -102,7 +102,7 @@ am_libscifapiwrapper_so_OBJECTS = libscifapiwrapper.$(OBJEXT) \
 	process.$(OBJEXT) common.$(OBJEXT) protocol.$(OBJEXT) \
 	client.$(OBJEXT) common.pb-c.$(OBJEXT)
 libscifapiwrapper_so_OBJECTS = $(am_libscifapiwrapper_so_OBJECTS)
-libscifapiwrapper_so_LDADD = $(LDADD)
+libscifapiwrapper_so_DEPENDENCIES =
 am_server_OBJECTS = server.$(OBJEXT) process.$(OBJEXT) \
 	common.$(OBJEXT) protocol.$(OBJEXT)
 server_OBJECTS = $(am_server_OBJECTS)
@@ -209,6 +209,7 @@ PROTOBUF_C_CFLAGS = @PROTOBUF_C_CFLAGS@
 PROTOBUF_C_LIBDIR = @PROTOBUF_C_LIBDIR@
 PROTOBUF_C_VERSION = @PROTOBUF_C_VERSION@
 PROTOC_C = @PROTOC_C@
+SCIF_INSTALL_PATH = @SCIF_INSTALL_PATH@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -257,16 +258,20 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CFLAGS = -I$(PROTOBUF_C_CFLAGS) -L$(PROTOBUF_C_LIBDIR) -I@builddir@ \
-	-I/usr/include/google $(DEBUG_CFLAGS) -I@builddir@
+AM_CFLAGS = -I$(PROTOBUF_C_CFLAGS) -L$(PROTOBUF_C_LIBDIR) \
+	-L/usr/include/ -I@builddir@ -I/usr/include/google \
+	-L$(SCIF_INSTALL_PATH)/lib -I$(SCIF_INSTALL_PATH)/include \
+	$(DEBUG_CFLAGS) -I@builddir@
 BUILT_SOURCES = @srcdir@/common.pb-c.c @srcdir@/common.pb-c.h
 server_SOURCES = server.c process.c process.h common.h common.c \
 	protocol.c protocol.h common.pb-c common.pc-c.h
+libcudawrapper_so_CFLAGS = -fPIC -shared $(DEBUG_CFLAGS)
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h \
 	common.h common.c protocol.c protocol.h client.c client.h \
 	common.pb-c.c common.pb-c.h
 CLEANFILES = @builddir@/common.pb-c.c @builddir@/common.pb-c.h
-server_LDADD = $(PROTOBUF_C_LIBS) 
+server_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif
+libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif -ldl
 EXTRA_DIST = common.proto
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am

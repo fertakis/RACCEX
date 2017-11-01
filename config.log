@@ -44,35 +44,35 @@ PATH: /snap/bin
 ## Core tests. ##
 ## ----------- ##
 
-configure:1959: checking for a BSD-compatible install
-configure:2027: result: /usr/bin/install -c
-configure:2038: checking whether build environment is sane
-configure:2093: result: yes
-configure:2244: checking for a thread-safe mkdir -p
-configure:2283: result: /bin/mkdir -p
-configure:2290: checking for gawk
-configure:2320: result: no
-configure:2290: checking for mawk
-configure:2306: found /usr/bin/mawk
-configure:2317: result: mawk
-configure:2328: checking whether make sets $(MAKE)
-configure:2350: result: yes
-configure:2379: checking whether make supports nested variables
-configure:2396: result: yes
-configure:2554: checking for style of include used by make
-configure:2582: result: GNU
-configure:2653: checking for gcc
-configure:2669: found /usr/bin/gcc
-configure:2680: result: gcc
-configure:2909: checking for C compiler version
-configure:2918: gcc --version >&5
+configure:1962: checking for a BSD-compatible install
+configure:2030: result: /usr/bin/install -c
+configure:2041: checking whether build environment is sane
+configure:2096: result: yes
+configure:2247: checking for a thread-safe mkdir -p
+configure:2286: result: /bin/mkdir -p
+configure:2293: checking for gawk
+configure:2323: result: no
+configure:2293: checking for mawk
+configure:2309: found /usr/bin/mawk
+configure:2320: result: mawk
+configure:2331: checking whether make sets $(MAKE)
+configure:2353: result: yes
+configure:2382: checking whether make supports nested variables
+configure:2399: result: yes
+configure:2557: checking for style of include used by make
+configure:2585: result: GNU
+configure:2656: checking for gcc
+configure:2672: found /usr/bin/gcc
+configure:2683: result: gcc
+configure:2912: checking for C compiler version
+configure:2921: gcc --version >&5
 gcc (Ubuntu 5.4.0-6ubuntu1~16.04.4) 5.4.0 20160609
 Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-configure:2929: $? = 0
-configure:2918: gcc -v >&5
+configure:2932: $? = 0
+configure:2921: gcc -v >&5
 Using built-in specs.
 COLLECT_GCC=gcc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper
@@ -80,73 +80,73 @@ Target: x86_64-linux-gnu
 Configured with: ../src/configure -v --with-pkgversion='Ubuntu 5.4.0-6ubuntu1~16.04.4' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-5 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
 Thread model: posix
 gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.4) 
-configure:2929: $? = 0
-configure:2918: gcc -V >&5
+configure:2932: $? = 0
+configure:2921: gcc -V >&5
 gcc: error: unrecognized command line option '-V'
 gcc: fatal error: no input files
 compilation terminated.
-configure:2929: $? = 1
-configure:2918: gcc -qversion >&5
+configure:2932: $? = 1
+configure:2921: gcc -qversion >&5
 gcc: error: unrecognized command line option '-qversion'
 gcc: fatal error: no input files
 compilation terminated.
-configure:2929: $? = 1
-configure:2949: checking whether the C compiler works
-configure:2971: gcc -g   conftest.c  >&5
-configure:2975: $? = 0
-configure:3023: result: yes
-configure:3026: checking for C compiler default output file name
-configure:3028: result: a.out
-configure:3034: checking for suffix of executables
-configure:3041: gcc -o conftest -g   conftest.c  >&5
-configure:3045: $? = 0
-configure:3067: result: 
-configure:3089: checking whether we are cross compiling
-configure:3097: gcc -o conftest -g   conftest.c  >&5
-configure:3101: $? = 0
-configure:3108: ./conftest
-configure:3112: $? = 0
-configure:3127: result: no
-configure:3132: checking for suffix of object files
-configure:3154: gcc -c -g  conftest.c >&5
-configure:3158: $? = 0
-configure:3179: result: o
-configure:3183: checking whether we are using the GNU C compiler
-configure:3202: gcc -c -g  conftest.c >&5
-configure:3202: $? = 0
-configure:3211: result: yes
-configure:3220: checking whether gcc accepts -g
-configure:3240: gcc -c -g  conftest.c >&5
-configure:3240: $? = 0
-configure:3281: result: yes
-configure:3298: checking for gcc option to accept ISO C89
-configure:3361: gcc  -c -g  conftest.c >&5
-configure:3361: $? = 0
-configure:3374: result: none needed
-configure:3399: checking whether gcc understands -c and -o together
-configure:3421: gcc -c conftest.c -o conftest2.o
-configure:3424: $? = 0
-configure:3421: gcc -c conftest.c -o conftest2.o
-configure:3424: $? = 0
-configure:3436: result: yes
-configure:3455: checking dependency style of gcc
-configure:3566: result: gcc3
-configure:3582: checking for main in -lprotobuf-c
-configure:3601: gcc -o conftest -g   conftest.c -lprotobuf-c   >&5
-configure:3601: $? = 0
-configure:3610: result: yes
-configure:3697: checking for g++
-configure:3713: found /usr/bin/g++
-configure:3724: result: g++
-configure:3751: checking for C++ compiler version
-configure:3760: g++ --version >&5
+configure:2932: $? = 1
+configure:2952: checking whether the C compiler works
+configure:2974: gcc -g   conftest.c  >&5
+configure:2978: $? = 0
+configure:3026: result: yes
+configure:3029: checking for C compiler default output file name
+configure:3031: result: a.out
+configure:3037: checking for suffix of executables
+configure:3044: gcc -o conftest -g   conftest.c  >&5
+configure:3048: $? = 0
+configure:3070: result: 
+configure:3092: checking whether we are cross compiling
+configure:3100: gcc -o conftest -g   conftest.c  >&5
+configure:3104: $? = 0
+configure:3111: ./conftest
+configure:3115: $? = 0
+configure:3130: result: no
+configure:3135: checking for suffix of object files
+configure:3157: gcc -c -g  conftest.c >&5
+configure:3161: $? = 0
+configure:3182: result: o
+configure:3186: checking whether we are using the GNU C compiler
+configure:3205: gcc -c -g  conftest.c >&5
+configure:3205: $? = 0
+configure:3214: result: yes
+configure:3223: checking whether gcc accepts -g
+configure:3243: gcc -c -g  conftest.c >&5
+configure:3243: $? = 0
+configure:3284: result: yes
+configure:3301: checking for gcc option to accept ISO C89
+configure:3364: gcc  -c -g  conftest.c >&5
+configure:3364: $? = 0
+configure:3377: result: none needed
+configure:3402: checking whether gcc understands -c and -o together
+configure:3424: gcc -c conftest.c -o conftest2.o
+configure:3427: $? = 0
+configure:3424: gcc -c conftest.c -o conftest2.o
+configure:3427: $? = 0
+configure:3439: result: yes
+configure:3458: checking dependency style of gcc
+configure:3569: result: gcc3
+configure:3585: checking for main in -lprotobuf-c
+configure:3604: gcc -o conftest -g   conftest.c -lprotobuf-c   >&5
+configure:3604: $? = 0
+configure:3613: result: yes
+configure:3700: checking for g++
+configure:3716: found /usr/bin/g++
+configure:3727: result: g++
+configure:3754: checking for C++ compiler version
+configure:3763: g++ --version >&5
 g++ (Ubuntu 5.4.0-6ubuntu1~16.04.4) 5.4.0 20160609
 Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-configure:3771: $? = 0
-configure:3760: g++ -v >&5
+configure:3774: $? = 0
+configure:3763: g++ -v >&5
 Using built-in specs.
 COLLECT_GCC=g++
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper
@@ -154,32 +154,32 @@ Target: x86_64-linux-gnu
 Configured with: ../src/configure -v --with-pkgversion='Ubuntu 5.4.0-6ubuntu1~16.04.4' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-5 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
 Thread model: posix
 gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.4) 
-configure:3771: $? = 0
-configure:3760: g++ -V >&5
+configure:3774: $? = 0
+configure:3763: g++ -V >&5
 g++: error: unrecognized command line option '-V'
 g++: fatal error: no input files
 compilation terminated.
-configure:3771: $? = 1
-configure:3760: g++ -qversion >&5
+configure:3774: $? = 1
+configure:3763: g++ -qversion >&5
 g++: error: unrecognized command line option '-qversion'
 g++: fatal error: no input files
 compilation terminated.
-configure:3771: $? = 1
-configure:3775: checking whether we are using the GNU C++ compiler
-configure:3794: g++ -c -g  conftest.cpp >&5
-configure:3794: $? = 0
-configure:3803: result: yes
-configure:3812: checking whether g++ accepts -g
-configure:3832: g++ -c -g  conftest.cpp >&5
-configure:3832: $? = 0
-configure:3873: result: yes
-configure:3898: checking dependency style of g++
-configure:4009: result: gcc3
-configure:4036: checking whether make supports nested variables
-configure:4053: result: yes
-configure:4212: checking that generated files are newer than configure
-configure:4218: result: done
-configure:4245: creating ./config.status
+configure:3774: $? = 1
+configure:3778: checking whether we are using the GNU C++ compiler
+configure:3797: g++ -c -g  conftest.cpp >&5
+configure:3797: $? = 0
+configure:3806: result: yes
+configure:3815: checking whether g++ accepts -g
+configure:3835: g++ -c -g  conftest.cpp >&5
+configure:3835: $? = 0
+configure:3876: result: yes
+configure:3901: checking dependency style of g++
+configure:4012: result: gcc3
+configure:4039: checking whether make supports nested variables
+configure:4056: result: yes
+configure:4226: checking that generated files are newer than configure
+configure:4232: result: done
+configure:4259: creating ./config.status
 
 ## ---------------------- ##
 ## Running config.status. ##
@@ -196,9 +196,9 @@ generated by GNU Autoconf 2.69.  Invocation command line was
 
 on accelerator
 
-config.status:785: creating Makefile
-config.status:785: creating src/Makefile
-config.status:957: executing depfiles commands
+config.status:786: creating Makefile
+config.status:786: creating src/Makefile
+config.status:958: executing depfiles commands
 
 ## ---------------- ##
 ## Cache variables. ##
@@ -299,6 +299,7 @@ PROTOBUF_C_CFLAGS=''
 PROTOBUF_C_LIBDIR='/usr/lib'
 PROTOBUF_C_VERSION=''
 PROTOC_C='protoc-c'
+SCIF_INSTALL_PATH=''
 SET_MAKE=''
 SHELL='/bin/bash'
 STRIP=''

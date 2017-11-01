@@ -51,7 +51,7 @@ int get_server_connection_config(char *server_ip, char *server_port)
     return ret;
 }
 
-int pack_phi_cmd(void **payload, var **args, size_t arg_cnt, int type)
+/*int pack_phi_cmd(void **payload, var **args, size_t arg_cnt, int type)
 {
     PhiCmd *cmd;
     int i;
@@ -87,4 +87,4 @@ int pack_phi_cmd(void **payload, var **args, size_t arg_cnt, int type)
 
     *payload = cmd;
     return 0; 
-}
+}*/

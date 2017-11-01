@@ -39,4 +39,13 @@ AC_PROG_CXX
 
 AM_SILENT_RULES([no])
 
+AC_ARG_WITH([scif],
+   [AS_HELP_STRING(
+        [--with-scif=PATH],
+        [prefix where SCIF is installed @<:@default=auto@:>@])],
+   [SCIF_INSTALL_PATH=$withval],
+   [with_scif=auto])
+AC_SUBST([SCIF_INSTALL_PATH])
+
+
 AC_OUTPUT(Makefile src/Makefile)
