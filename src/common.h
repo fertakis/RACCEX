@@ -65,4 +65,6 @@ enum scif_return_codes {
 
 int get_server_connection_config(char *server_ip, char *server_port);
 
+void *malloc_safe_f(size_t size, const char *file, const int line);
+#define malloc_safe(size) malloc_safe_f(size, __FILE__, __LINE__)
 

@@ -24,6 +24,7 @@
 #include "common.h"
 #include "phi_errors.h"
 #include "common.pb-c.h"
+#include "libscifapiwrapper.h"
 
 int process_phi_cmd(void **result, void *cmd_ptr) {
 	int phi_result = 0, int_res,arg_count = 0;

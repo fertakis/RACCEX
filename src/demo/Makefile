@@ -18,14 +18,14 @@ CFLAGS += -g
 #set ICC license file
 #export INTEL_LICENSE_FILE=/various/common_tools/intel-icc-and-tools/licenses/
 
-LIBS = 
+LIBS = -lscif
 
 BINS = server client
 
 all: $(BINS)
 
 server: server.c common.h
-	$(CC) $(CFLAGS) -lscif -o $@ $< $(LIBS)
+	$(CC) $(CFLAGS) -o $@ $< $(LIBS)
 
 client: client.c common.h
 	$(CC) $(CFLAGS) -o $@ $< $(LIBS)
