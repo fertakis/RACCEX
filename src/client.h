@@ -9,7 +9,7 @@ typedef struct _unitofwork {
 
 int init_client_connection(const char *s_ip, const char *s_port);
 
-int init_params(unitofwork *uow);
+void init_params(unitofwork *uow);
 
 void establish_connection(unitofwork *uow);
 

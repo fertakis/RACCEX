@@ -104,8 +104,7 @@ am_libscifapiwrapper_so_OBJECTS = libscifapiwrapper.$(OBJEXT) \
 libscifapiwrapper_so_OBJECTS = $(am_libscifapiwrapper_so_OBJECTS)
 libscifapiwrapper_so_DEPENDENCIES =
 am_server_OBJECTS = server.$(OBJEXT) process.$(OBJEXT) \
-	common.$(OBJEXT) protocol.$(OBJEXT) \
-	libscifapiwrapper.$(OBJEXT)
+	common.$(OBJEXT) protocol.$(OBJEXT) common.pb-c.$(OBJEXT)
 server_OBJECTS = $(am_server_OBJECTS)
 server_DEPENDENCIES =
 AM_V_P = $(am__v_P_$(V))
@@ -164,12 +163,12 @@ ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/fertakis/repos/remotePhiExec/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/fertakis/repos/remotephiexec/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /home/fertakis/repos/remotePhiExec/missing autoconf
-AUTOHEADER = ${SHELL} /home/fertakis/repos/remotePhiExec/missing autoheader
-AUTOMAKE = ${SHELL} /home/fertakis/repos/remotePhiExec/missing automake-1.15
+AUTOCONF = ${SHELL} /home/fertakis/repos/remotephiexec/missing autoconf
+AUTOHEADER = ${SHELL} /home/fertakis/repos/remotephiexec/missing autoheader
+AUTOMAKE = ${SHELL} /home/fertakis/repos/remotephiexec/missing automake-1.15
 AWK = mawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -195,7 +194,7 @@ LDFLAGS =  -L/usr/lib
 LIBOBJS = 
 LIBS = -lprotobuf-c 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/fertakis/repos/remotePhiExec/missing makeinfo
+MAKEINFO = ${SHELL} /home/fertakis/repos/remotephiexec/missing makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
 PACKAGE = remotephiexec
@@ -215,10 +214,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = 
 VERSION = 0.1.0
-abs_builddir = /home/fertakis/repos/remotePhiExec/src
-abs_srcdir = /home/fertakis/repos/remotePhiExec/src
-abs_top_builddir = /home/fertakis/repos/remotePhiExec
-abs_top_srcdir = /home/fertakis/repos/remotePhiExec
+abs_builddir = /home/fertakis/repos/remotephiexec/src
+abs_srcdir = /home/fertakis/repos/remotephiexec/src
+abs_top_builddir = /home/fertakis/repos/remotephiexec
+abs_top_srcdir = /home/fertakis/repos/remotephiexec
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
@@ -238,7 +237,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/fertakis/repos/remotePhiExec/install-sh
+install_sh = ${SHELL} /home/fertakis/repos/remotephiexec/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -259,14 +258,11 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -L/usr/include/ \
-	-I/usr/include/google -L$(SCIF_INSTALL_PATH)/lib64 \
-	-I$(SCIF_INSTALL_PATH)/include $(DEBUG_CFLAGS) -lscif \
-	-I.
+AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google \
+	-L$(SCIF_INSTALL_PATH)/lib64 $(DEBUG_CFLAGS) -I.
 BUILT_SOURCES = ./common.pb-c.c ./common.pb-c.h
 server_SOURCES = server.c process.c process.h common.h common.c \
-	protocol.c protocol.h libscifapiwrapper.c libscifapiwrapper.h \
-	common.pb-c common.pc-c.h
+	protocol.c client protocol.h common.pb-c.c common.pc-c.h
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h \
 	common.h common.c protocol.c protocol.h client.c client.h \
 	common.pb-c.c common.pb-c.h

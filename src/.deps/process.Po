@@ -63,7 +63,7 @@ process.o: process.c /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
  /usr/include/x86_64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h libscifapiwrapper.h
+ /usr/include/x86_64-linux-gnu/bits/posix2_lim.h
 
 /usr/include/stdc-predef.h:
 
@@ -246,5 +246,3 @@ common.pb-c.h:
 /usr/include/linux/limits.h:
 
 /usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
-
-libscifapiwrapper.h:

@@ -24,7 +24,6 @@
 #include "common.h"
 #include "phi_errors.h"
 #include "common.pb-c.h"
-#include "libscifapiwrapper.h"
 
 int process_phi_cmd(void **result, void *cmd_ptr) {
 	int phi_result = 0, int_res,arg_count = 0;
@@ -39,7 +38,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 	switch((int)cmd->type) {
 		case GET_VERSION:
 			printf("Executing get_driver_version...\n");
-			int_res = scif_get_driver_version();
+			//int_res = scif_get_driver_version();
 			res_type = INT;
 			break;
 			/*get_client_handle(client_handle, client_list, cmd->int_args[0]);
