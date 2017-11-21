@@ -431,7 +431,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/fertakis/repos/remotephiexec'
+ac_pwd='/home/fertakis/repos/remotePhiExec'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 MKDIR_P='/bin/mkdir -p'
@@ -643,12 +643,12 @@ S["mkdir_p"]="$(MKDIR_P)"
 S["MKDIR_P"]="/bin/mkdir -p"
 S["INSTALL_STRIP_PROGRAM"]="$(install_sh) -c -s"
 S["STRIP"]=""
-S["install_sh"]="${SHELL} /home/fertakis/repos/remotephiexec/install-sh"
-S["MAKEINFO"]="${SHELL} /home/fertakis/repos/remotephiexec/missing makeinfo"
-S["AUTOHEADER"]="${SHELL} /home/fertakis/repos/remotephiexec/missing autoheader"
-S["AUTOMAKE"]="${SHELL} /home/fertakis/repos/remotephiexec/missing automake-1.15"
-S["AUTOCONF"]="${SHELL} /home/fertakis/repos/remotephiexec/missing autoconf"
-S["ACLOCAL"]="${SHELL} /home/fertakis/repos/remotephiexec/missing aclocal-1.15"
+S["install_sh"]="${SHELL} /home/fertakis/repos/remotePhiExec/install-sh"
+S["MAKEINFO"]="${SHELL} /home/fertakis/repos/remotePhiExec/missing makeinfo"
+S["AUTOHEADER"]="${SHELL} /home/fertakis/repos/remotePhiExec/missing autoheader"
+S["AUTOMAKE"]="${SHELL} /home/fertakis/repos/remotePhiExec/missing automake-1.15"
+S["AUTOCONF"]="${SHELL} /home/fertakis/repos/remotePhiExec/missing autoconf"
+S["ACLOCAL"]="${SHELL} /home/fertakis/repos/remotePhiExec/missing aclocal-1.15"
 S["VERSION"]="0.1.0"
 S["PACKAGE"]="remotephiexec"
 S["CYGPATH_W"]="echo"
