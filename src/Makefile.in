@@ -86,7 +86,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = server$(EXEEXT) libscifapiwrapper.so$(EXEEXT)
+bin_PROGRAMS = server$(EXEEXT) libscifapiwrapper.so$(EXEEXT) \
+	test_server$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -113,6 +114,10 @@ am_server_OBJECTS = server.$(OBJEXT) process.$(OBJEXT) \
 	common.$(OBJEXT) protocol.$(OBJEXT) common.pb-c.$(OBJEXT)
 server_OBJECTS = $(am_server_OBJECTS)
 server_DEPENDENCIES =
+am_test_server_OBJECTS = test_server.$(OBJEXT) common.$(OBJEXT) \
+	common.pb-c.$(OBJEXT) client.$(OBJEXT) protocol.$(OBJEXT)
+test_server_OBJECTS = $(am_test_server_OBJECTS)
+test_server_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -145,8 +150,10 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES)
-DIST_SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES)
+SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES) \
+	$(test_server_SOURCES)
+DIST_SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES) \
+	$(test_server_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -272,11 +279,13 @@ AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google \
 	-L$(SCIF_INSTALL_PATH)/lib64 $(DEBUG_CFLAGS) -I@builddir@
 BUILT_SOURCES = @srcdir@/common.pb-c.c @srcdir@/common.pb-c.h
 server_SOURCES = server.c process.c process.h common.h common.c \
-	protocol.c client protocol.h common.pb-c.c common.pc-c.h
+	protocol.c protocol.h common.pb-c.c common.pc-c.h
 libscifapiwrapper_so_CFLAGS = -fPIC -shared $(DEBUG_CFLAGS)
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h \
 	common.h common.c protocol.c protocol.h client.c client.h \
 	common.pb-c.c common.pb-c.h
+test_server_SOURCES = test_server.c common.c common.h common.pb-c.c \
+	common.pb-c.h client.c client.h protocol.c protocol.h
 CLEANFILES = @builddir@/common.pb-c.c @builddir@/common.pb-c.h
 server_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif
 libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif -ldl
@@ -366,12 +375,17 @@ server$(EXEEXT): $(server_OBJECTS) $(server_DEPENDENCIES) $(EXTRA_server_DEPENDE
 	@rm -f server$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(server_OBJECTS) $(server_LDADD) $(LIBS)
 
+test_server$(EXEEXT): $(test_server_OBJECTS) $(test_server_DEPENDENCIES) $(EXTRA_test_server_DEPENDENCIES) 
+	@rm -f test_server$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_server_OBJECTS) $(test_server_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.pb-c.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscifapiwrapper_so-client.Po@am__quote@
@@ -383,6 +397,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/process.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/protocol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_server.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

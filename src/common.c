@@ -63,40 +63,42 @@ int get_server_connection_config(char *server_ip, char *server_port)
     return ret;
 }
 
-/*int pack_phi_cmd(void **payload, var **args, size_t arg_cnt, int type)
-{
-    PhiCmd *cmd;
-    int i;
+int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {
+	PhiCmd *cmd;
+	int i;
 
-    cmd = malloc(sizeof(PhiCmd));
-    phi_cmd__init(cmd);
+	printf("Packing PHI cmd...\n");
 
-    cmd->type = type;
-    cmd->arg_count = arg_cnt;
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
 
-    for (i = 0; i < arg_cnt; i++) {	
-        switch (args[i]->type) {
-            case INT:
-                cmd->n_int_args = args[i]->elements;
-                cmd->int_args = args[i]->data;
-                break;
-            case UINT:
-                cmd->n_uint_args = args[i]->elements;
-                cmd->uint_args = args[i]->data;
-                break;
-            case STRING:
-                cmd->n_str_args = args[i]->elements;
-                cmd->str_args = args[i]->data;
-                break;
-            case BYTES:
-                cmd->n_extra_args = 1;
-                cmd->extra_args = malloc_safe(sizeof(*(cmd->extra_args)) * cmd->n_extra_args);
-                cmd->extra_args[0].data = args[i]->data;
-                cmd->extra_args[0].len = args[i]->length;
-                break;
-        }
-    }
+	cmd->type = type;
+	cmd->arg_count = arg_count;
 
-    *payload = cmd;
-    return 0; 
-}*/
+	for (i = 0; i < arg_count; i++) {	
+		switch (args[i]->type) {
+			case INT:
+				cmd->n_int_args = args[i]->elements;
+				cmd->int_args = args[i]->data;
+				break;
+			case UINT:
+				cmd->n_uint_args = args[i]->elements;
+				cmd->uint_args = args[i]->data;
+				break;
+			case STRING:
+				cmd->n_str_args = args[i]->elements;
+				cmd->str_args = args[i]->data;
+				break;
+			case BYTES:
+				//cmd->n_extra_args = args[i]->elements;
+				cmd->n_extra_args = 1;
+				cmd->extra_args = malloc_safe(sizeof(*(cmd->extra_args)) * cmd->n_extra_args);
+				cmd->extra_args[0].data = args[i]->data;
+				cmd->extra_args[0].len = args[i]->length;
+				break;
+		}
+	}
+
+	*payload = cmd;
+	return 0;
+}
