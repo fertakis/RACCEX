@@ -23,10 +23,12 @@
 
 #include "common.h"
 #include "client.h"
+#include "common.pb-c.h"
 
 int init_client_connection(const char *s_ip, const char *s_port)
 {
-    int sd ;
+    int sd, port;
+    char *hostname;
     struct hostent *hp;
     struct sockaddr_in sa;
 
@@ -69,11 +71,11 @@ void establish_connection(unitofwork *uow) {
         if(get_server_connection_config(server_ip, server_port) !=0) {
             sprintf(server_ip, DEFAULT_SERVER_IP);
             sprintf(server_port, DEFAULT_SERVER_PORT);
-            gdprintf("Could not get env vars, using defaults: %s:%s\n", s_ip, s_port);
+            printf("Could not get env vars, using defaults: %s:%s\n", server_ip, server_port);
 
         }
         uow->socket_fd = init_client_connection(server_ip, server_port);
-        gdprintf("Connected to server %s on port %s...\n", s_ip, s_port);
+        printf("Connected to server %s on port %s...\n", server_ip, server_port);
     }
 }
 
@@ -85,7 +87,7 @@ int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)
     //printf("Preparing and sending Phi cmd..\n);"
     pack_phi_cmd(&payload, args, arg_cnt, cmd_type);
     
-    len = encode_message(&buf, payload, PHI_CMD);
+    len = serialise_message(&buf, PHI_CMD, payload);
     if(buf == NULL)
         return -1;
     send_message(socket_fd, buf, len);
@@ -121,13 +123,13 @@ void get_phi_cmd_result(void **result, int socket_fd)
 		if (cmd->n_uint_args > 0) {
 			*result = malloc_safe(sizeof(uint64_t));
 			memcpy(*result, &cmd->uint_args[0], sizeof(uint64_t));
-			printf("| result: 0x%" PRIx64 "\n", *(uint64_t *) *result);
+			printf("| result: 0x% \n", *(uint64_t *) *result);
 		} else if (cmd->n_extra_args > 0) {
 			*result = malloc_safe(cmd->extra_args[0].len);
 			memcpy(*result, cmd->extra_args[0].data, cmd->extra_args[0].len);
 			printf("| result: (bytes)\n");
 		}
-		free_decoded_message(dec_msg);
+		free_deserialised_message(deserialised_message);
 	}
 	
 	if(buf != NULL)
