@@ -1,14 +1,13 @@
 bin_PROGRAMS = server libscifapiwrapper.so 
 
-AM_CFLAGS = -I$(PROTOBUF_C_CFLAGS) -L$(PROTOBUF_C_LIBDIR) -L/usr/include/ -I@builddir@ -I/usr/include/google -L$(SCIF_INSTALL_PATH)/lib -I$(SCIF_INSTALL_PATH)/include $(DEBUG_CFLAGS)
+AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -L/usr/include/  -I/usr/include/google -L$(SCIF_INSTALL_PATH)/lib64 -I$(SCIF_INSTALL_PATH)/include $(DEBUG_CFLAGS) -lscif
 
 BUILT_SOURCES = @srcdir@/common.pb-c.c @srcdir@/common.pb-c.h
 
 server_SOURCES = server.c process.c process.h common.h common.c protocol.c
-server_SOURCES += protocol.h common.pb-c common.pc-c.h
+server_SOURCES += protocol.h libscifapiwrapper.c libscifapiwrapper.h common.pb-c common.pc-c.h
 
 
-libcudawrapper_so_CFLAGS = -fPIC -shared $(DEBUG_CFLAGS)
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h common.h
 libscifapiwrapper_so_SOURCES += common.c protocol.c protocol.h client.c client.h common.pb-c.c common.pb-c.h
 

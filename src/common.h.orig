@@ -68,7 +68,19 @@ enum scif_return_codes {
 
 int get_server_connection_config(char *server_ip, char *server_port);
 
-void *malloc_safe_f(size_t size, const char *file, const int line);
+<<<<<<< HEAD
+inline void *malloc_safe_f(size_t size, const char *file, const int line);
 #define malloc_safe(size) malloc_safe_f(size, __FILE__, __LINE__)
 
-#endif /* CLIENT_H */
+
+#ifdef REMOTEPHI_DEBUG
+#define gdprintf printf
+#else
+#define gdprintf
+#endif
+=======
+void *malloc_safe_f(size_t size, const char *file, const int line);
+#define malloc_safe(size) malloc_safe_f(size, __FILE__, __LINE__)
+>>>>>>> 4418322c9c214dba3bdef03b5a9ecdf6aea0cd16
+
+#endif /* COMMON_H */

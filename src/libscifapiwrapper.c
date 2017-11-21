@@ -39,11 +39,11 @@
 #define only_version(symbol, major, minor)
 #endif
 
-unitofwork *uow
+unitofwork *uow;
 
 static uint8_t scif_version_mismatch;
 
-	static int
+int
 scif_get_driver_version(void)
 {
 	int res_code, version;

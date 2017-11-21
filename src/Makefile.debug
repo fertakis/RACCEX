@@ -1,0 +1,19 @@
+CFLAGS = -Wall
+#ICFLAGS = $(CFLAGS) -g -mmic -lscif
+CFLAGS += -g -I/usr/inlude/ -I/usr/lib64/ pkg-config --cflags 'libprotobuf-c >= 1.0.0' 
+
+
+LIBS = -lscif
+
+BINS = server libscifapiwrapper.so
+
+all: $(BINS)
+
+server: server.c server.c process.c process.h common.h common.c protocol.c protocol.h common.pb-c common.pc-c.h
+	$(CC) $(CFLAGS) -o $@ $< $(LIBS)
+
+libscifapiwrapper.so: libscifapiwrapper.c process.c process.h common.h common.c protocol.c protocol.h client.c client.h common.pb-c.c common.pb-c.h
+	$(CC) $(CFLAGS) -o $@ $< $(LIBS)
+
+clean:
+	rm -f *.o *~ $(BINS)

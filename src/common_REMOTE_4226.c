@@ -27,18 +27,6 @@
 char *server_ip;
 char *server_port;
 
-inline void *malloc_safe_f(size_t size, const char *file, const int line) {
-	void *ptr = NULL;
-
-	ptr = malloc(size);
-	if (ptr == NULL && size != 0) {
-		fprintf(stderr, "[%s, %i] Memory allocation failed!\n", file, line);
-		exit(EXIT_FAILURE);
-	}
-
-	return ptr;
-}
-
 int get_server_connection_config(char *server_ip, char *server_port)
 {
     int ret = 0;
@@ -100,3 +88,15 @@ int get_server_connection_config(char *server_ip, char *server_port)
     *payload = cmd;
     return 0; 
 }*/
+
+void *malloc_safe_f(size_t size, const char *file, const int line) {
+	void *ptr = NULL;
+
+	ptr = malloc(size);
+	if (ptr == NULL && size != 0) {
+		fprintf(stderr, "[%s, %i] Memory allocation failed!\n", file, line);
+		exit(EXIT_FAILURE);
+	}
+
+	return ptr;
+}

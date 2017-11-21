@@ -63,6 +63,8 @@ int get_server_connection_config(char *server_ip, char *server_port)
     return ret;
 }
 
+<<<<<<< HEAD
+=======
 /*int pack_phi_cmd(void **payload, var **args, size_t arg_cnt, int type)
 {
     PhiCmd *cmd;
@@ -100,3 +102,16 @@ int get_server_connection_config(char *server_ip, char *server_port)
     *payload = cmd;
     return 0; 
 }*/
+
+void *malloc_safe_f(size_t size, const char *file, const int line) {
+	void *ptr = NULL;
+
+	ptr = malloc(size);
+	if (ptr == NULL && size != 0) {
+		fprintf(stderr, "[%s, %i] Memory allocation failed!\n", file, line);
+		exit(EXIT_FAILURE);
+	}
+
+	return ptr;
+}
+>>>>>>> 4418322c9c214dba3bdef03b5a9ecdf6aea0cd16
