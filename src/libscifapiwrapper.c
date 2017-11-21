@@ -91,6 +91,8 @@ scif_open(void)
 		close(fd);
 		return (scif_epd_t)-1;
 	}*/
+	init_params(&uow);
+	
 	establish_connection(&uow);
 
 	if(send_phi_cmd(uow.socket_fd, NULL, 0, OPEN) < 0 )

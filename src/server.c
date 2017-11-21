@@ -123,8 +123,6 @@ int main(int argc, char *argv[]) {
 					break;*/
 			}
 
-			//print_clients(client_list);
-			//print_cuda_devices(free_list, busy_list);
 
 			if (msg != NULL) {
 				free(msg);

@@ -52,8 +52,8 @@ int get_server_connection_config(char *server_ip, char *server_port)
     }
     if(remote_port == NULL)
     {
-        remote_server = DEFAULT_SERVER_IP;
-        printf("Enviromental Variable 'REMOTE_PHI_SERVER' not defined, using default server ip: %s\n", remote_server);
+        remote_port = DEFAULT_SERVER_PORT;
+        printf("Enviromental Variable 'REMOTE_PHI_PORT' not defined, using default server port: %s\n", remote_port);
         ret = 1;
     }
 
