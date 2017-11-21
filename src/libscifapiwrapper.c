@@ -39,7 +39,7 @@
 #define only_version(symbol, major, minor)
 #endif
 
-unitofwork *uow;
+unitofwork uow;
 
 static uint8_t scif_version_mismatch;
 
@@ -48,7 +48,7 @@ scif_get_driver_version(void)
 {
 	int res_code, version;
 	void *result = NULL;
-        var arg = { .elements = 1}, 
+        var arg = { .elements = 1}; 
 
 	//initialise parameters
 	init_params(&uow);
@@ -62,11 +62,11 @@ scif_get_driver_version(void)
 		exit(EXIT_FAILURE);
 	}
 	//receive resutls
-	res_code = get_phi_cmd_result(&result, uow.socket_fd);
-	if(res_code == PHI_SUCCESS) {
+	get_phi_cmd_result(&result, uow.socket_fd);
+	/*if(res_code == PHI_SUCCESS) {
 		version = *(int *) result;
 		free(result);
-	}
+	}*/
 
 	return version;
 }
@@ -93,17 +93,17 @@ scif_open(void)
 	}*/
 	establish_connection(&uow);
 
-	if(send_phi_cmd(uow.socket_fd, NULL, 0, SCIF_OPEN) < 0 )
+	if(send_phi_cmd(uow.socket_fd, NULL, 0, OPEN) < 0 )
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
 	}
 
-	res_code = get_phi_cmd_result(&result, uow.socket_fd);
-	if(res_code == PHI_SUCCESS) {
+	get_phi_cmd_result(&result, uow.socket_fd);
+	/*if(res_code == PHI_SUCCESS) {
 		fd = *(scif_epd_t *)result;
 		free(result);
-	}
+	}*/
 
 	return fd;
 }
