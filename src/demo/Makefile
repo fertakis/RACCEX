@@ -12,20 +12,20 @@ ICC = /various/common_tools/intel-icc-and-tools/bin/icc
 
 CFLAGS = -Wall
 #ICFLAGS = $(CFLAGS) -g -mmic -lscif
-CFLAGS += -g
+CFLAGS += -g -I/usr/inlude/ -I/usr/lib64/
 # CFLAGS += -O2 -fomit-frame-pointer -finline-functions
 
 #set ICC license file
 #export INTEL_LICENSE_FILE=/various/common_tools/intel-icc-and-tools/licenses/
 
-LIBS = 
+LIBS = -lscif
 
 BINS = server client
 
 all: $(BINS)
 
 server: server.c common.h
-	$(CC) $(CFLAGS) -lscif -o $@ $< $(LIBS)
+	$(CC) $(CFLAGS) -o $@ $< $(LIBS)
 
 client: client.c common.h
 	$(CC) $(CFLAGS) -o $@ $< $(LIBS)

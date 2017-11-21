@@ -15,3 +15,7 @@
 *.o
 *.com
 *.so
+
+# Unignore Files #
+##################
+!tags
