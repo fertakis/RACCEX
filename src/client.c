@@ -28,7 +28,6 @@
 int init_client_connection(const char *s_ip, const char *s_port)
 {
     int sd, port;
-    char *hostname;
     struct hostent *hp;
     struct sockaddr_in sa;
 
@@ -40,16 +39,16 @@ int init_client_connection(const char *s_ip, const char *s_port)
     fprintf(stderr, "Created TCP socket\n");
 
     /* Look up remote hostname on DNS */
-    if ( !(hp = gethostbyname(hostname))) {
-        printf("DNS lookup failed for host %s\n", hostname);
+    if ( !(hp = gethostbyname(s_ip))) {
+        printf("DNS lookup failed for host %s\n", s_ip);
         exit(1);
     }
 
     /* Connect to remote TCP port */
     sa.sin_family = AF_INET;
-    sa.sin_port = htons(port);
+    sa.sin_port = htons(atoi(s_port));
     memcpy(&sa.sin_addr.s_addr, hp->h_addr, sizeof(struct in_addr));
-    fprintf(stderr, "Connecting to remote host... "); fflush(stderr);
+    fprintf(stderr, "Connecting to remote host...\n"); fflush(stderr);
     if (connect(sd, (struct sockaddr *) &sa, sizeof(sa)) < 0) {
         perror("connect");
         exit(1);

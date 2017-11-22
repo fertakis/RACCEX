@@ -41,13 +41,14 @@ int init_server_net(const char *port, struct sockaddr_in *sa)
 	/* Bind to a well-known port */
 	memset(sa, 0, sizeof(sa));
 	sa->sin_family = AF_INET;
-	sa->sin_port = htons(TCP_PORT);
+	sa->sin_port = htons(atoi(port));
+	//sa->sin_port = htons(port);
 	sa->sin_addr.s_addr = htonl(INADDR_ANY);
 	if (bind(socket_fd, (struct sockaddr *)sa, sizeof(*sa)) < 0) {
 		perror("bind");
 		exit(1);
 	}
-	fprintf(stderr, "Bound TCP socket to port %d\n", TCP_PORT);
+	fprintf(stderr, "Bound TCP socket to port %s\n", port);
 
 
 	/* Listen for incoming connections */
