@@ -5,7 +5,7 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 ACCEPT	common.h	/^	ACCEPT,$/;"	e	enum:__anon1
-ACLOCAL	Makefile	/^ACLOCAL = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing aclocal-1.15$/;"	m
+ACLOCAL	Makefile	/^ACLOCAL = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/missing aclocal-1.15$/;"	m
 ACLOCAL_M4	Makefile	/^ACLOCAL_M4 = $(top_srcdir)\/aclocal.m4$/;"	m
 AMTAR	Makefile	/^AMTAR = $${TAR-tar}$/;"	m
 AM_CFLAGS	Makefile	/^AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I\/usr\/include\/google \\$/;"	m
@@ -16,9 +16,9 @@ AM_V_GEN	Makefile	/^AM_V_GEN = $(am__v_GEN_$(V))$/;"	m
 AM_V_P	Makefile	/^AM_V_P = $(am__v_P_$(V))$/;"	m
 AM_V_at	Makefile	/^AM_V_at = $(am__v_at_$(V))$/;"	m
 AM_V_lt	Makefile	/^AM_V_lt = $(am__v_lt_$(V))$/;"	m
-AUTOCONF	Makefile	/^AUTOCONF = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing autoconf$/;"	m
-AUTOHEADER	Makefile	/^AUTOHEADER = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing autoheader$/;"	m
-AUTOMAKE	Makefile	/^AUTOMAKE = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing automake-1.15$/;"	m
+AUTOCONF	Makefile	/^AUTOCONF = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/missing autoconf$/;"	m
+AUTOHEADER	Makefile	/^AUTOHEADER = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/missing autoheader$/;"	m
+AUTOMAKE	Makefile	/^AUTOMAKE = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/missing automake-1.15$/;"	m
 AWK	Makefile	/^AWK = mawk$/;"	m
 BIND	common.h	/^	BIND,$/;"	e	enum:__anon1
 BUILT_SOURCES	Makefile	/^BUILT_SOURCES = .\/common.pb-c.c .\/common.pb-c.h$/;"	m
@@ -53,7 +53,7 @@ DEPDIR	Makefile	/^DEPDIR = .deps$/;"	m
 DEVICE_NODE	libscifapiwrapper.c	21;"	d	file:
 DISTFILES	Makefile	/^DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)$/;"	m
 DIST_COMMON	Makefile	/^DIST_COMMON = $(srcdir)\/Makefile.am $(am__DIST_COMMON)$/;"	m
-DIST_SOURCES	Makefile	/^DIST_SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES)$/;"	m
+DIST_SOURCES	Makefile	/^DIST_SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES) \\$/;"	m
 ECHO_C	Makefile	/^ECHO_C = $/;"	m
 ECHO_N	Makefile	/^ECHO_N = -n$/;"	m
 ECHO_T	Makefile	/^ECHO_T = $/;"	m
@@ -81,7 +81,7 @@ LIB_INIT	common.h	/^	LIB_INIT$/;"	e	enum:__anon1
 LINK	Makefile	/^LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@$/;"	m
 LISTEN	common.h	/^	LISTEN,$/;"	e	enum:__anon1
 LTLIBOBJS	Makefile	/^LTLIBOBJS = $/;"	m
-MAKEINFO	Makefile	/^MAKEINFO = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing makeinfo$/;"	m
+MAKEINFO	Makefile	/^MAKEINFO = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/missing makeinfo$/;"	m
 MKDIR_P	Makefile	/^MKDIR_P = \/bin\/mkdir -p$/;"	m
 MMAP	common.h	/^	MMAP,$/;"	e	enum:__anon1
 MUNMAP	common.h	/^	MUNMAP,$/;"	e	enum:__anon1
@@ -140,7 +140,7 @@ SCIF_SUCCESS	common.h	/^	SCIF_SUCCESS=0,$/;"	e	enum:scif_return_codes
 SEND	common.h	/^	SEND,$/;"	e	enum:__anon1
 SET_MAKE	Makefile	/^SET_MAKE = $/;"	m
 SHELL	Makefile	/^SHELL = \/bin\/bash$/;"	m
-SOURCES	Makefile	/^SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES)$/;"	m
+SOURCES	Makefile	/^SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES) \\$/;"	m
 STRING	common.h	/^    STRING,$/;"	e	enum:var_type_enum
 STRIP	Makefile	/^STRIP = $/;"	m
 TCP_BACKLOG	common.h	12;"	d
@@ -162,10 +162,10 @@ __str	libscifapiwrapper.c	29;"	d	file:
 __symver	libscifapiwrapper.c	25;"	d	file:
 __symver_tag	libscifapiwrapper.c	23;"	d	file:
 _unitofwork	client.h	/^typedef struct _unitofwork {$/;"	s
-abs_builddir	Makefile	/^abs_builddir = \/home\/fertakis\/repos\/remotePhiExec\/src$/;"	m
-abs_srcdir	Makefile	/^abs_srcdir = \/home\/fertakis\/repos\/remotePhiExec\/src$/;"	m
-abs_top_builddir	Makefile	/^abs_top_builddir = \/home\/fertakis\/repos\/remotePhiExec$/;"	m
-abs_top_srcdir	Makefile	/^abs_top_srcdir = \/home\/fertakis\/repos\/remotePhiExec$/;"	m
+abs_builddir	Makefile	/^abs_builddir = \/home\/konstantinos\/repos\/remotephiexec\/src$/;"	m
+abs_srcdir	Makefile	/^abs_srcdir = \/home\/konstantinos\/repos\/remotephiexec\/src$/;"	m
+abs_top_builddir	Makefile	/^abs_top_builddir = \/home\/konstantinos\/repos\/remotephiexec$/;"	m
+abs_top_srcdir	Makefile	/^abs_top_srcdir = \/home\/konstantinos\/repos\/remotephiexec$/;"	m
 ac_ct_CC	Makefile	/^ac_ct_CC = gcc$/;"	m
 ac_ct_CXX	Makefile	/^ac_ct_CXX = g++$/;"	m
 am__DIST_COMMON	Makefile	/^am__DIST_COMMON = $(srcdir)\/Makefile.in $(top_srcdir)\/depcomp$/;"	m
@@ -208,11 +208,12 @@ am__v_lt_0	Makefile	/^am__v_lt_0 = --silent$/;"	m
 am__v_lt_1	Makefile	/^am__v_lt_1 = $/;"	m
 am_libscifapiwrapper_so_OBJECTS	Makefile	/^am_libscifapiwrapper_so_OBJECTS =  \\$/;"	m
 am_server_OBJECTS	Makefile	/^am_server_OBJECTS = server.$(OBJEXT) process.$(OBJEXT) \\$/;"	m
+am_test_server_OBJECTS	Makefile	/^am_test_server_OBJECTS = test_server.$(OBJEXT) common.$(OBJEXT) \\$/;"	m
 arg_count	common.pb-c.h	/^  uint32_t *arg_count;$/;"	m	struct:_PhiCmd
 base	common.pb-c.h	/^  ProtobufCMessage base;$/;"	m	struct:_Cookie
 base	common.pb-c.h	/^  ProtobufCMessage base;$/;"	m	struct:_PhiCmd
 base	common.pb-c.h	/^  ProtobufCMessage base;$/;"	m	struct:_PhiDevice
-bin_PROGRAMS	Makefile	/^bin_PROGRAMS = server$(EXEEXT) libscifapiwrapper.so$(EXEEXT)$/;"	m
+bin_PROGRAMS	Makefile	/^bin_PROGRAMS = server$(EXEEXT) libscifapiwrapper.so$(EXEEXT) \\$/;"	m
 bindir	Makefile	/^bindir = ${exec_prefix}\/bin$/;"	m
 build_alias	Makefile	/^build_alias = $/;"	m
 builddir	Makefile	/^builddir = .$/;"	m
@@ -240,7 +241,7 @@ establish_connection	client.c	/^void establish_connection(unitofwork *uow) {$/;"
 exec_prefix	Makefile	/^exec_prefix = ${prefix}$/;"	m
 extra_args	common.pb-c.h	/^  ProtobufCBinaryData *extra_args;$/;"	m	struct:_PhiCmd
 free_deserialised_message	protocol.c	/^void free_deserialised_message(void *msg) {$/;"	f
-get_phi_cmd_result	client.c	/^void get_phi_cmd_result(void **result, int socket_fd)$/;"	f
+get_phi_cmd_result	client.c	/^int get_phi_cmd_result(void **result, int socket_fd)$/;"	f
 get_server_connection_config	common.c	/^int get_server_connection_config(char *server_ip, char *server_port)$/;"	f
 has_phi_error	common.pb-c.h	/^  protobuf_c_boolean has_phi_error;$/;"	m	struct:_Cookie
 host_alias	Makefile	/^host_alias = $/;"	m
@@ -255,7 +256,7 @@ insist_read	client_proto_example.c	/^ssize_t insist_read(int fd, void *buf, size
 insist_read	protocol.c	/^ssize_t insist_read(int fd, void *buf, size_t cnt)$/;"	f
 insist_write	client_proto_example.c	/^ssize_t insist_write(int fd, const void *buf, size_t cnt)$/;"	f
 insist_write	protocol.c	/^ssize_t insist_write(int fd, const void *buf, size_t cnt)$/;"	f
-install_sh	Makefile	/^install_sh = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/install-sh$/;"	m
+install_sh	Makefile	/^install_sh = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/install-sh$/;"	m
 install_sh_DATA	Makefile	/^install_sh_DATA = $(install_sh) -c -m 644$/;"	m
 install_sh_PROGRAM	Makefile	/^install_sh_PROGRAM = $(install_sh) -c$/;"	m
 install_sh_SCRIPT	Makefile	/^install_sh_SCRIPT = $(install_sh) -c$/;"	m
@@ -274,8 +275,10 @@ localedir	Makefile	/^localedir = ${datarootdir}\/locale$/;"	m
 localstatedir	Makefile	/^localstatedir = ${prefix}\/var$/;"	m
 main	client_proto_example.c	/^int main(int argc, char *argv[])$/;"	f
 main	server.c	/^int main(int argc, char *argv[]) {$/;"	f
-main	test-scif.c	/^void main() {$/;"	f
-malloc_safe	common.h	72;"	d
+main	test-client.c	/^int main() {$/;"	f
+main	test-scif.c	/^int main(int argc, char **argv) {$/;"	f
+main	test_server.c	/^int main(int argc, char *argv[]) {$/;"	f
+malloc_safe	common.h	73;"	d
 malloc_safe_f	common.c	/^inline void *malloc_safe_f(size_t size, const char *file, const int line) {$/;"	f
 mandir	Makefile	/^mandir = ${datarootdir}\/man$/;"	m
 mkdir_p	Makefile	/^mkdir_p = $(MKDIR_P)$/;"	m
@@ -289,7 +292,7 @@ n_uint_args	common.pb-c.h	/^  size_t n_uint_args;$/;"	m	struct:_PhiCmd
 name	common.pb-c.h	/^  char *name;$/;"	m	struct:_PhiDevice
 oldincludedir	Makefile	/^oldincludedir = \/usr\/include$/;"	m
 only_version	libscifapiwrapper.c	39;"	d	file:
-pack_phi_cmd	process.c	/^int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {$/;"	f
+pack_phi_cmd	common.c	/^int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {$/;"	f
 pdfdir	Makefile	/^pdfdir = ${docdir}$/;"	m
 phi_cmd	common.pb-c.h	/^  PhiCmd *phi_cmd;$/;"	m	struct:_Cookie
 phi_cmd__descriptor	common.pb-c.c	/^const ProtobufCMessageDescriptor phi_cmd__descriptor =$/;"	v
@@ -367,12 +370,15 @@ str_args	common.pb-c.h	/^  char **str_args;$/;"	m	struct:_PhiCmd
 subdir	Makefile	/^subdir = src$/;"	m
 sysconfdir	Makefile	/^sysconfdir = ${prefix}\/etc$/;"	m
 target_alias	Makefile	/^target_alias = $/;"	m
+test_server_LDADD	Makefile	/^test_server_LDADD = $(LDADD)$/;"	m
+test_server_OBJECTS	Makefile	/^test_server_OBJECTS = $(am_test_server_OBJECTS)$/;"	m
+test_server_SOURCES	Makefile	/^test_server_SOURCES = test_server.c common.c common.h common.pb-c.c \\$/;"	m
 top_build_prefix	Makefile	/^top_build_prefix = ..\/$/;"	m
 top_builddir	Makefile	/^top_builddir = ..$/;"	m
 top_srcdir	Makefile	/^top_srcdir = ..$/;"	m
 transform	Makefile	/^transform = $(program_transform_name)$/;"	m
 type	common.h	/^    var_type type;$/;"	m	struct:var_struct
-type	common.pb-c.h	/^  uint32_t *type;$/;"	m	struct:_PhiCmd
+type	common.pb-c.h	/^  int64_t *type;$/;"	m	struct:_PhiCmd
 type	common.pb-c.h	/^  uint32_t type;$/;"	m	struct:_Cookie
 uint_args	common.pb-c.h	/^  uint64_t *uint_args;$/;"	m	struct:_PhiCmd
 unitofwork	client.h	/^} unitofwork ;$/;"	t	typeref:struct:_unitofwork

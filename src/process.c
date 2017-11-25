@@ -35,7 +35,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 	var_type res_type;
 
 	printf("Processing PHI_CMD\n");
-	switch((int)cmd->type) {
+	switch(cmd->type) {
 		case GET_VERSION:
 			printf("Executing get_driver_version...\n");
 			//int_res = scif_get_driver_version();

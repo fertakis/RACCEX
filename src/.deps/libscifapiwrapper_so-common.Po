@@ -1,5 +1,6 @@
-server.o: server.c /usr/include/stdc-predef.h /usr/include/stdio.h \
- /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+libscifapiwrapper_so-common.o: common.c /usr/include/stdc-predef.h \
+ /usr/include/stdio.h /usr/include/features.h \
+ /usr/include/x86_64-linux-gnu/sys/cdefs.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
@@ -54,8 +55,8 @@ server.o: server.c /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/rpc/netdb.h \
  /usr/include/x86_64-linux-gnu/bits/netdb.h \
  /usr/include/x86_64-linux-gnu/sys/time.h /usr/include/arpa/inet.h \
- common.h protocol.h process.h common.pb-c.h \
- /usr/local/include/protobuf-c/protobuf-c.h /usr/include/assert.h \
+ common.h common.pb-c.h /usr/local/include/protobuf-c/protobuf-c.h \
+ /usr/include/assert.h \
  /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
@@ -214,10 +215,6 @@ server.o: server.c /usr/include/stdc-predef.h /usr/include/stdio.h \
 /usr/include/arpa/inet.h:
 
 common.h:
-
-protocol.h:
-
-process.h:
 
 common.pb-c.h:
 

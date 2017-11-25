@@ -28,10 +28,8 @@ typedef struct _Cookie Cookie;
 struct  _PhiCmd
 {
   ProtobufCMessage base;
-  size_t n_type;
-  uint32_t *type;
-  size_t n_arg_count;
-  uint32_t *arg_count;
+  uint32_t type;
+  uint32_t arg_count;
   size_t n_int_args;
   int64_t *int_args;
   size_t n_uint_args;
@@ -43,7 +41,7 @@ struct  _PhiCmd
 };
 #define PHI_CMD__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&phi_cmd__descriptor) \
-    , 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
+    , 0, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
 
 
 struct  _PhiDevice

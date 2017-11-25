@@ -147,9 +147,9 @@ static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[6] =
   {
     "type",
     1,
-    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_LABEL_REQUIRED,
     PROTOBUF_C_TYPE_UINT32,
-    offsetof(PhiCmd, n_type),
+    0,   /* quantifier_offset */
     offsetof(PhiCmd, type),
     NULL,
     NULL,
@@ -159,9 +159,9 @@ static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[6] =
   {
     "arg_count",
     2,
-    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_LABEL_REQUIRED,
     PROTOBUF_C_TYPE_UINT32,
-    offsetof(PhiCmd, n_arg_count),
+    0,   /* quantifier_offset */
     offsetof(PhiCmd, arg_count),
     NULL,
     NULL,

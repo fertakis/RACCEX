@@ -15,6 +15,6 @@ void establish_connection(unitofwork *uow);
 
 int send_phi_cmd(int socket_fd, var **args, size_t arg_cnt, int cmd_type);
 
-void get_phi_cmd_result(void **result, int socket_fd);
+int get_phi_cmd_result(void **result, int socket_fd);
 
 #endif /* CLIENT_H */

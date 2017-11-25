@@ -1,6 +1,6 @@
 message PhiCmd {
-    repeated uint32 type = 1;
-    repeated uint32 arg_count = 2;
+    required uint32 type = 1;
+    required uint32 arg_count = 2;
     repeated int64 int_args = 3;
     repeated uint64 uint_args = 4; 
     repeated string str_args = 5;

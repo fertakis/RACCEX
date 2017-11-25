@@ -59,7 +59,7 @@ size_t serialise_message(void **result, int msg_type, void *payload) {
 	Cookie message = COOKIE__INIT;
 	void *buffer, *msg_buffer; 
 
-	printf("Encoding message data...\n");
+	printf("Serialising message data...\n");
 	message.type = msg_type;
 
 	switch (msg_type) {
