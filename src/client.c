@@ -96,7 +96,7 @@ int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)
     return 0;
 }
 
-void get_phi_cmd_result(void **result, int socket_fd)
+int get_phi_cmd_result(void **result, int socket_fd)
 {
 	PhiCmd *cmd;
 	size_t len;
@@ -122,7 +122,7 @@ void get_phi_cmd_result(void **result, int socket_fd)
 		if (cmd->n_uint_args > 0) {
 			*result = malloc_safe(sizeof(uint64_t));
 			memcpy(*result, &cmd->uint_args[0], sizeof(uint64_t));
-			printf("| result: 0x% \n", *(uint64_t *) *result);
+			printf("| result: 0x%d \n", *(uint64_t *) *result);
 		} else if (cmd->n_extra_args > 0) {
 			*result = malloc_safe(cmd->extra_args[0].len);
 			memcpy(*result, cmd->extra_args[0].data, cmd->extra_args[0].len);

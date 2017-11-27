@@ -64,7 +64,7 @@ int init_server_net(const char *port, struct sockaddr_in *sa)
 int main(int argc, char *argv[]) {
 	int server_sfd, client_sfd, msg_type, resp_type, arg_cnt;
 	struct sockaddr_in sa;
-	char server_ip[16] /* IPv4 */, server_port[6], *local_port,client_host[NI_MAXHOST], client_serv[NI_MAXSERV], addrstr[INET_ADDRSTRLEN];
+	char server_ip[16], server_port[6], *local_port, addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
 	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL ;
 	uint32_t msg_length;
