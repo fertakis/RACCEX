@@ -26,16 +26,16 @@
 #include "common.pb-c.h"
 
 int process_phi_cmd(void **result, void *cmd_ptr) {
-	int phi_result = 0, int_res,arg_count = 0;
+	int phi_result = 0, int_res = 0,arg_count = 0;
 	PhiCmd *cmd = cmd_ptr;
 	uint64_t uint_res = 0; 
 	void *extra_args = NULL, *res_data = NULL;
 	size_t extra_args_size = 0, res_length = 0;
-	var *res = NULL;
+	var **res = NULL;
 	var_type res_type;
 
 	printf("Processing PHI_CMD\n");
-	switch((int)cmd->type) {
+	switch(cmd->type) {
 		case GET_VERSION:
 			printf("Executing get_driver_version...\n");
 			//int_res = scif_get_driver_version();
@@ -53,20 +53,26 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				printf("Executing scif_open() ... \n");
 				scif_epd_t endp;
 				if((endp = scif_open()) < 0)
+				{
 					perror("scif_open");
+					phi_result = SCIF_OPEN_FAIL; 
+				}
 				else 
-					phi_result = endp;
-				res_type = UINT;
+				{
+					phi_result = SCIF_SUCCESS;
+				}
+				res_type = INT;
+				int_res = endp;
 				break;
 			}
 		case CLOSE:
 			printf("Executing scif_close() ... \n");
 			//TODO: scif_close call goes here...
-			scif_epd_t endp = (scif_epd_t)cmd->uint_args[0];
+			scif_epd_t endp = (scif_epd_t)cmd->int_args[0];
 			if(scif_close(endp)<0)
 			{
 				perror("scif_close");
-				phi_result = SCIF_OPEN_FAIL;
+				phi_result = SCIF_CLOSE_FAIL;
 			} else 
 				phi_result = SCIF_SUCCESS;
 			break;
@@ -74,10 +80,29 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 		case BIND:
 			printf("Executing scif_bind() ... \n");
 			//TODO: scif_bind call goes here...
+			if((int_res = scif_bind((scif_epd_t)cmd->int_args[0], (uint16_t)cmd->uint_args[0])) < 0)
+			{
+				perror("scif_bind");
+				phi_result = SCIF_BIND_FAIL;
+			}
+			else 
+			{
+				phi_result = SCIF_SUCCESS;
+			}
+			res_type = INT;
 			break;
 		case LISTEN:
 			printf("Executing scif_listen() ... \n");
-			//TODO: scif_listen call goes here...
+			//TODO: scif_liste call goes here...
+			if(scif_listen((scif_epd_t) cmd->int_args[0], cmd->int_args[1]) < 0)
+			{
+				perror("scif_listen");
+				phi_result = SCIF_LISTEN_FAIL;
+			}
+			else 
+			{
+				phi_result = SCIF_SUCCESS;
+			}
 			break;
 		case CONNECT:
 			printf("Executing scif_connect() ... \n");
@@ -153,53 +178,42 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			break;	
 	}
 
-	res = (var *)malloc_safe(sizeof(var));
-	res->type = res_type;
-	res->elements = 1;
-	switch(res->type) {
-		case INT:
-			res->length = sizeof(int);
-			break;
-			//TODO: Complete switch cases	
+	if(res_type == INT)
+	{
+		res_length = sizeof(int);
+		res_data = &int_res;
+	} else if (extra_args_size != 0)
+	{
+		res_type = BYTES;
+		res_length = extra_args_size;
+		res_data = extra_args;
 	}
-	res->data = malloc_safe(res->length);
-	memcpy(res->data, &phi_result,res->length);
+	
+	if(res_length > 0 ) {
+		res = malloc_safe(sizeof(var *)*2);
+		res[1] = malloc_safe(sizeof(var));
+		res[1]->type = res_type;
+		res[1]->elements = 1;
+		res[1]->length = res_length;
+		res[1]->data = malloc_safe(res_length);
+		memcpy(res[1]->data, res_data, res_length);
+		arg_count = 2 ;
+	} else {
+		res = malloc_safe(sizeof(var *));
+		arg_count = 1;
+	}
+	
+	res[0] = malloc_safe(sizeof(var));
+	res[0]->type = INT;
+	res[0]->elements = 1;
+	res[0]->length = sizeof(int);
+	res[0]->data = malloc_safe(res[0]->length);
+	memcpy(res[0]->data, &phi_result, res[0]->length);
+
 	*result = res;	
 
-		/*if (res_type == UINT) {
-		  res_length = sizeof(uint64_t);
-		  res_data = &uint_res;
-		  } else if (extra_args_size != 0) {	
-		  res_type = BYTES;
-		  res_length = extra_args_size;
-		  res_data = extra_args;
-		  }
-
-
-		  if (res_length > 0) {
-		  res = malloc_safe(sizeof(*res) * 2);
-		  res[1] = malloc_safe(sizeof(**res));
-		  res[1]->type = res_type;
-		  res[1]->elements = 1;
-		  res[1]->length = res_length;
-		  res[1]->data = malloc_safe(res_length);
-		  memcpy(res[1]->data, res_data, res_length);
-		  arg_count = 2;
-		  } else {
-		  res = malloc_safe(sizeof(*res));
-		  arg_count = 1;
-		  }
-		  res[0] = malloc_safe(sizeof(**res));
-		  res[0]->type = INT;
-		  res[0]->elements = 1;
-		  res[0]->length = sizeof(int);
-		  res[0]->data = malloc_safe(res[0]->length);
-		  memcpy(res[0]->data, &cuda_result, res[0]->length);
-
-		 *result = res;*/
-
-		if (extra_args != NULL)
-			free(extra_args);
+	if (extra_args != NULL)
+		free(extra_args);
 
 	return arg_count;
 }
