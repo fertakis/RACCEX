@@ -15,13 +15,15 @@
 #include <scif.h>
 
 int main(int argc, char *argv[]) {
-	int client_sock_fd, test_arg, test_res;
+	int client_sock_fd;
 	char *server_ip, *server_port;
 	size_t buf_size;
 	void *buffer = NULL, *result = NULL;
 	PhiCmd cmd1 = PHI_CMD__INIT;
-	scif_epd_t endPoint;
 	
+	scif_epd_t endPoint;
+	int scif_port_no;
+
 	if(argc > 3) {
 		printf("Usage: client <server_ip> <server_port>\n");
 		exit(EXIT_FAILURE);
@@ -58,6 +60,32 @@ int main(int argc, char *argv[]) {
 	endPoint = *(int *)result;	
 	printf("endpoint is %d\nexiting..\n", endPoint);
 	
+	//close connection
+	close(client_sock_fd);
+	printf("Connection terminated...");
+	//initialise new connection
+	client_sock_fd = init_client_connection(server_ip, server_port);
+	printf("Connection established...");
+
+	/**
+	* cmd2: scif_bind()
+	**/
+	printf("\n* SCIF_BIND()\n");
+	cmd2.type = BIND;
+	cmd2.arg_count = 2
+	cmd2.n_int_args = 2
+	cmd2.int_args = malloc_safe(sizeof(int)*cmd2.n_int_args);
+	cmd2.int_args[0] = endPoint;
+	cmd2.int_args[1] = 0; // In scif_bind(epd, pn), if pn is zero, a port number >= SCIF_PORT_RSVD is assigned and returned.
+	
+	buf_size = serialise_message(&buffer, PHI_CMD, &cmd2);
+	send_message(client_sock_fd, buffer, buf_size);
+	
+	free(cmd2.int_args);
+	get_phi_cmd_result(&result, client_sock_fd);
+	scif_port_no = *(int *)result;	
+	
+	//close connection
 	close(client_sock_fd);
 	return 0;
 }

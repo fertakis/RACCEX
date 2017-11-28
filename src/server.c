@@ -118,10 +118,9 @@ int main(int argc, char *argv[]) {
 					arg_cnt = process_phi_cmd(&result, payload);
 					resp_type = PHI_CMD_RESULT;
 					break;
-				/*case PHI_DEVICE_QUERY:
-					process_cuda_device_query(&result, free_list, busy_list);
-					resp_type = PHI_DEVICE_LIST;
-					break;*/
+				default:
+					printf("--------INVALID MESSAGE TYPE--------\n");
+					break;
 			}
 
 
@@ -160,12 +159,13 @@ int main(int argc, char *argv[]) {
 				printf("\n--------------\nClient finished.\n\n");
 				break;
 			}*/
+			//TODO: closing method should be implemented
+			printf("\n-------------\nClient finished. Closing connection.\n");
+			break;
 		}
 	}
 	close(client_sfd);
 
-	/*if (client_list != NULL)
-		free_cdn_list(client_list);*/
-
+	//should never be here
 	return EXIT_FAILURE;
 }
