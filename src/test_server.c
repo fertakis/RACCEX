@@ -19,7 +19,8 @@ int main(int argc, char *argv[]) {
 	char *server_ip, *server_port;
 	size_t buf_size;
 	void *buffer = NULL, *result = NULL;
-	PhiCmd cmd1 = PHI_CMD__INIT;
+	PhiCmd cmd1 = PHI_CMD__INIT,
+	cmd2 = PHI_CMD__INIT;
 	
 	scif_epd_t endPoint;
 	int scif_port_no;
@@ -72,8 +73,8 @@ int main(int argc, char *argv[]) {
 	**/
 	printf("\n* SCIF_BIND()\n");
 	cmd2.type = BIND;
-	cmd2.arg_count = 2
-	cmd2.n_int_args = 2
+	cmd2.arg_count = 2;
+	cmd2.n_int_args = 2;
 	cmd2.int_args = malloc_safe(sizeof(int)*cmd2.n_int_args);
 	cmd2.int_args[0] = endPoint;
 	cmd2.int_args[1] = 0; // In scif_bind(epd, pn), if pn is zero, a port number >= SCIF_PORT_RSVD is assigned and returned.

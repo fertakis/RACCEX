@@ -119,10 +119,10 @@ int get_phi_cmd_result(void **result, int socket_fd)
 		cmd = payload;
 		res_code = cmd->int_args[0];
 		printf("Server responded: \n| result code: %d\n", res_code); 
-		if (cmd->n_uint_args > 0) {
-			*result = malloc_safe(sizeof(uint64_t));
-			memcpy(*result, &cmd->uint_args[0], sizeof(uint64_t));
-			printf("| result: 0x%d \n", *(uint64_t *) *result);
+		if (cmd->n_int_args > 0) {
+			*result = malloc_safe(sizeof(int));
+			memcpy(*result, &cmd->int_args[0], sizeof(int));
+			printf("| result: %d \n", *(int *) *result);
 		} else if (cmd->n_extra_args > 0) {
 			*result = malloc_safe(cmd->extra_args[0].len);
 			memcpy(*result, cmd->extra_args[0].data, cmd->extra_args[0].len);
