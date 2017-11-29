@@ -80,7 +80,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 		case BIND:
 			printf("Executing scif_bind() ... \n");
 			//TODO: scif_bind call goes here...
-			if((int_res = scif_bind((scif_epd_t)cmd->int_args[0], (uint16_t)cmd->uint_args[0])) < 0)
+			if((int_res = scif_bind((scif_epd_t)cmd->int_args[0], (uint16_t)cmd->int_args[1])) < 0)
 			{
 				perror("scif_bind");
 				phi_result = SCIF_BIND_FAIL;

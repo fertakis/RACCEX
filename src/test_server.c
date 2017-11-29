@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 	size_t buf_size;
 	void *buffer = NULL, *result = NULL;
 	PhiCmd cmd1 = PHI_CMD__INIT,
-	cmd2 = PHI_CMD__INIT;
+	cmd2 = PHI_CMD__INIT, cmd3 = PHI_CMD__INIT;
 	
 	scif_epd_t endPoint;
 	int scif_port_no;
@@ -88,5 +88,31 @@ int main(int argc, char *argv[]) {
 	
 	//close connection
 	close(client_sock_fd);
+	printf("Connection terminated...");
+	//initialise new connection
+	client_sock_fd = init_client_connection(server_ip, server_port);
+	printf("Connection established...");
+
+	/**
+	* cmd3: scif_listen()
+	**/
+	printf("\n* SCIF_LISTEN()\n");
+	cmd3.type = LISTEN;
+	cmd3.arg_count = 2;
+	cmd3.n_int_args = 2;
+	cmd3.int_args = malloc_safe(sizeof(int)*cmd2.n_int_args);
+	cmd3.int_args[0] = endPoint;
+	cmd3.int_args[1] = 10; // In scif_bind(epd, pn), if pn is zero, a port number >= SCIF_PORT_RSVD is assigned and returned.
+	
+	buf_size = serialise_message(&buffer, PHI_CMD, &cmd3);
+	send_message(client_sock_fd, buffer, buf_size);
+	
+	free(cmd3.int_args);
+	get_phi_cmd_result(&result, client_sock_fd);
+	if( *(int *)result == 0 )
+		printf("Endpoint marked as listening endpoint\n");
+	else
+		printf("Problem while trying binding endpoint as a listenting endp\n");
+	
 	return 0;
 }
