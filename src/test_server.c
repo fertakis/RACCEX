@@ -65,10 +65,10 @@ int main(int argc, char *argv[]) {
 
 	//close connection
 	close(client_sock_fd);
-	printf("Connection terminated...");
+	printf("Connection terminated...\n");
 	//initialise new connection
 	client_sock_fd = init_client_connection(server_ip, server_port);
-	printf("Connection established...");
+	printf("Connection established...\n");
 
 	/**
 	 * cmd2: scif_bind()
@@ -90,10 +90,10 @@ int main(int argc, char *argv[]) {
 
 	//close connection
 	close(client_sock_fd);
-	printf("Connection terminated...");
+	printf("Connection terminated...\n");
 	//initialise new connection
 	client_sock_fd = init_client_connection(server_ip, server_port);
-	printf("Connection established...");
+	printf("Connection established...\n");
 
 	/**
 	 * cmd3: scif_listen()
@@ -118,11 +118,11 @@ int main(int argc, char *argv[]) {
 	
 	//close connection
 	close(client_sock_fd);
-	printf("Connection terminated...");
+	printf("Connection terminated...\n");
 	
 	//initialise new connection
 	client_sock_fd = init_client_connection(server_ip, server_port);
-	printf("Connection established...");
+	printf("Connection established...\n");
 	
 	/**
 	 * cmd5: scif_connect()
@@ -163,11 +163,11 @@ int main(int argc, char *argv[]) {
 
 	//close connection
 	close(client_sock_fd);
-	printf("Connection terminated...");
+	printf("Connection terminated...\n");
 
 	//initialise new connection
 	client_sock_fd = init_client_connection(server_ip, server_port);
-	printf("Connection established...");
+	printf("Connection established...\n");
 	
 
 	/**
@@ -192,7 +192,7 @@ int main(int argc, char *argv[]) {
 
 	//close connection
 	close(client_sock_fd);
-	printf("Connection terminated...");
+	printf("Connection terminated...\n");
 
 	return 0;
 }
