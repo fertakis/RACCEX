@@ -20,10 +20,12 @@ int main(int argc, char *argv[]) {
 	size_t buf_size;
 	void *buffer = NULL, *result = NULL;
 	PhiCmd cmd1 = PHI_CMD__INIT,
-	       cmd2 = PHI_CMD__INIT, cmd3 = PHI_CMD__INIT, cmd4 = PHI_CMD__INIT;
+	       cmd2 = PHI_CMD__INIT, cmd3 = PHI_CMD__INIT, cmd4 = PHI_CMD__INIT,
+	       cmd5 = PHI_CMD__INIT;
 
 	scif_epd_t endPoint;
-	int scif_port_no;
+	int scif_port_no, remote_portID;
+	struct scif_portID *dst;
 
 	if(argc > 3) {
 		printf("Usage: client <server_ip> <server_port>\n");
@@ -117,10 +119,57 @@ int main(int argc, char *argv[]) {
 	//close connection
 	close(client_sock_fd);
 	printf("Connection terminated...");
+	
 	//initialise new connection
 	client_sock_fd = init_client_connection(server_ip, server_port);
 	printf("Connection established...");
 	
+	/**
+	 * cmd5: scif_connect()
+	 **/
+	printf("\n* SCIF_CONNECT()\n");
+	cmd5.type = CONNECT;
+	cmd5.arg_count = 2;
+	
+	cmd5.n_int_args = 1;
+	cmd5.int_args = malloc_safe(sizeof(int)*cmd5.n_int_args);
+	cmd5.int_args[0] = endPoint;
+	
+	cmd5.n_extra_args = 1; 
+	cmd5.extra_args = malloc_safe(sizeof(*(cmd5.extra_args)) * cmd5.n_extra_args);
+	
+	dst = malloc_safe(sizeof(struct scif_portID));
+	dst->node = 6;	
+	dst->port = 1022;
+	
+	cmd5.extra_args[0].data = dst;
+	cmd5.extra_args[0].len = sizeof(struct scif_portID);
+
+	buf_size = serialise_message(&buffer, PHI_CMD, &cmd5);
+	send_message(client_sock_fd, buffer, buf_size);
+
+	free(cmd5.int_args);
+	free(dst);
+	free(cmd5.extra_args);
+	free(buffer);
+
+	get_phi_cmd_result(&result, client_sock_fd);
+	remote_portID = *(int *)result;
+
+	if( remote_portID >  0 )
+		printf("connection established...\n");
+	else
+		printf("Problem while trying to connect to endpoint\n");
+
+	//close connection
+	close(client_sock_fd);
+	printf("Connection terminated...");
+
+	//initialise new connection
+	client_sock_fd = init_client_connection(server_ip, server_port);
+	printf("Connection established...");
+	
+
 	/**
 	 * cmd4: scif_close()
 	 **/

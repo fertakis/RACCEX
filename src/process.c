@@ -60,9 +60,9 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				else 
 				{
 					phi_result = SCIF_SUCCESS;
+					res_type = INT;
+					int_res = endp;
 				}
-				res_type = INT;
-				int_res = endp;
 				break;
 			}
 		case CLOSE:
@@ -86,8 +86,8 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			else 
 			{
 				phi_result = SCIF_SUCCESS;
+				res_type = INT;
 			}
-			res_type = INT;
 			break;
 		case LISTEN:
 			printf("Executing scif_listen() ... \n");
@@ -105,6 +105,20 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 		case CONNECT:
 			printf("Executing scif_connect() ... \n");
 			//TODO: scif_connect call goes here...
+			struct scif_portID *dst;
+			dst = (struct scif_portID *)cmd->extra_args[0].data;
+			printf("remote scif_portID: node=%d and port=%d \n", dst->node, dst->port);
+			
+			if((int_res = scif_connect((scif_epd_t)cmd->int_args[0], dst)) < 0)
+			{
+				perror("scif_connect");
+				phi_result = SCIF_CONNECT_FAIL;
+			}
+			else 
+			{	
+				phi_result = SCIF_SUCCESS;
+				res_type = INT;
+			}
 			break;
 		case ACCEPT:
 			printf("Executing scif_accept() ... \n");
