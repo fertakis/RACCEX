@@ -68,15 +68,13 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 		case CLOSE:
 			printf("Executing scif_close() ... \n");
 			//TODO: scif_close call goes here...
-			scif_epd_t endp = (scif_epd_t)cmd->int_args[0];
-			if(scif_close(endp)<0)
+			if(scif_close((scif_epd_t)cmd->int_args[0])<0)
 			{
 				perror("scif_close");
 				phi_result = SCIF_CLOSE_FAIL;
 			} else 
 				phi_result = SCIF_SUCCESS;
 			break;
-			res_type = UINT;
 		case BIND:
 			printf("Executing scif_bind() ... \n");
 			//TODO: scif_bind call goes here...

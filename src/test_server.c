@@ -20,8 +20,8 @@ int main(int argc, char *argv[]) {
 	size_t buf_size;
 	void *buffer = NULL, *result = NULL;
 	PhiCmd cmd1 = PHI_CMD__INIT,
-	cmd2 = PHI_CMD__INIT, cmd3 = PHI_CMD__INIT;
-	
+	       cmd2 = PHI_CMD__INIT, cmd3 = PHI_CMD__INIT, cmd4 = PHI_CMD__INIT;
+
 	scif_epd_t endPoint;
 	int scif_port_no;
 
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 		printf("Usage: client <server_ip> <server_port>\n");
 		exit(EXIT_FAILURE);
 	}
-	
+
 	if (argc == 1) {
 		printf("No server ip or port defined, using defaults %s:%s\n", DEFAULT_SERVER_IP, DEFAULT_SERVER_PORT);
 		server_ip = (char *) DEFAULT_SERVER_IP;
@@ -47,12 +47,12 @@ int main(int argc, char *argv[]) {
 	printf("Connected to server %s on port %s...\n", server_ip, server_port);
 
 	/**
-	* cmd1: scif_open()
-	**/	
+	 * cmd1: scif_open()
+	 **/	
 	printf("\n* SCIF_OPEN()\n");
 	cmd1.type = OPEN;
 	cmd1.arg_count = 0 ;
-	
+
 	buf_size = serialise_message(&buffer, PHI_CMD, &cmd1);
 	send_message(client_sock_fd, buffer, buf_size);
 
@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 	get_phi_cmd_result(&result, client_sock_fd);
 	endPoint = *(int *)result;	
 	printf("endpoint is %d\nexiting..\n", endPoint);
-	
+
 	//close connection
 	close(client_sock_fd);
 	printf("Connection terminated...");
@@ -69,8 +69,8 @@ int main(int argc, char *argv[]) {
 	printf("Connection established...");
 
 	/**
-	* cmd2: scif_bind()
-	**/
+	 * cmd2: scif_bind()
+	 **/
 	printf("\n* SCIF_BIND()\n");
 	cmd2.type = BIND;
 	cmd2.arg_count = 2;
@@ -78,14 +78,14 @@ int main(int argc, char *argv[]) {
 	cmd2.int_args = malloc_safe(sizeof(int)*cmd2.n_int_args);
 	cmd2.int_args[0] = endPoint;
 	cmd2.int_args[1] = 0; // In scif_bind(epd, pn), if pn is zero, a port number >= SCIF_PORT_RSVD is assigned and returned.
-	
+
 	buf_size = serialise_message(&buffer, PHI_CMD, &cmd2);
 	send_message(client_sock_fd, buffer, buf_size);
-	
+
 	free(cmd2.int_args);
 	get_phi_cmd_result(&result, client_sock_fd);
 	scif_port_no = *(int *)result;	
-	
+
 	//close connection
 	close(client_sock_fd);
 	printf("Connection terminated...");
@@ -94,19 +94,19 @@ int main(int argc, char *argv[]) {
 	printf("Connection established...");
 
 	/**
-	* cmd3: scif_listen()
-	**/
+	 * cmd3: scif_listen()
+	 **/
 	printf("\n* SCIF_LISTEN()\n");
 	cmd3.type = LISTEN;
 	cmd3.arg_count = 2;
 	cmd3.n_int_args = 2;
-	cmd3.int_args = malloc_safe(sizeof(int)*cmd2.n_int_args);
+	cmd3.int_args = malloc_safe(sizeof(int)*cmd3.n_int_args);
 	cmd3.int_args[0] = endPoint;
-	cmd3.int_args[1] = 10; // In scif_bind(epd, pn), if pn is zero, a port number >= SCIF_PORT_RSVD is assigned and returned.
-	
+	cmd3.int_args[1] = 10; 
+
 	buf_size = serialise_message(&buffer, PHI_CMD, &cmd3);
 	send_message(client_sock_fd, buffer, buf_size);
-	
+
 	free(cmd3.int_args);
 	get_phi_cmd_result(&result, client_sock_fd);
 	if( *(int *)result == 0 )
@@ -114,5 +114,36 @@ int main(int argc, char *argv[]) {
 	else
 		printf("Problem while trying binding endpoint as a listenting endp\n");
 	
+	//close connection
+	close(client_sock_fd);
+	printf("Connection terminated...");
+	//initialise new connection
+	client_sock_fd = init_client_connection(server_ip, server_port);
+	printf("Connection established...");
+	
+	/**
+	 * cmd4: scif_close()
+	 **/
+	printf("\n* SCIF_CLOSE()\n");
+	cmd4.type = CLOSE;
+	cmd4.arg_count = 1;
+	cmd4.n_int_args = 1;
+	cmd4.int_args = malloc_safe(sizeof(int)*cmd4.n_int_args);
+	cmd4.int_args[0] = endPoint;
+
+	buf_size = serialise_message(&buffer, PHI_CMD, &cmd3);
+	send_message(client_sock_fd, buffer, buf_size);
+
+	free(cmd3.int_args);
+	get_phi_cmd_result(&result, client_sock_fd);
+	if( *(int *)result == 0 )
+		printf("Endpoint closed succesfully\n");
+	else
+		printf("Problem while trying to close endpoint\n");
+
+	//close connection
+	close(client_sock_fd);
+	printf("Connection terminated...");
+
 	return 0;
 }
