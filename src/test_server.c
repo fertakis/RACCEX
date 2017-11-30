@@ -131,10 +131,10 @@ int main(int argc, char *argv[]) {
 	cmd4.int_args = malloc_safe(sizeof(int)*cmd4.n_int_args);
 	cmd4.int_args[0] = endPoint;
 
-	buf_size = serialise_message(&buffer, PHI_CMD, &cmd3);
+	buf_size = serialise_message(&buffer, PHI_CMD, &cmd4);
 	send_message(client_sock_fd, buffer, buf_size);
 
-	free(cmd3.int_args);
+	free(cmd4.int_args);
 	get_phi_cmd_result(&result, client_sock_fd);
 	if( *(int *)result == 0 )
 		printf("Endpoint closed succesfully\n");
