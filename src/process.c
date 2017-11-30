@@ -119,10 +119,13 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				phi_result = SCIF_SUCCESS;
 				res_type = INT;
 			}
+			//free allocated memory
+			free(dst);
 			break;
 		case ACCEPT:
 			printf("Executing scif_accept() ... \n");
 			//TODO: scif_accept call goes here...
+			struct scif_portID *peer;
 			break;
 		case SEND:
 			printf("Executing scif_send() ... \n");
