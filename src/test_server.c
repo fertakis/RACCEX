@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
 	/**
 	 * cmd5: scif_connect()
 	 **/
-	printf("\n* SCIF_CONNECT()\n");
+	/*printf("\n* SCIF_CONNECT()\n");
 	cmd5.type = CONNECT;
 	cmd5.arg_count = 2;
 	
@@ -160,7 +160,7 @@ int main(int argc, char *argv[]) {
 		printf("connection established...\n");
 	else
 		printf("Problem while trying to connect to endpoint\n");
-
+*/
 	//close connection
 	//close(client_sock_fd);
 	//printf("Connection terminated...\n");
