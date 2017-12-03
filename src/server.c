@@ -66,7 +66,9 @@ int main(int argc, char *argv[]) {
 	struct sockaddr_in sa;
 	char server_ip[16], server_port[6], *local_port, addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
-	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL ;
+	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL;
+	//TODO: revise in order to support multiple connections 
+	client_node *cur_client = NULL;
 	uint32_t msg_length;
 
 	if (argc > 2) {
@@ -115,7 +117,7 @@ int main(int argc, char *argv[]) {
 			printf("Processing message\n");
 			switch (msg_type) {
 				case PHI_CMD:
-					arg_cnt = process_phi_cmd(&result, payload);
+					arg_cnt = process_phi_cmd(&result, payload, cur_client);
 					resp_type = PHI_CMD_RESULT;
 					break;
 				default:
@@ -153,15 +155,16 @@ int main(int argc, char *argv[]) {
 				msg = NULL;
 			}
 
-			/*CHECK TO SEE IF CLIENT IS FINISHED
-			if (get_client_status(client_handle) == 0) {
+			//CHECK TO SEE IF CLIENT IS FINISHED
+			if (cur_client == NULL) {
 				// TODO: freeing
 				printf("\n--------------\nClient finished.\n\n");
 				break;
-			}*/
+			}
+			
 			//TODO: closing method should be implemented
-			printf("\n-------------\nClient finished. Closing connection.\n");
-			break;
+			//printf("\n-------------\nClient finished. Closing connection.\n");
+			//break;
 		}
 	}
 	close(client_sfd);

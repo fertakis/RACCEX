@@ -79,18 +79,6 @@ scif_open(void)
 	var arg = {.elements = 1}, *args[] = { &arg };
 	void *result;
 
-	/*if (scif_version_mismatch) {
-		errno = ENXIO;
-		return -1;
-	}
-
-	if ((fd = open(DEVICE_NODE, O_RDWR)) < 0)
-		return (scif_epd_t)-1;
-
-	if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0) {
-		close(fd);
-		return (scif_epd_t)-1;
-	}*/
 	init_params(&uow);
 	
 	establish_connection(&uow);
@@ -101,11 +89,11 @@ scif_open(void)
 		exit(EXIT_FAILURE);	
 	}
 
-	get_phi_cmd_result(&result, uow.socket_fd);
-	/*if(res_code == PHI_SUCCESS) {
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == PHI_SUCCESS) {
 		fd = *(scif_epd_t *)result;
 		free(result);
-	}*/
+	}
 
 	return fd;
 }
@@ -114,6 +102,15 @@ only_version(scif_open, 0, 0)
 	int
 scif_close(scif_epd_t epd)
 {
+	int res_code;
+	var arg = { .elements = 1}, *args[] = { &arg };
+	void *result;
+
+	arg.type = INT;
+	arg.length = sizeof(int);
+	arg.data = &epd;
+	
+	//if(get_c)	
 	if (close(epd))
 		return -1;
 	return 0;

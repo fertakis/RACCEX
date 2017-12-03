@@ -22,10 +22,11 @@
 #include <netinet/in.h>
 
 #include "common.h"
+#include "process.h"
 #include "phi_errors.h"
 #include "common.pb-c.h"
 
-int process_phi_cmd(void **result, void *cmd_ptr) {
+int process_phi_cmd(void **result, void *cmd_ptr, client_node *cur_client) {
 	int phi_result = 0, int_res = 0,arg_count = 0;
 	PhiCmd *cmd = cmd_ptr;
 	uint64_t uint_res = 0; 
@@ -62,6 +63,9 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					phi_result = SCIF_SUCCESS;
 					res_type = INT;
 					int_res = endp;
+					cur_client = malloc_safe(sizeof(client_node));
+					cur_client->id = endp;
+					free(endp);
 				}
 				break;
 			}
@@ -73,7 +77,11 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				perror("scif_close");
 				phi_result = SCIF_CLOSE_FAIL;
 			} else 
+			{
 				phi_result = SCIF_SUCCESS;
+				free(cur_client);
+				cur_client = NULL;
+			}
 			break;
 		case BIND:
 			printf("Executing scif_bind() ... \n");

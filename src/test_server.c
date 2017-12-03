@@ -64,11 +64,11 @@ int main(int argc, char *argv[]) {
 	printf("endpoint is %d\nexiting..\n", endPoint);
 
 	//close connection
-	close(client_sock_fd);
-	printf("Connection terminated...\n");
+	//close(client_sock_fd);
+	//printf("Connection terminated...\n");
 	//initialise new connection
-	client_sock_fd = init_client_connection(server_ip, server_port);
-	printf("Connection established...\n");
+	//client_sock_fd = init_client_connection(server_ip, server_port);
+	//printf("Connection established...\n");
 
 	/**
 	 * cmd2: scif_bind()
@@ -89,11 +89,11 @@ int main(int argc, char *argv[]) {
 	scif_port_no = *(int *)result;	
 
 	//close connection
-	close(client_sock_fd);
-	printf("Connection terminated...\n");
+	//close(client_sock_fd);
+	//printf("Connection terminated...\n");
 	//initialise new connection
-	client_sock_fd = init_client_connection(server_ip, server_port);
-	printf("Connection established...\n");
+	//client_sock_fd = init_client_connection(server_ip, server_port);
+	//printf("Connection established...\n");
 
 	/**
 	 * cmd3: scif_listen()
@@ -117,12 +117,12 @@ int main(int argc, char *argv[]) {
 		printf("Problem while trying binding endpoint as a listenting endp\n");
 	
 	//close connection
-	close(client_sock_fd);
-	printf("Connection terminated...\n");
+	//close(client_sock_fd);
+	//printf("Connection terminated...\n");
 	
 	//initialise new connection
-	client_sock_fd = init_client_connection(server_ip, server_port);
-	printf("Connection established...\n");
+	//client_sock_fd = init_client_connection(server_ip, server_port);
+	//printf("Connection established...\n");
 	
 	/**
 	 * cmd5: scif_connect()
@@ -162,12 +162,12 @@ int main(int argc, char *argv[]) {
 		printf("Problem while trying to connect to endpoint\n");
 
 	//close connection
-	close(client_sock_fd);
-	printf("Connection terminated...\n");
+	//close(client_sock_fd);
+	//printf("Connection terminated...\n");
 
 	//initialise new connection
-	client_sock_fd = init_client_connection(server_ip, server_port);
-	printf("Connection established...\n");
+	//client_sock_fd = init_client_connection(server_ip, server_port);
+	//printf("Connection established...\n");
 	
 
 	/**
