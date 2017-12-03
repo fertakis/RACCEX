@@ -65,6 +65,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node *cur_client) {
 					int_res = endp;
 					cur_client = malloc_safe(sizeof(client_node));
 					cur_client->id = endp;
+					printf("current client initialised with endp = %d\n", cur_client->id);
 				}
 				break;
 			}
