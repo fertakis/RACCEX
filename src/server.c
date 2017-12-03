@@ -155,8 +155,6 @@ int main(int argc, char *argv[]) {
 				msg = NULL;
 			}
 
-			//CHECK TO SEE IF CLIENT IS FINISHED
-			printf("curr_client->id=%d\n", cur_client->id);
 			if (cur_client == NULL) {
 				// TODO: freeing
 				printf("\n--------------\nClient finished.\n\n");
