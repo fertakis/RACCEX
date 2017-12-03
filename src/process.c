@@ -26,7 +26,7 @@
 #include "phi_errors.h"
 #include "common.pb-c.h"
 
-int process_phi_cmd(void **result, void *cmd_ptr, client_node *cur_client) {
+int process_phi_cmd(void **result, void *cmd_ptr,client_node  **cur_client) {
 	int phi_result = 0, int_res = 0,arg_count = 0;
 	PhiCmd *cmd = cmd_ptr;
 	uint64_t uint_res = 0; 
@@ -63,9 +63,9 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node *cur_client) {
 					phi_result = SCIF_SUCCESS;
 					res_type = INT;
 					int_res = endp;
-					cur_client = malloc_safe(sizeof(client_node));
-					cur_client->id = endp;
-					printf("current client initialised with endp = %d\n", cur_client->id);
+					*cur_client = (client_node *)malloc_safe(sizeof(client_node));
+					(*cur_client)->id = endp;
+					printf("current client initialised with endp = %d\n", (*cur_client)->id);
 				}
 				break;
 			}
@@ -79,8 +79,8 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node *cur_client) {
 			} else 
 			{
 				phi_result = SCIF_SUCCESS;
-				free(cur_client);
-				cur_client = NULL;
+				free(*cur_client);
+				*cur_client = NULL;
 			}
 			break;
 		case BIND:

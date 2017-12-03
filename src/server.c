@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
 			printf("Processing message\n");
 			switch (msg_type) {
 				case PHI_CMD:
-					arg_cnt = process_phi_cmd(&result, payload, cur_client);
+					arg_cnt = process_phi_cmd(&result, payload, &cur_client);
 					resp_type = PHI_CMD_RESULT;
 					break;
 				default:
