@@ -43,12 +43,12 @@ unitofwork uow;
 
 static uint8_t scif_version_mismatch;
 
-int
+	int
 scif_get_driver_version(void)
 {
 	int res_code, version;
 	void *result = NULL;
-        var arg = { .elements = 1}; 
+	var arg = { .elements = 1}; 
 
 	//initialise parameters
 	init_params(&uow);
@@ -64,9 +64,9 @@ scif_get_driver_version(void)
 	//receive resutls
 	get_phi_cmd_result(&result, uow.socket_fd);
 	/*if(res_code == PHI_SUCCESS) {
-		version = *(int *) result;
-		free(result);
-	}*/
+	  version = *(int *) result;
+	  free(result);
+	  }*/
 
 	return version;
 }
@@ -80,7 +80,7 @@ scif_open(void)
 	void *result;
 
 	init_params(&uow);
-	
+
 	establish_connection(&uow);
 
 	if(send_phi_cmd(uow.socket_fd, NULL, 0, OPEN) < 0 )
@@ -92,6 +92,7 @@ scif_open(void)
 	res_code = get_phi_cmd_result(&result, uow.socket_fd);
 	if(res_code == PHI_SUCCESS) {
 		fd = *(scif_epd_t *)result;
+		uow.endp = fd;
 		free(result);
 	}
 
@@ -109,53 +110,107 @@ scif_close(scif_epd_t epd)
 	arg.type = INT;
 	arg.length = sizeof(int);
 	arg.data = &epd;
-	
-	//if(get_c)	
-	if (close(epd))
-		return -1;
-	return 0;
+
+	if(send_phi_cmd(uow.socket_fd, args, 1, CLOSE) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);	
+	}	
+
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+
+	free(result);
+
+	return res_code;
 }
 only_version(scif_close, 0, 0)
 
 	int
 scif_bind(scif_epd_t epd, uint16_t pn)
 {
-	int pni = pn;
+	int pni = pn, res_code, ret = -1;
+	var arg_int = { .elements =1 }, arg_uint = { .elements = 1}, *args[] = { &arg_int, &arg_uint };
+	void *result;  
 
-	if (ioctl(epd, SCIF_BIND, &pni) < 0)
-		return -1;
+	arg_int.type = INT;
+	arg_int.length = sizeof(int);
+	arg_int.data = &epd;
 
-	return pni;
+	arg_uint.type = UINT;
+	arg_uint.length = sizeof(uint16_t);
+	arg_uint.data = &pn
+
+	if(send_phi_cmd(uow.socket_fd, args, 2, BIND) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);	
+	}	
+
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+
+	if(res_code == PHI_SUCCESS) {
+		ret = *(uint16_t *)result;
+	}
+
+	return ret;
 }
 only_version(scif_bind, 0, 0)
 
 	int
 scif_listen(scif_epd_t epd, int backlog)
 {
-	if (ioctl(epd, SCIF_LISTEN, backlog) < 0)
-		return -1;
+	int res_code, ret = -1;
+	var arg = { .elements = 2 }, *args[] = { &arg };
+	void *result;  
 
-	return 0;
+	arg.type = INT;
+	arg.length = sizeof(int) * arg.elements;
+	arg.data = malloc_safe(arg.length);
+	memset(arg.data, 0, arg.length);
+	memcpy(arg.data, &epd, sizeof(int));
+	memcpy(arg,data+sizeof(int), &backlog, sizeof(int));
+
+	if(send_phi_cmd(uow.socket_fd, args, 1, LISTEN) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);	
+	}	
+
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	
+	ret = *(int *) result ;
+
+	return ret;
 }
 only_version(scif_listen, 0, 0)
 
 	int
 scif_connect(scif_epd_t epd, struct scif_portID *dst)
 {
-	struct scifioctl_connect req;
+	int res_code, ret =-1;
+	var arg_int = { .elements = 1}, arg_bytes = { .elements = 1}, *args[] = { &arg_int, &arg_bytes};
+	void *result; 
 
-	if (!dst) {
-		errno = EINVAL;
-		return -1;
-	}
+	arg_int.type = INT;
+	arg_int.length = sizeof(int);
+	arg.data = &epd;
+	
+	arg_bytes.type = BYTES;
+	arg_bytes.length = sizeof(struct scif_portID);
+	arg_data.data = dst;
+	
+	if(send_phi_cmd(uow.socket_fd, args, 2, CONNECT) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);	
+	}	
 
-	req.peer.node = dst->node;
-	req.peer.port = dst->port;
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == SCIF_SUCCESS) 
+		ret = *(int *) result ;
 
-	if (ioctl(epd, SCIF_CONNECT, &req) < 0)
-		return -1;
+	return ret;
 
-	return req.self.port;
 }
 only_version(scif_connect, 0, 0)
 

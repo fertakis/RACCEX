@@ -2,7 +2,7 @@
 #define CLIENT_H
 
 typedef struct _unitofwork {
-	int id;
+	int endp;
  	int socket_fd;
 } unitofwork ;
 

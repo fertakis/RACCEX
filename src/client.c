@@ -59,13 +59,13 @@ int init_client_connection(const char *s_ip, const char *s_port)
 }
 
 void init_params(unitofwork *uow) {
-    uow->id = -1;
+    uow->endp = -1;
 }
 
 void establish_connection(unitofwork *uow) {
     char server_ip[16], server_port[6];
 
-    if(uow->id < 0)
+    if(uow->endp < 0)
     {
         if(get_server_connection_config(server_ip, server_port) !=0) {
             sprintf(server_ip, DEFAULT_SERVER_IP);
