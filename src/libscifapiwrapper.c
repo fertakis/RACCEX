@@ -217,40 +217,34 @@ only_version(scif_connect, 0, 0)
 	int
 scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int flags)
 {
-	struct scifioctl_accept req;
-	scif_epd_t newfd;
-	int errno_save;
+	int res_code, ret = -1 ;
+	var arg_int = { .elements =2 }, arg_bytes = { .elements = 1}, *args[]= { &arg_int, &arg_bytes};
+	void *result = NULL;
 
-	if (!peer || !newepd) {
-		errno = EINVAL;
-		return -1;
+	arg_int.type = INT;
+	arg_int.length = sizeof(int)*arg_int.elements;
+	arg_int.data = malloc_safe(arg_int.length);
+	arg_int.data[0] = epd;
+	arg_int.data[1] = flags;
+	
+	arg_bytes.type = BYTES;
+	arg.length = sizeof(struct scif_portID);
+	arg.data = peer;
+
+	if(send_phi_cmd(uow.socket_fd, args, 2, accept) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);	
+	}	
+
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == SCIF_SUCCESS) {
+		newepd = (scif_epd_t *) result;
+		ret = 0
 	}
 
-	// Create a new file descriptor link it to the new connection
-	if ((newfd = open(DEVICE_NODE, O_RDWR)) < 0)
-		return -1;
+	return ret;
 
-	req.flags = flags;
-
-	// First get the accept connection completed
-	if (ioctl(epd, SCIF_ACCEPTREQ, &req) < 0) {
-		errno_save = errno;
-		close(newfd);
-		errno = errno_save;
-		return -1;
-	}
-
-	if (ioctl(newfd, SCIF_ACCEPTREG, &req.endpt) < 0) {
-		errno_save = errno;
-		close(newfd);
-		errno = errno_save;
-		return -1;
-	}
-
-	*newepd = newfd;
-	peer->node = req.peer.node;
-	peer->port = req.peer.port;
-	return 0;
 }
 only_version(scif_accept, 0, 0)
 
