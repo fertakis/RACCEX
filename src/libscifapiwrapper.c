@@ -51,7 +51,7 @@ scif_get_driver_version(void)
 	var arg = { .elements = 1}; 
 
 	//initialise parameters
-	init_params(&uow);
+/*	init_params(&uow);
 
 	//initialise socket & establish connection
 	establish_connection(&uow);
@@ -62,13 +62,13 @@ scif_get_driver_version(void)
 		exit(EXIT_FAILURE);
 	}
 	//receive resutls
-	get_phi_cmd_result(&result, uow.socket_fd);
+	get_phi_cmd_result(&result, uow.socket_fd);*/
 	/*if(res_code == PHI_SUCCESS) {
 	  version = *(int *) result;
 	  free(result);
 	  }*/
 
-	return version;
+	return 1;
 }
 
 	scif_epd_t
@@ -138,7 +138,7 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 
 	arg_uint.type = UINT;
 	arg_uint.length = sizeof(uint16_t);
-	arg_uint.data = &pn
+	arg_uint.data = &pn;
 
 	if(send_phi_cmd(uow.socket_fd, args, 2, BIND) < 0)
 	{
@@ -165,11 +165,11 @@ scif_listen(scif_epd_t epd, int backlog)
 
 	arg.type = INT;
 	arg.length = sizeof(int) * arg.elements;
-	arg.data = malloc_safe(arg.length);
-	memset(arg.data, 0, arg.length);
-	memcpy(arg.data, &epd, sizeof(int));
-	memcpy(arg,data+sizeof(int), &backlog, sizeof(int));
-
+	int *data = (int *)malloc_safe(arg.length);
+	data[0] = epd;
+	data[1] = backlog;
+	arg.data = data;
+	
 	if(send_phi_cmd(uow.socket_fd, args, 1, LISTEN) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
@@ -193,11 +193,11 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int);
-	arg.data = &epd;
+	arg_int.data = &epd;
 	
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(struct scif_portID);
-	arg_data.data = dst;
+	arg_bytes.data = dst;
 	
 	if(send_phi_cmd(uow.socket_fd, args, 2, CONNECT) < 0)
 	{
@@ -223,15 +223,16 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
-	arg_int.data = malloc_safe(arg_int.length);
-	arg_int.data[0] = epd;
-	arg_int.data[1] = flags;
+	int *data = malloc_safe(arg_int.length);
+	data[0] = epd;
+	data[1] = flags;
+	arg_int.data = data;
 	
 	arg_bytes.type = BYTES;
-	arg.length = sizeof(struct scif_portID);
-	arg.data = peer;
+	arg_bytes.length = sizeof(struct scif_portID);
+	arg_bytes.data = peer;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, accept) < 0)
+	if(send_phi_cmd(uow.socket_fd, args, 2, ACCEPT) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
@@ -240,7 +241,7 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 	res_code = get_phi_cmd_result(&result, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS) {
 		newepd = (scif_epd_t *) result;
-		ret = 0
+		ret = 0;
 	}
 
 	return ret;
