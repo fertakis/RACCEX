@@ -39,26 +39,26 @@ inline void *malloc_safe_f(size_t size, const char *file, const int line) {
 	return ptr;
 }
 
-int get_server_connection_config(char *server, char *server_port)
+int get_server_connection_config(char **server, char **server_port)
 {
 	int ret = 0;
 
-	server = getenv("REMOTE_PHI_SERVER");
-	server_port = getenv("REMOTE_PHI_PORT");
+	*server = getenv("REMOTE_PHI_SERVER"),
+	*server_port = getenv("REMOTE_PHI_PORT");
 
-	if(server == NULL)
+	if(*server == NULL)
 	{
-		server = DEFAULT_SERVER_IP;
-		printf("Enviromental Variable 'REMOTE_PHI_SERVER' not defined, using default server ip: %s\n", server);
+		*server = DEFAULT_SERVER_IP;
+		printf("Enviromental Variable 'REMOTE_PHI_SERVER' not defined, using default server ip: %s\n", *server);
 		ret = 1 ;
 	}
-	if(server_port == NULL)
+	if(*server_port == NULL)
 	{
-		server_port = DEFAULT_SERVER_PORT;
-		printf("Enviromental Variable 'REMOTE_PHI_PORT' not defined, using default server port: %s\n", server_port);
+		*server_port = DEFAULT_SERVER_PORT;
+		printf("Enviromental Variable 'REMOTE_PHI_PORT' not defined, using default server port: %s\n", *server_port);
 		ret = 1;
 	}
-
+	
 	return ret;
 }
 

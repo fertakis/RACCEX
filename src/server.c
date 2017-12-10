@@ -64,7 +64,7 @@ int init_server_net(const char *port, struct sockaddr_in *sa)
 int main(int argc, char *argv[]) {
 	int server_sfd, client_sfd, msg_type, resp_type, arg_cnt;
 	struct sockaddr_in sa;
-	char server_ip[16], server_port[6], *local_port, addrstr[INET_ADDRSTRLEN];
+	char *server, *server_port, *local_port, addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
 	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL;
 	//TODO: revise in order to support multiple connections 
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
 
 	if (argc == 1) {
 		printf("No port defined, trying env vars\n");
-		if (get_server_connection_config(server_ip, server_port) < 2)
+		if (get_server_connection_config(&server, &server_port) < 2)
 			local_port = server_port;
 		else {
 			printf("Could not get env vars, using default %s\n", DEFAULT_SERVER_PORT);
