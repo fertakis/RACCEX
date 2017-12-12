@@ -1,4 +1,4 @@
-bin_PROGRAMS = server libscifapiwrapper.so test_server test_client 
+bin_PROGRAMS = server libscifapiwrapper.so test_server test_client hello_world 
 
 AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google -L/usr/lib64  $(DEBUG_CFLAGS)
 
@@ -16,6 +16,9 @@ test_server_SOURCES += protocol.c protocol.h
 
 test_client_SOURCES = test_client.c
 test_client_LDADD = -lscif
+
+hello_world_SOURCES = hello_world.c
+hello_world_CFLAGS = -fopenmp
 
 common.pb-c.c: @srcdir@/common.proto
 	 $(PROTOC_C) --proto_path=@srcdir@ --c_out=. @srcdir@/common.proto

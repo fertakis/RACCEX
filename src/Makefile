@@ -87,7 +87,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 bin_PROGRAMS = server$(EXEEXT) libscifapiwrapper.so$(EXEEXT) \
-	test_server$(EXEEXT) test_client$(EXEEXT)
+	test_server$(EXEEXT) test_client$(EXEEXT) hello_world$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -99,6 +99,11 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
+am_hello_world_OBJECTS = hello_world-hello_world.$(OBJEXT)
+hello_world_OBJECTS = $(am_hello_world_OBJECTS)
+hello_world_LDADD = $(LDADD)
+hello_world_LINK = $(CCLD) $(hello_world_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_libscifapiwrapper_so_OBJECTS =  \
 	libscifapiwrapper_so-libscifapiwrapper.$(OBJEXT) \
 	libscifapiwrapper_so-process.$(OBJEXT) \
@@ -153,10 +158,12 @@ AM_V_CCLD = $(am__v_CCLD_$(V))
 am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES) \
-	$(test_client_SOURCES) $(test_server_SOURCES)
-DIST_SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES) \
-	$(test_client_SOURCES) $(test_server_SOURCES)
+SOURCES = $(hello_world_SOURCES) $(libscifapiwrapper_so_SOURCES) \
+	$(server_SOURCES) $(test_client_SOURCES) \
+	$(test_server_SOURCES)
+DIST_SOURCES = $(hello_world_SOURCES) $(libscifapiwrapper_so_SOURCES) \
+	$(server_SOURCES) $(test_client_SOURCES) \
+	$(test_server_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -291,6 +298,8 @@ test_server_SOURCES = test_server.c common.c common.h common.pb-c.c \
 	common.pb-c.h client.c client.h protocol.c protocol.h
 test_client_SOURCES = test_client.c
 test_client_LDADD = -lscif
+hello_world_SOURCES = hello_world.c
+hello_world_CFLAGS = -fopenmp
 CLEANFILES = ./common.pb-c.c ./common.pb-c.h
 server_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif
 libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif -ldl
@@ -372,6 +381,10 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
+hello_world$(EXEEXT): $(hello_world_OBJECTS) $(hello_world_DEPENDENCIES) $(EXTRA_hello_world_DEPENDENCIES) 
+	@rm -f hello_world$(EXEEXT)
+	$(AM_V_CCLD)$(hello_world_LINK) $(hello_world_OBJECTS) $(hello_world_LDADD) $(LIBS)
+
 libscifapiwrapper.so$(EXEEXT): $(libscifapiwrapper_so_OBJECTS) $(libscifapiwrapper_so_DEPENDENCIES) $(EXTRA_libscifapiwrapper_so_DEPENDENCIES) 
 	@rm -f libscifapiwrapper.so$(EXEEXT)
 	$(AM_V_CCLD)$(libscifapiwrapper_so_LINK) $(libscifapiwrapper_so_OBJECTS) $(libscifapiwrapper_so_LDADD) $(LIBS)
@@ -397,6 +410,7 @@ distclean-compile:
 include ./$(DEPDIR)/client.Po
 include ./$(DEPDIR)/common.Po
 include ./$(DEPDIR)/common.pb-c.Po
+include ./$(DEPDIR)/hello_world-hello_world.Po
 include ./$(DEPDIR)/libscifapiwrapper_so-client.Po
 include ./$(DEPDIR)/libscifapiwrapper_so-common.Po
 include ./$(DEPDIR)/libscifapiwrapper_so-common.pb-c.Po
@@ -422,6 +436,20 @@ include ./$(DEPDIR)/test_server.Po
 #	$(AM_V_CC)source='$<' object='$@' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(AM_V_CC_no)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+hello_world-hello_world.o: hello_world.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hello_world_CFLAGS) $(CFLAGS) -MT hello_world-hello_world.o -MD -MP -MF $(DEPDIR)/hello_world-hello_world.Tpo -c -o hello_world-hello_world.o `test -f 'hello_world.c' || echo '$(srcdir)/'`hello_world.c
+	$(AM_V_at)$(am__mv) $(DEPDIR)/hello_world-hello_world.Tpo $(DEPDIR)/hello_world-hello_world.Po
+#	$(AM_V_CC)source='hello_world.c' object='hello_world-hello_world.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hello_world_CFLAGS) $(CFLAGS) -c -o hello_world-hello_world.o `test -f 'hello_world.c' || echo '$(srcdir)/'`hello_world.c
+
+hello_world-hello_world.obj: hello_world.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hello_world_CFLAGS) $(CFLAGS) -MT hello_world-hello_world.obj -MD -MP -MF $(DEPDIR)/hello_world-hello_world.Tpo -c -o hello_world-hello_world.obj `if test -f 'hello_world.c'; then $(CYGPATH_W) 'hello_world.c'; else $(CYGPATH_W) '$(srcdir)/hello_world.c'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/hello_world-hello_world.Tpo $(DEPDIR)/hello_world-hello_world.Po
+#	$(AM_V_CC)source='hello_world.c' object='hello_world-hello_world.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hello_world_CFLAGS) $(CFLAGS) -c -o hello_world-hello_world.obj `if test -f 'hello_world.c'; then $(CYGPATH_W) 'hello_world.c'; else $(CYGPATH_W) '$(srcdir)/hello_world.c'; fi`
 
 libscifapiwrapper_so-libscifapiwrapper.o: libscifapiwrapper.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -MT libscifapiwrapper_so-libscifapiwrapper.o -MD -MP -MF $(DEPDIR)/libscifapiwrapper_so-libscifapiwrapper.Tpo -c -o libscifapiwrapper_so-libscifapiwrapper.o `test -f 'libscifapiwrapper.c' || echo '$(srcdir)/'`libscifapiwrapper.c
