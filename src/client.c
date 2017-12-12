@@ -117,7 +117,7 @@ int get_phi_cmd_result(void **result, int socket_fd)
 		exit(EXIT_FAILURE);
 	} else {
 		cmd = payload;
-		res_code = cmd->int_args[0];
+		res_code = cmd->phi_result_code;
 		printf("Server responded: \n| result code: %d\n", res_code); 
 		if (cmd->n_int_args > 0) {
 			*result = malloc_safe(sizeof(int));

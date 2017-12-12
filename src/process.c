@@ -26,7 +26,7 @@
 #include "phi_errors.h"
 #include "common.pb-c.h"
 
-int process_phi_cmd(void **result, void *cmd_ptr,client_node  **cur_client) {
+int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 	int phi_result = 0, int_res = 0,arg_count = 0;
 	PhiCmd *cmd = cmd_ptr;
 	uint64_t uint_res = 0; 
@@ -227,7 +227,7 @@ int process_phi_cmd(void **result, void *cmd_ptr,client_node  **cur_client) {
 	}
 	
 	res[0] = malloc_safe(sizeof(var));
-	res[0]->type = INT;
+	res[0]->type = PHI_RESULT_CODE;
 	res[0]->elements = 1;
 	res[0]->length = sizeof(int);
 	res[0]->data = malloc_safe(res[0]->length);

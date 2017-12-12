@@ -10,7 +10,7 @@
 void   phi_cmd__init
                      (PhiCmd         *message)
 {
-  static PhiCmd init_value = PHI_CMD__INIT;
+  static const PhiCmd init_value = PHI_CMD__INIT;
   *message = init_value;
 }
 size_t phi_cmd__get_packed_size
@@ -47,13 +47,15 @@ void   phi_cmd__free_unpacked
                      (PhiCmd *message,
                       ProtobufCAllocator *allocator)
 {
+  if(!message)
+    return;
   assert(message->base.descriptor == &phi_cmd__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 void   phi_device__init
                      (PhiDevice         *message)
 {
-  static PhiDevice init_value = PHI_DEVICE__INIT;
+  static const PhiDevice init_value = PHI_DEVICE__INIT;
   *message = init_value;
 }
 size_t phi_device__get_packed_size
@@ -90,13 +92,15 @@ void   phi_device__free_unpacked
                      (PhiDevice *message,
                       ProtobufCAllocator *allocator)
 {
+  if(!message)
+    return;
   assert(message->base.descriptor == &phi_device__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 void   cookie__init
                      (Cookie         *message)
 {
-  static Cookie init_value = COOKIE__INIT;
+  static const Cookie init_value = COOKIE__INIT;
   *message = init_value;
 }
 size_t cookie__get_packed_size
@@ -133,10 +137,12 @@ void   cookie__free_unpacked
                      (Cookie *message,
                       ProtobufCAllocator *allocator)
 {
+  if(!message)
+    return;
   assert(message->base.descriptor == &cookie__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[6] =
+static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[7] =
 {
   {
     "type",
@@ -163,8 +169,20 @@ static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[6] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "int_args",
+    "phi_result_code",
     3,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PhiCmd, phi_result_code),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "int_args",
+    4,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_INT64,
     offsetof(PhiCmd, n_int_args),
@@ -176,7 +194,7 @@ static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[6] =
   },
   {
     "uint_args",
-    4,
+    5,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_UINT64,
     offsetof(PhiCmd, n_uint_args),
@@ -188,7 +206,7 @@ static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[6] =
   },
   {
     "str_args",
-    5,
+    6,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_STRING,
     offsetof(PhiCmd, n_str_args),
@@ -200,7 +218,7 @@ static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[6] =
   },
   {
     "extra_args",
-    6,
+    7,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_BYTES,
     offsetof(PhiCmd, n_extra_args),
@@ -213,16 +231,17 @@ static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[6] =
 };
 static const unsigned phi_cmd__field_indices_by_name[] = {
   1,   /* field[1] = arg_count */
-  5,   /* field[5] = extra_args */
-  2,   /* field[2] = int_args */
-  4,   /* field[4] = str_args */
+  6,   /* field[6] = extra_args */
+  3,   /* field[3] = int_args */
+  2,   /* field[2] = phi_result_code */
+  5,   /* field[5] = str_args */
   0,   /* field[0] = type */
-  3,   /* field[3] = uint_args */
+  4,   /* field[4] = uint_args */
 };
 static const ProtobufCIntRange phi_cmd__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 6 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor phi_cmd__descriptor =
 {
@@ -232,7 +251,7 @@ const ProtobufCMessageDescriptor phi_cmd__descriptor =
   "PhiCmd",
   "",
   sizeof(PhiCmd),
-  6,
+  7,
   phi_cmd__field_descriptors,
   phi_cmd__field_indices_by_name,
   1,  phi_cmd__number_ranges,

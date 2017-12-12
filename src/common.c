@@ -96,6 +96,9 @@ int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {
 				cmd->extra_args[0].data = args[i]->data;
 				cmd->extra_args[0].len = args[i]->length;
 				break;
+			case PHI_RESULT_CODE:
+				cmd->phi_result_code = *(int *)args[i]->data;
+				break;
 		}
 	}
 

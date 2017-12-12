@@ -1,10 +1,11 @@
 message PhiCmd {
     required uint32 type = 1;
     required uint32 arg_count = 2;
-    repeated int64 int_args = 3;
-    repeated uint64 uint_args = 4; 
-    repeated string str_args = 5;
-    repeated bytes extra_args = 6;
+    required int32 phi_result_code = 3;
+    repeated int64 int_args = 4;
+    repeated uint64 uint_args = 5; 
+    repeated string str_args = 6;
+    repeated bytes extra_args = 7;
 }
 
 message PhiDevice {
