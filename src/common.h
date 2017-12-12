@@ -88,7 +88,7 @@ enum scif_return_codes {
 };
 
 
-int get_server_connection_config(char *server_ip, char *server_port);
+int get_server_connection_config(char **server, char **server_port);
 int pack_phi_cmd(void ** payload, var **args, size_t arg_count, int type);
 
 void *malloc_safe_f(size_t size, const char *file, const int line);
