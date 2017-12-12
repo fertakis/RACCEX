@@ -9,7 +9,8 @@ int main() {
 	printf("Going to test scif_open\n");
 	endPoint = scif_open();
 	printf("endpoint is %d\nexiting..\n", endPoint);
-	scif_close(endPoint);
+	if((scif_close(endPoint) == 0))
+		printf("test completed succesfully... \nCongrats!!\n");
 
 	return 0;
 }

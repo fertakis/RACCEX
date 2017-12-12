@@ -119,8 +119,6 @@ scif_close(scif_epd_t epd)
 
 	res_code = get_phi_cmd_result(&result, uow.socket_fd);
 
-	free(result);
-
 	return res_code;
 }
 only_version(scif_close, 0, 0)
