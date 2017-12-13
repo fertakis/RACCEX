@@ -95,6 +95,8 @@ scif_open(void)
 		uow.endp = fd;
 		free(result);
 	}
+	else 
+		fd = -1;
 
 	return fd;
 }
@@ -148,7 +150,10 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 
 	if(res_code == PHI_SUCCESS) {
 		ret = *(uint16_t *)result;
+		free(result);
 	}
+	else 
+		ret = -1;
 
 	return ret;
 }
@@ -176,7 +181,8 @@ scif_listen(scif_epd_t epd, int backlog)
 
 	res_code = get_phi_cmd_result(&result, uow.socket_fd);
 	
-	ret = *(int *) result ;
+	if(res_code == PHI_SUCCESS)
+		ret = 0 ;
 
 	return ret;
 }
