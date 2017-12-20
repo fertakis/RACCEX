@@ -10,7 +10,7 @@
 void   phi_cmd__init
                      (PhiCmd         *message)
 {
-  static const PhiCmd init_value = PHI_CMD__INIT;
+  static PhiCmd init_value = PHI_CMD__INIT;
   *message = init_value;
 }
 size_t phi_cmd__get_packed_size
@@ -47,15 +47,13 @@ void   phi_cmd__free_unpacked
                      (PhiCmd *message,
                       ProtobufCAllocator *allocator)
 {
-  if(!message)
-    return;
   assert(message->base.descriptor == &phi_cmd__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 void   phi_device__init
                      (PhiDevice         *message)
 {
-  static const PhiDevice init_value = PHI_DEVICE__INIT;
+  static PhiDevice init_value = PHI_DEVICE__INIT;
   *message = init_value;
 }
 size_t phi_device__get_packed_size
@@ -92,15 +90,13 @@ void   phi_device__free_unpacked
                      (PhiDevice *message,
                       ProtobufCAllocator *allocator)
 {
-  if(!message)
-    return;
   assert(message->base.descriptor == &phi_device__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 void   cookie__init
                      (Cookie         *message)
 {
-  static const Cookie init_value = COOKIE__INIT;
+  static Cookie init_value = COOKIE__INIT;
   *message = init_value;
 }
 size_t cookie__get_packed_size
@@ -137,8 +133,6 @@ void   cookie__free_unpacked
                      (Cookie *message,
                       ProtobufCAllocator *allocator)
 {
-  if(!message)
-    return;
   assert(message->base.descriptor == &cookie__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }

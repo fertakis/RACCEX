@@ -118,7 +118,7 @@ int get_phi_cmd_result(void **result, int socket_fd)
 	} else {
 		cmd = payload;
 		res_code = cmd->phi_result_code;
-		printf("Server responded: \n| result code: %d\n", res_code); 
+		printf("Server responded: \n| result code: %d\n", res_code);
 		if (cmd->n_int_args > 0) {
 			*result = malloc_safe(sizeof(int));
 			memcpy(*result, &cmd->int_args[0], sizeof(int));
@@ -134,4 +134,44 @@ int get_phi_cmd_result(void **result, int socket_fd)
 	if(buf != NULL)
 		free(buf);
 	return res_code;
+}
+
+int get_phi_nodeIDs(uint16_t **nodes, uint16_t **self, int socket_fd)
+{
+	PhiCmd *cmd;
+	size_t len;
+	void *buf = NULL, *payload = NULL, *deserialised_message=NULL;
+	int res_code, ret = -1 ;
+	
+	printf("Waiting result from PHI Server...\n");
+	len = receive_message(&buf, socket_fd);
+	if(len > 0)
+		deserialise_message(&deserialised_message, &payload, buf, len);
+	else {
+		fprintf(stderr, "Problem receiving server response.\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	if(payload == NULL) {
+		fprintf(stderr, "Problem deserialising message.\n");
+		exit(EXIT_FAILURE);
+	} else {
+		cmd = payload;
+		res_code = cmd->phi_result_code;
+		printf("Server responded: \n| result code: %d\n", res_code);
+		if(res_code == PHI_SUCCESS)
+			if (cmd->n_int_args > 0) {
+				ret = cmd->int_args[0];
+				memcpy(*self, &cmd->int_args[1], sizeof(uint16_t));
+				printf("| result: %d \n", *(uint16_t *) *self);
+			} else if (cmd->n_extra_args > 0) {
+				memcpy(*nodes, cmd->extra_args[0].data, cmd->extra_args[0].len);
+				printf("| result: (bytes)\n");
+			}
+		free_deserialised_message(deserialised_message);
+	}
+	
+	if(buf != NULL)
+		free(buf);
+	return ret;
 }
