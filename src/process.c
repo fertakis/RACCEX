@@ -42,13 +42,6 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			//int_res = scif_get_driver_version();
 			res_type = INT;
 			break;
-			/*get_client_handle(client_handle, client_list, cmd->int_args[0]);
-			  uint_res = ((client_node *) *client_handle)->id;
-			// cuInit() should have already been executed by the server 
-			// by that point...
-			//cuda_result = cuda_err_print(cuInit(cmd->uint_args[0]), 0);
-			cuda_result = CUDA_SUCCESS;
-			res_type = UINT;*/
 		case OPEN:
 			{
 				printf("Executing scif_open() ... \n");
@@ -190,6 +183,23 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 		case GET_NODE_IDS:
 			printf("Executing scif_get_node_ids) ... \n");
 			//TODO: scif_get_node_ids call goes here...
+			int len = cmd->int_args[0], online_nodes;
+			uint16_t *nodes, *self;
+	
+			nodes = malloc_safe(sizeof(uint16_t) * len);
+			self = malloc_safe(sizeof(uint16_t));
+			phi_result = SCIF_SUCCESS;
+
+			if((online_nodes = scif_get_nodeIDs(nodes, len, self)) < 0)
+			{
+				perror("scif_get_nodeIDs");
+				phi_result = SCIF_GET_NODEIDS_FAIL;
+			}  	
+			
+			extra_args = malloc_safe(sizeof(uint16_t)*(len+1));
+			memcpy(extra_args, nodes, sizeof(uint16_t)*len);
+			memcpy(extra_args+sizeof(uint16_t)*len, self, sizeof(uint16_t);
+				
 			break;
 		case POLL:
 			printf("Executing scif_poll() ... \n");
@@ -201,6 +211,14 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			break;	
 	}
 
+	arg_count++;
+
+	if(arg_count > 1 ) 
+	{
+	
+
+
+	{
 	if(res_type == INT)
 	{
 		res_length = sizeof(int);

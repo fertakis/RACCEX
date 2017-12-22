@@ -46,6 +46,7 @@ int get_server_connection_config(char **server, char **server_port)
 	*server = getenv("REMOTE_PHI_SERVER"),
 	*server_port = getenv("REMOTE_PHI_PORT");
 
+	printf("server config..\n");
 	if(*server == NULL)
 	{
 		*server = DEFAULT_SERVER_IP;

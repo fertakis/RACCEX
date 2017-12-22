@@ -285,8 +285,9 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google -L/usr/lib64 \
-	$(DEBUG_CFLAGS) -I.
+AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google \
+	-L/home/fertakis/repos/remotePhiExec/src/ $(DEBUG_CFLAGS) \
+	-I.
 BUILT_SOURCES = ./common.pb-c.c ./common.pb-c.h
 server_SOURCES = server.c process.c process.h common.h common.c \
 	protocol.c protocol.h common.pb-c.c common.pc-c.h
@@ -301,8 +302,8 @@ test_client_LDADD = -lscif
 hello_world_SOURCES = hello_world.c
 hello_world_CFLAGS = -fopenmp
 CLEANFILES = ./common.pb-c.c ./common.pb-c.h
-server_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif
-libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif -ldl
+server_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L/home/fertakis/repos/remotePhiExec/src/ -lscif
+libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L/home/fertakis/repos/remotePhiExec/src/ -lscif -ldl
 EXTRA_DIST = common.proto
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am

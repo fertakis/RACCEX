@@ -45,6 +45,7 @@ scif_get_driver_version(void)
 	  version = *(int *) result;
 	  free(result);
 	  }*/
+	printf(" scif_get_driver_version executed \n");
 
 	return 1;
 }
@@ -56,6 +57,8 @@ scif_open(void)
 	scif_epd_t fd;
 	var arg = {.elements = 1}, *args[] = { &arg };
 	void *result;
+
+	printf("scif_open...\n");
 
 	init_params(&uow);
 
@@ -364,6 +367,8 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	int ret = -1; 
 	var arg = { .elements = 1 }, *args[] = { &arg };
 	void *result;
+
+	printf("get_scif_nodes\n");	
 	
 	init_params(&uow);
 	
@@ -373,13 +378,13 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	arg.length = sizeof(int);
 	arg.data = &len;
 
-	if(send_phi_cmd(uow.socket_fd, args, GET_NODE_IDS) < 0)
+	/*if(send_phi_cmd(uow.socket_fd, args, GET_NODE_IDS) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	} 	
 	
-	ret = get_phi_nodeIDs(&nodes, &self, uow.socket_fd);
+	ret = get_phi_nodeIDs(&nodes, &self, uow.socket_fd);*/
 	
 	return ret;
 }

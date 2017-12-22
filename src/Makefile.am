@@ -1,6 +1,6 @@
 bin_PROGRAMS = server libscifapiwrapper.so test_server test_client hello_world 
 
-AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google -L/usr/lib64  $(DEBUG_CFLAGS)
+AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google -L/home/fertakis/repos/remotePhiExec/src/ $(DEBUG_CFLAGS)
 
 BUILT_SOURCES = @srcdir@/common.pb-c.c @srcdir@/common.pb-c.h
 
@@ -32,8 +32,8 @@ common.pb-c.h: @srcdir@/common.pb-c.c
 CLEANFILES = @builddir@/common.pb-c.c @builddir@/common.pb-c.h
 
 
-server_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif
-libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif -ldl
+server_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L/home/fertakis/repos/remotePhiExec/src/ -lscif
+libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L/home/fertakis/repos/remotePhiExec/src/ -lscif -ldl
 
 EXTRA_DIST = common.proto
 

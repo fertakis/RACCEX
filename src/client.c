@@ -24,6 +24,7 @@
 #include "common.h"
 #include "client.h"
 #include "common.pb-c.h"
+#include "protocol.h"
 
 int init_client_connection(const char *s_ip, const char *s_port)
 {
