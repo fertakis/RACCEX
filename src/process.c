@@ -26,82 +26,118 @@
 #include "phi_errors.h"
 #include "common.pb-c.h"
 
+int exec_scif_open(scif_epd_t *endp, client_node **cur_client)
+{
+	scif_epd_t t_endp;
+	int ret;
+
+	if((t_endp = scif_open()) < 0)
+	{
+		perror("scif_open");
+		ret = SCIF_OPEN_FAIL; 
+	}
+	else 
+	{
+		ret = SCIF_SUCCESS;
+		*endp = t_endp;
+		*cur_client = (client_node *)malloc_safe(sizeof(client_node));
+		(*cur_client)->id = endp;
+		printf("current client initialised with endp = %d\n", (*cur_client)->id);
+	}
+	return ret; 
+}
+
+int exec_scif_close(scif_epd_t endp, client_node **cur_client)
+{
+	int ret;
+
+	if(scif_close(endp)<0)
+	{
+		perror("scif_close");
+		ret  = SCIF_CLOSE_FAIL;
+	} else 
+	{
+		ret = SCIF_SUCCESS;
+		free(*cur_client);
+		*cur_client = NULL;
+	}
+	return ret; 
+}
+
+int exec_scif_bind(scif_epd_t endp, uint16_t pn, int *portno)
+{
+	int ret; 
+	if((int_res = scif_bind((scif_epd_t)cmd->int_args[0], (uint16_t)cmd->int_args[1])) < 0)
+	{
+		perror("scif_bind");
+		ret = SCIF_BIND_FAIL;
+	}
+	else 
+	{
+		ret = SCIF_SUCCESS;
+		res_type = INT;
+	}
+	return ret; 
+}
+
+int exec_scif_listen(scif_epd_t endp, int backlog)
+{
+	int ret;
+	if(scif_listen(endp, backlog) < 0)
+	{
+		perror("scif_listen");
+		ret = SCIF_LISTEN_FAIL;
+	}
+	else 
+	{
+		ret = SCIF_SUCCESS;
+	}
+	return ret;
+}
 int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
-	int phi_result = 0, int_res = 0,arg_count = 0;
+	int phi_result = 0, *int_res, int_res_count, uint_res_cout,arg_count = 1;
 	PhiCmd *cmd = cmd_ptr;
 	uint64_t uint_res = 0; 
 	void *extra_args = NULL, *res_data = NULL;
 	size_t extra_args_size = 0, res_length = 0;
 	var **res = NULL;
-	var_type res_type;
 
 	printf("Processing PHI_CMD\n");
 	switch(cmd->type) {
 		case GET_VERSION:
 			printf("Executing get_driver_version...\n");
 			//int_res = scif_get_driver_version();
-			res_type = INT;
 			break;
 		case OPEN:
-			{
 				printf("Executing scif_open() ... \n");
-				scif_epd_t endp;
-				if((endp = scif_open()) < 0)
-				{
-					perror("scif_open");
-					phi_result = SCIF_OPEN_FAIL; 
-				}
-				else 
-				{
-					phi_result = SCIF_SUCCESS;
-					res_type = INT;
-					int_res = endp;
-					*cur_client = (client_node *)malloc_safe(sizeof(client_node));
-					(*cur_client)->id = endp;
-					printf("current client initialised with endp = %d\n", (*cur_client)->id);
-				}
+				arg_count++;
+				int_res = malloc_safe(sizeof(int));
+				int_res_count = 1;
+				phi_result = exec_scif_open(int_res, cur_client);
+
 				break;
-			}
 		case CLOSE:
 			printf("Executing scif_close() ... \n");
 			//TODO: scif_close call goes here...
-			if(scif_close((scif_epd_t)cmd->int_args[0])<0)
-			{
-				perror("scif_close");
-				phi_result = SCIF_CLOSE_FAIL;
-			} else 
-			{
-				phi_result = SCIF_SUCCESS;
-				free(*cur_client);
-				*cur_client = NULL;
-			}
+
+			phi_result = exec_scif_close((scif_epd_t)cmd->int_args[0], cur_client);
+
 			break;
 		case BIND:
 			printf("Executing scif_bind() ... \n");
 			//TODO: scif_bind call goes here...
-			if((int_res = scif_bind((scif_epd_t)cmd->int_args[0], (uint16_t)cmd->int_args[1])) < 0)
-			{
-				perror("scif_bind");
-				phi_result = SCIF_BIND_FAIL;
-			}
-			else 
-			{
-				phi_result = SCIF_SUCCESS;
-				res_type = INT;
-			}
+
+			arg_count++;
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+
+			phi_result = exec_scif_bind((scif_epd_t)cmd->int_args[0], (uint16_t)cmd->int_args[1], int_res);
+
 			break;
 		case LISTEN:
 			printf("Executing scif_listen() ... \n");
 			//TODO: scif_liste call goes here...
-			if(scif_listen((scif_epd_t) cmd->int_args[0], cmd->int_args[1]) < 0)
-			{
-				perror("scif_listen");
-				phi_result = SCIF_LISTEN_FAIL;
-			}
-			else 
-			{
-				phi_result = SCIF_SUCCESS;
-			}
+			phi_result = exec_scif_listen((scif_epd_t)cmd->int_args[0], cmd->int_args[1]);
 			break;
 		case CONNECT:
 			printf("Executing scif_connect() ... \n");
@@ -109,7 +145,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			struct scif_portID *dst;
 			dst = (struct scif_portID *)cmd->extra_args[0].data;
 			printf("remote scif_portID: node=%d and port=%d \n", dst->node, dst->port);
-			
+
 			if((int_res = scif_connect((scif_epd_t)cmd->int_args[0], dst)) < 0)
 			{
 				perror("scif_connect");
@@ -185,7 +221,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			//TODO: scif_get_node_ids call goes here...
 			int len = cmd->int_args[0], online_nodes;
 			uint16_t *nodes, *self;
-	
+
 			nodes = malloc_safe(sizeof(uint16_t) * len);
 			self = malloc_safe(sizeof(uint16_t));
 			phi_result = SCIF_SUCCESS;
@@ -195,11 +231,11 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 				perror("scif_get_nodeIDs");
 				phi_result = SCIF_GET_NODEIDS_FAIL;
 			}  	
-			
+
 			extra_args = malloc_safe(sizeof(uint16_t)*(len+1));
 			memcpy(extra_args, nodes, sizeof(uint16_t)*len);
-			memcpy(extra_args+sizeof(uint16_t)*len, self, sizeof(uint16_t);
-				
+			memcpy(extra_args+sizeof(uint16_t)*len, self, sizeof(uint16_t));
+
 			break;
 		case POLL:
 			printf("Executing scif_poll() ... \n");
@@ -212,13 +248,17 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 	}
 
 	arg_count++;
+	res = malloc_safe(sizeof(var *) * arg_count);
+
 
 	if(arg_count > 1 ) 
 	{
-	
 
 
-	{
+
+	}
+
+
 	if(res_type == INT)
 	{
 		res_length = sizeof(int);
@@ -229,7 +269,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 		res_length = extra_args_size;
 		res_data = extra_args;
 	}
-	
+
 	if(res_length > 0 ) {
 		res = malloc_safe(sizeof(var *)*2);
 		res[1] = malloc_safe(sizeof(var));
@@ -243,7 +283,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 		res = malloc_safe(sizeof(var *));
 		arg_count = 1;
 	}
-	
+
 	res[0] = malloc_safe(sizeof(var));
 	res[0]->type = PHI_RESULT_CODE;
 	res[0]->elements = 1;
