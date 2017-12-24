@@ -109,7 +109,8 @@ int exec_scif_connect(scif_epd_t endp, struct scif_portID *dst, int *portID)
 	return ret;
 }
 
-int exec_scif_accept(scif_epd_t endp, struct scif_portID *peer, scif_epd_t *newepd, int flags)
+int exec_scif_accept(scif_epd_t endp, struct scif_portID *peer, 
+		scif_epd_t *newepd, int flags)
 {
 	int ret;
 	if(scif_accept(endp, peer, newepd, flags) < 0)
@@ -122,7 +123,8 @@ int exec_scif_accept(scif_epd_t endp, struct scif_portID *peer, scif_epd_t *newe
 	return ret; 
 }
 
-int exec_scif_send(scif_epd_t endp, void *msg, int len, int flags, int *send_count)
+int exec_scif_send(scif_epd_t endp, void *msg, int len, int flags, 
+		int *send_count)
 {
 	int ret;
 	if((*send_count = scif_send(endp, msg, len, flags)) < 0)
@@ -135,7 +137,8 @@ int exec_scif_send(scif_epd_t endp, void *msg, int len, int flags, int *send_cou
 	return ret; 
 }
 
-int exec_scif_recv(scif_epd_t endp, void *msg, int len, int flags, int *read_count)
+int exec_scif_recv(scif_epd_t endp, void *msg, int len, int flags, 
+		int *read_count)
 {
 	int ret; 
 	
@@ -402,11 +405,22 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 		case ACCEPT:
 			printf("Executing scif_accept() ... \n");
 			//TODO: scif_accept call goes here...
-			struct scif_portID *peer;
+			
+			arg_count++;
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+
+			phi_result = exec_scif_accept((scif_epd_t)cmd->int_args[0], (struct scif_portID *)cmd->extra_args[0].data, int_res, cmd->int_args[1]); 
 			break;
 		case SEND:
 			printf("Executing scif_send() ... \n");
 			//TODO: scif_send call goes here...
+			
+			arg_count++;
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1; 
+
+			phi_result = exec_scif_send((scif_epd_t)cmd->int_args[0], cmd->extra_args[0].data, cmd->int_args[1], cmd->int_args[2], int_res);	
 			break;
 		case RECV:
 			printf("Executing scif_recv() ... \n");
