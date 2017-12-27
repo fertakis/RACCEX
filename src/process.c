@@ -123,11 +123,11 @@ int exec_scif_accept(scif_epd_t endp, struct scif_portID *peer,
 	return ret; 
 }
 
-int exec_scif_send(scif_epd_t endp, void *msg, int len, int flags, 
+int exec_scif_send(scif_epd_t endp, void **msg, int len, int flags, 
 		int *send_count)
 {
 	int ret;
-	if((*send_count = scif_send(endp, msg, len, flags)) < 0)
+	if((*send_count = scif_send(endp, *msg, len, flags)) < 0)
 	{
 		perror("scif_send");
 		ret = SCIF_SEND_FAIL;
@@ -366,6 +366,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			arg_count++;
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
+			
 			phi_result = exec_scif_open(int_res, cur_client);
 
 			break;
@@ -384,13 +385,17 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
 
-			phi_result = exec_scif_bind((scif_epd_t)cmd->int_args[0], (uint16_t)cmd->int_args[1], int_res);
+			phi_result = exec_scif_bind((scif_epd_t)cmd->int_args[0], 
+					(uint16_t)cmd->int_args[1], int_res);
 
 			break;
 		case LISTEN:
 			printf("Executing scif_listen() ... \n");
 			//TODO: scif_liste call goes here...
-			phi_result = exec_scif_listen((scif_epd_t)cmd->int_args[0], cmd->int_args[1]);
+			
+			phi_result = exec_scif_listen((scif_epd_t)cmd->int_args[0], 
+					cmd->int_args[1]);
+			
 			break;
 		case CONNECT:
 			printf("Executing scif_connect() ... \n");
@@ -400,7 +405,9 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
 
-			phi_result = exec_scif_connect((scif_epd_t)cmd->int_args[0], (struct scif_portID *)cmd->extra_args[0].data, int_res);
+			phi_result = exec_scif_connect((scif_epd_t)cmd->int_args[0], 
+					(struct scif_portID *)cmd->extra_args[0].data, int_res);
+			
 			break;
 		case ACCEPT:
 			printf("Executing scif_accept() ... \n");
@@ -410,7 +417,10 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
 
-			phi_result = exec_scif_accept((scif_epd_t)cmd->int_args[0], (struct scif_portID *)cmd->extra_args[0].data, int_res, cmd->int_args[1]); 
+			phi_result = exec_scif_accept((scif_epd_t)cmd->int_args[0], 
+					(struct scif_portID *)cmd->extra_args[0].data, 
+					int_res, cmd->int_args[1]); 
+			
 			break;
 		case SEND:
 			printf("Executing scif_send() ... \n");
@@ -420,7 +430,10 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1; 
 
-			phi_result = exec_scif_send((scif_epd_t)cmd->int_args[0], cmd->extra_args[0].data, cmd->int_args[1], cmd->int_args[2], int_res);	
+			phi_result = exec_scif_send((scif_epd_t)cmd->int_args[0], 
+					cmd->extra_args[0].data, cmd->int_args[1], 
+					cmd->int_args[2], int_res);	
+			
 			break;
 		case RECV:
 			printf("Executing scif_recv() ... \n");
@@ -430,12 +443,17 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			arg_count += 2;
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
-		
-			phi_result = exec_scif_recv((scif_epd_t)cmd->int_args[0],
+			
+			extra_args = malloc_safe((size_t)cmd->int_args[1]);
+			extra_args_size = (size_t)cmd->int_args[1];
+			phi_result = exec_scif_recv((scif_epd_t)cmd->int_args[0], 
+					&extra_args, cmd->int_args[1], cmd->int_args[2],
+					int_res);
 			break;
 		case REGISTER:
 			printf("Executing scif_register() ... \n");
 			//TODO: scif_register call goes here...
+			
 			break;
 		case UNREGISTER:
 			printf("Executing scif_unregister() ... \n");
