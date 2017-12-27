@@ -42,7 +42,7 @@ test_server.o: test_server.c /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h /usr/include/getopt.h \
  /usr/include/netdb.h /usr/include/rpc/netdb.h \
  /usr/include/x86_64-linux-gnu/bits/netdb.h common.h common.pb-c.h \
- /usr/local/include/protobuf-c/protobuf-c.h /usr/include/assert.h \
+ /usr/include/google/protobuf-c/protobuf-c.h /usr/include/assert.h \
  /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
@@ -178,7 +178,7 @@ common.h:
 
 common.pb-c.h:
 
-/usr/local/include/protobuf-c/protobuf-c.h:
+/usr/include/google/protobuf-c/protobuf-c.h:
 
 /usr/include/assert.h:
 

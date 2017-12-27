@@ -55,13 +55,13 @@ client.o: client.c /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/netdb.h \
  /usr/include/x86_64-linux-gnu/sys/time.h /usr/include/arpa/inet.h \
  common.h client.h common.pb-c.h \
- /usr/local/include/protobuf-c/protobuf-c.h /usr/include/assert.h \
+ /usr/include/google/protobuf-c/protobuf-c.h /usr/include/assert.h \
  /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
  /usr/include/x86_64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h
+ /usr/include/x86_64-linux-gnu/bits/posix2_lim.h protocol.h
 
 /usr/include/stdc-predef.h:
 
@@ -219,7 +219,7 @@ client.h:
 
 common.pb-c.h:
 
-/usr/local/include/protobuf-c/protobuf-c.h:
+/usr/include/google/protobuf-c/protobuf-c.h:
 
 /usr/include/assert.h:
 
@@ -236,3 +236,5 @@ common.pb-c.h:
 /usr/include/linux/limits.h:
 
 /usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
+protocol.h:

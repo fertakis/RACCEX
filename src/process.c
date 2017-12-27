@@ -415,7 +415,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 		case SEND:
 			printf("Executing scif_send() ... \n");
 			//TODO: scif_send call goes here...
-			
+
 			arg_count++;
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1; 
@@ -425,6 +425,13 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 		case RECV:
 			printf("Executing scif_recv() ... \n");
 			//TODO: scif_recv call goes here...
+			void *data;
+
+			arg_count += 2;
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+		
+			phi_result = exec_scif_recv((scif_epd_t)cmd->int_args[0],
 			break;
 		case REGISTER:
 			printf("Executing scif_register() ... \n");
