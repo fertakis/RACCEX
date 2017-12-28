@@ -490,31 +490,62 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 		case READ_FROM:
 			printf("Executing scif_read_from() ... \n");
 			//TODO: scif_read_from call goes here...
-			
+			phi_result = exec_scif_readfrom((scif_epd_t)cmd->int_args[0], 
+					(off_t)cmd->extra_args[0].data, (size_t)cmd->int_args[1],
+					(off_t)cmd->extra_args[1].data, cmd->int_args[2]);
 			break;
 		case WRITE_TO:
 			printf("Executing scif_write_to() ... \n");
 			//TODO: scif_write_to call goes here...
+			phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
+					(off_t)cmd->extra_args[0].data, (size_t)cmd->int_args[1],
+					(off_t)cmd->extra_args[1].data, cmd->int_args[2]);
 			break;
 		case VREAD_FROM:
 			printf("Executing scif_vread_from() ... \n");
 			//TODO: scif_vread_from call goes here...
+			void *addr;
+			size_t len = (size_t)cmd->int_args[1];
+			addr = malloc_safe(len);
+			phi_result = exec_scif_vreadfrom((scif_epd_t)cmd->int_args[0],
+					addr, len, (off_t)cmd->extra_args[0].data,
+					cmd->int_args[2]);
+			extra_args = addr;
+			extra_args_size = len;
 			break;
 		case VWRITE_TO:
 			printf("Executing scif_vwrite_to) ... \n");
 			//TODO: scif_vwrite_to call goes here...
+			phi_result = exec_scif_vwriteto((scif_epd_t)cmd->int_args[0],
+					&cmd->extra_args[0].data, (size_t)cmd->int_args[1], 
+					(off_t)cmd->extra_args[1].data,	cmd->int_args[2]);
 			break;
 		case FENCE_MARK:
 			printf("Executing scif_fence_mark() ... \n");
 			//TODO: scif_fence_mark call goes here...
+			arg_count++;
+			
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+
+			phi_result = exec_scif_fence_mark((scif_epd_t)cmd->int_args[0],
+					cmd->int_args[1], int_res);
 			break;
 		case FENCE_WAIT:
 			printf("Executing scif_fence_wait() ... \n");
 			//TODO: scif_fence_wait call goes here...
+
+			phi_result = exec_scif_fence_wait((scif_epd_t)cmd->int_args[0],
+					cmd->int_args[1]);
 			break;
 		case FENCE_SIGNAL:
 			printf("Executing scif_fence_signal) ... \n");
 			//TODO: scif_fence_signal call goes here...
+
+			phi_result = exec_scif_fence_signal((scif_epd_t)cmd->int_args[0],
+					(off_t)cmd->extra_argas[0].data, cmd->uint_args[0],
+					(off_t)cmd->extra_args[1].data, cmd->uint_args[1],
+					cmd->int_args[1]);
 			break;
 		case GET_NODE_IDS:
 			printf("Executing scif_get_node_ids) ... \n");
@@ -524,13 +555,8 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 
 			nodes = malloc_safe(sizeof(uint16_t) * len);
 			self = malloc_safe(sizeof(uint16_t));
-			phi_result = SCIF_SUCCESS;
 
-			if((online_nodes = scif_get_nodeIDs(nodes, len, self)) < 0)
-			{
-				perror("scif_get_nodeIDs");
-				phi_result = SCIF_GET_NODEIDS_FAIL;
-			}  	
+			phi_result = exec_scif_get_nodeIDs(nodes, len, self, &online_nodes);
 
 			extra_args = malloc_safe(sizeof(uint16_t)*(len+1));
 			memcpy(extra_args, nodes, sizeof(uint16_t)*len);
@@ -540,6 +566,15 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 		case POLL:
 			printf("Executing scif_poll() ... \n");
 			//TODO: scif_poll call goes here...
+			
+			arg_count++;
+			
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+
+			phi_result = exec_scif_poll((scif_epd_t)cmd->int_args[0],
+					cmd->uint_args[0], (long)cmd->extra_args[0].data,
+					int_res);
 			break;
 		case LIB_INIT:
 			printf("Executing scif_lib_init() ... \n");
