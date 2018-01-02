@@ -56,7 +56,7 @@ scif_open(void)
 	int res_code;
 	scif_epd_t fd;
 	var arg = {.elements = 1}, *args[] = { &arg };
-	void *result;
+	PhiCmd *result;
 
 	printf("scif_open...\n");
 
@@ -72,7 +72,7 @@ scif_open(void)
 
 	res_code = get_phi_cmd_result(&result, uow.socket_fd);
 	if(res_code == PHI_SUCCESS) {
-		fd = *(scif_epd_t *)result;
+		fd = (scif_epd_t)result->int_args[0];
 		uow.endp = fd;
 		free(result);
 	}
@@ -128,7 +128,7 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 	res_code = get_phi_cmd_result(&result, uow.socket_fd);
 
 	if(res_code == PHI_SUCCESS) {
-		ret = *(uint16_t *)result;
+		ret = (uint16_t)result->int_args[0];
 		free(result);
 	}
 	else 
@@ -188,7 +188,7 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 
 	res_code = get_phi_cmd_result(&result, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS) 
-		ret = *(int *) result ;
+		ret = (int)result->int_args[0];
 
 	return ret;
 
@@ -220,7 +220,8 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 
 	res_code = get_phi_cmd_result(&result, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS) {
-		newepd = (scif_epd_t *) result;
+		newepd = &
+		(scif_epd_t )result->int_args[0];
 		ret = 0;
 	}
 
