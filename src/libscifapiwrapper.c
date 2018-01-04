@@ -1,3 +1,9 @@
+/*
+ * libscifapiwrapper.c
+ * SCIF Api Library Wrapper for Remote Intel PHI Execution
+ *
+ * Konstantinos Fertakis <kfertak@cslab.ece.ntua.gr>
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -275,7 +281,7 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 	data[2] = flags;
 	arg_int.data = data;
 	
-	if(send_phi_cmd(uow.socket_fd, args, 2, RECV) < 0)
+	if(send_phi_cmd(uow.socket_fd, args, 1, RECV) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
@@ -295,7 +301,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 {
 	int res_code;
 	off_t ret;
-	var arg_int = { .elements = 4 }, arg_bytes = { .elements = 1 } *args[] = { &arg_int, &arb_bytes}; 
+	var arg_int = { .elements = 4 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arb_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -331,7 +337,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, arg_bytes = { .elements = 1 } *args[] = { &arg_int, &arb_bytes}; 
+	var arg_int = { .elements = 2 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arb_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -375,7 +381,7 @@ scif_munmap(void *addr, size_t len)
 scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 } *args[] = { &arg_int, &arb_bytes}; 
+	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arb_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -383,6 +389,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	int *data = malloc_safe(arg_int.length);
 	data[0] = epd;
 	data[1] = len;
+	data[2] = flags;
 	arg_int.data = data;
 	
 	arg_bytes.type = BYTES;
@@ -406,7 +413,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 } *args[] = { &arg_int, &arb_bytes}; 
+	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arb_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -414,6 +421,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	int *data = malloc_safe(arg_int.length);
 	data[0] = epd;
 	data[1] = len;
+	data[2] = flags;
 	arg_int.data = data;
 	
 	arg_bytes.type = BYTES;
@@ -437,33 +445,168 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	int
 scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
+	int res_code, ret = -1;
+	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arb_bytes}; 
+	PhiCmd *result = NULL;
+
+	arg_int.type = INT;
+	arg_int.length = sizeof(int)*arg_int.elements;
+	int *data = malloc_safe(arg_int.length);
+	data[0] = epd;
+	data[1] = len;
+	data[2] = flags;
+	arg_int.data = data;
+	
+	arg_bytes.type = BYTES;
+	arg_bytes.length = sizeof(off_t);
+	arg_bytes.data = (off_t *)malloc_safe(arg_bytes.length);
+	*arg_bytes.data = offset;
+
+	if(send_phi_cmd(uow.socket_fd, args, 2, VREAD_FROM) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == SCIF_SUCCESS){
+			memcpy(addr, result->extra_args[0].data, len);
+			ret = 0;
+	}
+	return ret;
 }
 
 	int
 scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
+	int res_code, ret = -1;
+	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arb_bytes}; 
+	PhiCmd *result = NULL;
+
+	arg_int.type = INT;
+	arg_int.length = sizeof(int)*arg_int.elements;
+	int *data = malloc_safe(arg_int.length);
+	data[0] = epd;
+	data[1] = len;
+	data[2] = flags;
+	arg_int.data = data;
+	
+	arg_bytes.type = BYTES;
+	arg_bytes.length = sizeof(off_t) + len;
+	arg_bytes.data = malloc_safe(arg_bytes.length);
+	memcpy(arg_bytes.data, addr, len);
+	memcpy(arg_bytes.data + len, &offset, sizeof(off_t));
+
+	if(send_phi_cmd(uow.socket_fd, args, 2, VWRITE_TO) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == SCIF_SUCCESS)
+			ret = 0;
+	return ret;
 }
 
 	int
 scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 {
+	int res_code, ret = -1;
+	var arg_int = { .elements = 2 }, *args[] = { &arg_int}; 
+	PhiCmd *result = NULL;
+
+	arg_int.type = INT;
+	arg_int.length = sizeof(int)*arg_int.elements;
+	int *data = malloc_safe(arg_int.length);
+	data[0] = epd;
+	data[1] = flags;
+	arg_int.data = data;
+	
+	if(send_phi_cmd(uow.socket_fd, args, 1, FENCE_MARK) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == SCIF_SUCCESS){
+			mark = (int *)result->int_args[0];
+			ret = 0;
+	}
+	return ret;
 }
 
 	int
 scif_fence_wait(scif_epd_t epd, int mark)
 {
+	int res_code, ret = -1;
+	var arg_int = { .elements = 2 }, *args[] = { &arg_int}; 
+	PhiCmd *result = NULL;
+
+	arg_int.type = INT;
+	arg_int.length = sizeof(int)*arg_int.elements;
+	int *data = malloc_safe(arg_int.length);
+	data[0] = epd;
+	data[1] = mark;
+	arg_int.data = data;
+	
+	if(send_phi_cmd(uow.socket_fd, args, 1, FENCE_WAIT) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == SCIF_SUCCESS)
+			ret = 0;
+	return ret;
 }
 
 	int
 scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 		off_t roff, uint64_t rval, int flags)
 {
+	int res_code, ret = -1;
+	var arg_int = { .elements = 2 }, arg_uint = { .elements = 2}, args_bytes = { .elements = 2},
+			args[] = { &arg_int, &arg_uint, &arg_bytes}; 
+	PhiCmd *result = NULL;
+
+	arg_int.type = INT;
+	arg_int.length = sizeof(int)*arg_int.elements;
+	int *data = malloc_safe(arg_int.length);
+	data[0] = epd;
+	data[1] = flags;
+	arg_int.data = data;
+	
+	arg_uint.type = UINT;
+	arg_uint.length = sizeof(uint64_t)*arg_uint.elements;
+	uint64_t uints  = mallo_safe(arg_uint.length);
+	uints[0] = lval;
+	uints[1] = rval;
+
+	arg_bytes.type = BYTES;
+	arg_bytes.length = sizeof(off_t)*2;
+	arg_bytes.data = malloc_safe(arg_bytes.length);
+	arg_bytes.data[0] = loff;
+	arg_bytes.data[1] = roff;
+
+	if(send_phi_cmd(uow.socket_fd, args, 3, FENCE_SIGNAL) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == SCIF_SUCCESS)
+			ret = 0;
+	return ret;
 }
 
 	int
 scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 {
-	int ret = -1; 
+	int res_code, ret = -1; 
 	var arg = { .elements = 1 }, *args[] = { &arg };
 	void *result;
 
@@ -477,20 +620,52 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	arg.length = sizeof(int);
 	arg.data = &len;
 
-	/*if(send_phi_cmd(uow.socket_fd, args, GET_NODE_IDS) < 0)
+	if(send_phi_cmd(uow.socket_fd, args, GET_NODE_IDS) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	} 	
 	
-	ret = get_phi_nodeIDs(&nodes, &self, uow.socket_fd);*/
-	
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == SCIF_SUCCESS){
+			nodes = malloc_safe(len*sizeof(uint16_t));
+			memcpy(nodes, result->extra_args[0].data, len*sizeof(uint16_t));
+			self = malloc_safe(sizeof(uint16_t));
+			memcpy(self, result->extra_args[0].data+sizeof(uint16_t)*len, sizeof(uint16_t));
+	}
+	free(result);	
 	return ret;
 }
 
 	int
 scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 {
+	int res_code, ret = -1;
+	var arg_uint = { .elements = 2}, args_bytes = { .elements = 1},
+			args[] = { &arg_uint, &arg_bytes}; 
+	PhiCmd *result = NULL;
+
+	arg_uint.type = UINT;
+	arg_uint.length = sizeof(uint64_t)*arg_uint.elements;
+	uint64_t uints  = mallo_safe(arg_uint.length);
+	uints[0] = nfds;
+	uints[1] = timeout_msecs;
+
+	arg_bytes.type = BYTES;
+	arg_bytes.length = sizeof(struct scif_pollepd);
+	arg_bytes.data = ufds
+
+	if(send_phi_cmd(uow.socket_fd, args, 2, POLL) < 0)
+	{
+		fprintf(stderr, "Problem sending PHI cmd!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	res_code = get_phi_cmd_result(&result, uow.socket_fd);
+	if(res_code == SCIF_SUCCESS){
+			ret = result->int_args[0];
+	}
+	return ret;
 }
 
 __attribute__ ((constructor)) static void scif_lib_init(void)

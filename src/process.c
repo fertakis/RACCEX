@@ -4,7 +4,6 @@
  *
  * Konstantinos Fertakis <kfertak@cslab.ece.ntua.gr>
  */
-
 #include <stdio.h>
 #include <errno.h>
 #include <ctype.h>
@@ -567,7 +566,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			int_res_count = 1;
 
 			phi_result = exec_scif_poll((struct scif_pollepd *)cmd->extra_args[0].data,
-					cmd->uint_args[0], (long)cmd->extra_args[1].data,
+					cmd->uint_args[0], (long)cmd->uint_args[1],
 					int_res);
 			break;
 		}
