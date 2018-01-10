@@ -10,6 +10,10 @@
 ####################
 !*/
 
+# Dependencies Files #
+######################
+src/.deps/*
+
 # Compiled Source #
 ####################
 *.o
@@ -19,3 +23,4 @@
 # Unignore Files #
 ##################
 !tags
+!helloWorld
