@@ -34,23 +34,25 @@ scif_get_driver_version(void)
 	void *result = NULL;
 	var arg = { .elements = 1}; 
 
-	//initialise parameters
-	/*	init_params(&uow);
+	init_params(&uow);
 
 	//initialise socket & establish connection
 	establish_connection(&uow);
 	//prepare & send cmd
-	if(send_phi_cmd(uow.socket_fd, NULL, 0, PHI_CMD) == -1) 
+	if(send_phi_cmd(uow.socket_fd, NULL, 0, GET_VERSION) == -1) 
 	{
-	fprintf(stderr, "Error sending PHI cmd!\n");
-	exit(EXIT_FAILURE);
+		fprintf(stderr, "Error sending PHI cmd!\n");
+		exit(EXIT_FAILURE);
 	}
+	
 	//receive resutls
-	get_phi_cmd_result(&result, uow.socket_fd);*/
-	/*if(res_code == PHI_SUCCESS) {
-	  version = *(int *) result;
+	get_phi_cmd_result(&result, uow.socket_fd);
+	
+	if(res_code == PHI_SUCCESS) {
+	  version = (int)result->int_args[0];
 	  free(result);
-	  }*/
+	}
+	
 	printf(" scif_get_driver_version executed \n");
 
 	return 1;

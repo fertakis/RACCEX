@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <scif.h>
+#include <scif_ioctl.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -25,6 +26,37 @@
 #include "phi_errors.h"
 #include "common.pb-c.h"
 
+#define DEVICE_NODE "/dev/mic/scif"
+
+static int
+scif_get_driver_version(void)
+{
+	int scif_version;
+	scif_epd_t fd;
+
+	if ((fd = open(DEVICE_NODE, O_RDWR)) < 0)
+		return -1;
+	scif_version = ioctl(fd, SCIF_GET_VERSION);
+	if (scif_version < 0) {
+		close(fd);
+		return -1;
+	}
+	close(fd);
+	return scif_version;
+}
+
+int exec_scif_get_driver_version(int *version)
+{
+	int ret;
+	if((*version = scif_get_driver_version) < 0)
+	{
+		perror("scif_get_driver_version");
+		ret = SCIF_GET_DRIVER_VERSION_FAIL;
+	}
+	else
+		ret = SCIF_SUCCESS;
+	return ret;
+}
 int exec_scif_open(scif_epd_t *endp, client_node **cur_client)
 {
 	scif_epd_t t_endp;
@@ -342,7 +374,13 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 	switch(cmd->type) {
 		case GET_VERSION:
 			printf("Executing get_driver_version...\n");
-			//int_res = scif_get_driver_version();
+			
+			arg_count++;
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+			
+			phi_result = exec_scif_get_driver_version(int_res);
+
 			break;
 		case OPEN:
 			printf("Executing scif_open() ... \n");

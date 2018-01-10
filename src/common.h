@@ -63,6 +63,7 @@ enum phi_result_code{
 
 enum scif_return_codes {
 	SCIF_SUCCESS=0,
+	SCIF_GET_DRIVER_VERSION_FAIL,
 	SCIF_OPEN_FAIL,
 	SCIF_BIND_FAIL,
 	SCIF_LISTEN_FAIL,
