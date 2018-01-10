@@ -17,7 +17,8 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-
+#include <sys/ioctl.h>
+#include <fcntl.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
@@ -48,7 +49,7 @@ scif_get_driver_version(void)
 int exec_scif_get_driver_version(int *version)
 {
 	int ret;
-	if((*version = scif_get_driver_version) < 0)
+	if((*version = scif_get_driver_version()) < 0)
 	{
 		perror("scif_get_driver_version");
 		ret = SCIF_GET_DRIVER_VERSION_FAIL;

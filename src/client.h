@@ -1,6 +1,8 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include "common.pb-c.h"
+
 typedef struct _unitofwork {
 	int endp;
  	int socket_fd;

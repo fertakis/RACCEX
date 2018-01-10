@@ -11,7 +11,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
-
+#include <string.h>
 #include "stdio.h"
 #include <linux/errno.h>
 #include <stdint.h>
@@ -31,7 +31,7 @@ static	int
 scif_get_driver_version(void)
 {
 	int res_code, version;
-	void *result = NULL;
+	PhiCmd *result = NULL;
 	var arg = { .elements = 1}; 
 
 	init_params(&uow);
@@ -228,7 +228,7 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 
 	res_code = get_phi_cmd_result(&result, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS) {
-		newepd = &(scif_epd_t )result->int_args[0];
+		newepd = (scif_epd_t *)&result->int_args[0];
 		ret = 0;
 	}
 
@@ -303,7 +303,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 {
 	int res_code;
 	off_t ret;
-	var arg_int = { .elements = 4 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arb_bytes}; 
+	var arg_int = { .elements = 4 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -339,7 +339,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arb_bytes}; 
+	var arg_int = { .elements = 2 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -383,7 +383,7 @@ scif_munmap(void *addr, size_t len)
 scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arb_bytes}; 
+	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -397,8 +397,8 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(off_t)*2;
 	arg_bytes.data = (off_t *)malloc_safe(arg_bytes.length);
-	arg_bytes.data[0] = loffset;
-	arg_bytes.data[1] = roffset;
+	((off_t *)arg_bytes.data)[0] = loffset;
+	((off_t *)arg_bytes.data)[1] = roffset;
 
 	if(send_phi_cmd(uow.socket_fd, args, 2, READ_FROM) < 0)
 	{
@@ -415,7 +415,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arb_bytes}; 
+	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -429,8 +429,8 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(off_t)*2;
 	arg_bytes.data = (off_t *)malloc_safe(arg_bytes.length);
-	arg_bytes.data[0] = loffset;
-	arg_bytes.data[1] = roffset;
+	((off_t *)arg_bytes.data)[0] = loffset;
+	((off_t *)arg_bytes.data)[1] = roffset;
 
 	if(send_phi_cmd(uow.socket_fd, args, 2, WRITE_TO) < 0)
 	{
@@ -448,7 +448,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arb_bytes}; 
+	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -462,7 +462,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(off_t);
 	arg_bytes.data = (off_t *)malloc_safe(arg_bytes.length);
-	*arg_bytes.data = offset;
+	*((off_t *)arg_bytes.data) = offset;
 
 	if(send_phi_cmd(uow.socket_fd, args, 2, VREAD_FROM) < 0)
 	{
@@ -482,7 +482,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arb_bytes}; 
+	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -570,8 +570,8 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 		off_t roff, uint64_t rval, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, arg_uint = { .elements = 2}, args_bytes = { .elements = 2},
-			args[] = { &arg_int, &arg_uint, &arg_bytes}; 
+	var arg_int = { .elements = 2 }, arg_uint = { .elements = 2}, arg_bytes = { .elements = 2},
+			*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_int.type = INT;
@@ -583,15 +583,15 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	
 	arg_uint.type = UINT;
 	arg_uint.length = sizeof(uint64_t)*arg_uint.elements;
-	uint64_t uints  = mallo_safe(arg_uint.length);
+	uint64_t *uints  = malloc_safe(arg_uint.length);
 	uints[0] = lval;
 	uints[1] = rval;
 
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(off_t)*2;
-	arg_bytes.data = malloc_safe(arg_bytes.length);
-	arg_bytes.data[0] = loff;
-	arg_bytes.data[1] = roff;
+	arg_bytes.data = (off_t *)malloc_safe(arg_bytes.length);
+	((off_t *)arg_bytes.data)[0] = loff;
+	((off_t *)arg_bytes.data)[1] = roff;
 
 	if(send_phi_cmd(uow.socket_fd, args, 3, FENCE_SIGNAL) < 0)
 	{
@@ -610,7 +610,7 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 {
 	int res_code, ret = -1; 
 	var arg = { .elements = 1 }, *args[] = { &arg };
-	void *result;
+	PhiCmd *result;
 
 	printf("get_scif_nodes\n");	
 	
@@ -622,7 +622,7 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	arg.length = sizeof(int);
 	arg.data = &len;
 
-	if(send_phi_cmd(uow.socket_fd, args, GET_NODE_IDS) < 0)
+	if(send_phi_cmd(uow.socket_fd, args, 1, GET_NODE_IDS) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
@@ -643,19 +643,19 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 {
 	int res_code, ret = -1;
-	var arg_uint = { .elements = 2}, args_bytes = { .elements = 1},
-			args[] = { &arg_uint, &arg_bytes}; 
+	var arg_uint = { .elements = 2}, arg_bytes = { .elements = 1},
+			*args[] = { &arg_uint, &arg_bytes}; 
 	PhiCmd *result = NULL;
 
 	arg_uint.type = UINT;
 	arg_uint.length = sizeof(uint64_t)*arg_uint.elements;
-	uint64_t uints  = mallo_safe(arg_uint.length);
+	uint64_t *uints  = malloc_safe(arg_uint.length);
 	uints[0] = nfds;
 	uints[1] = timeout_msecs;
 
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(struct scif_pollepd);
-	arg_bytes.data = ufds
+	arg_bytes.data = ufds;
 
 	if(send_phi_cmd(uow.socket_fd, args, 2, POLL) < 0)
 	{

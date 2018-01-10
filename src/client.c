@@ -116,8 +116,8 @@ int get_phi_cmd_result(PhiCmd **result, int socket_fd)
 		fprintf(stderr, "Problem deserialising message.\n");
 		exit(EXIT_FAILURE);
 	} else {
-		*result = payload;
-		res_code = *result->phi_result_code;
+		*result = (PhiCmd *)payload;
+		res_code = ((PhiCmd *)*result)->phi_result_code;
 		printf("Server responded: \n| result code: %d\n", res_code);
 		
 		free_deserialised_message(deserialised_message);
