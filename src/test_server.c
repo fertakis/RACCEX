@@ -18,7 +18,8 @@ int main(int argc, char *argv[]) {
 	int client_sock_fd;
 	char *server_ip, *server_port;
 	size_t buf_size;
-	void *buffer = NULL, *result = NULL;
+	void *buffer = NULL;
+	PhiCmd *result = NULL;
 	PhiCmd cmd1 = PHI_CMD__INIT,
 	       cmd2 = PHI_CMD__INIT, cmd3 = PHI_CMD__INIT, cmd4 = PHI_CMD__INIT,
 	       cmd5 = PHI_CMD__INIT;
