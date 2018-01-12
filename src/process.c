@@ -367,7 +367,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 	int phi_result = 0, *int_res, int_res_count = 0, 
 	uint_res_count = 0 , arg_count = 1;
 	PhiCmd *cmd = cmd_ptr;
-	uint64_t *uint_res; 
+	uint64_t *uint_res = NULL; 
 	void *extra_args = NULL;
 	size_t extra_args_size = 0;
 	var **res = NULL;
