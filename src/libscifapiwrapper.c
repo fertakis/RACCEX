@@ -32,13 +32,16 @@ scif_get_driver_version(void)
 {
 	int res_code, version;
 	PhiCmd *result = NULL;
-	var arg = { .elements = 1}; 
-
+	
+	printf("initi params\n");
 	init_params(&uow);
-
+	
+	printf("init connection\n");
 	//initialise socket & establish connection
 	establish_connection(&uow);
-	//prepare & send cmd
+	
+	printf("send cookie\n");
+	//prepare & send cmd	
 	if(send_phi_cmd(uow.socket_fd, NULL, 0, GET_VERSION) == -1) 
 	{
 		fprintf(stderr, "Error sending PHI cmd!\n");
@@ -63,7 +66,6 @@ scif_open(void)
 {
 	int res_code;
 	scif_epd_t fd;
-	var arg = {.elements = 1}, *args[] = { &arg };
 	PhiCmd *result;
 
 	printf("scif_open...\n");

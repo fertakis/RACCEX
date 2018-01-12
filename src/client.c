@@ -68,12 +68,8 @@ void establish_connection(unitofwork *uow) {
 
     if(uow->endp < 0)
     {
-        if(get_server_connection_config(&server, &server_port) !=0) {
-            sprintf(server, DEFAULT_SERVER_IP);
-            sprintf(server_port, DEFAULT_SERVER_PORT);
-            printf("Could not get env vars, using defaults: %s:%s\n", server, server_port);
-
-        }
+        get_server_connection_config(&server, &server_port);
+  
         uow->socket_fd = init_client_connection(server, server_port);
         printf("Connected to server %s on port %s...\n", server, server_port);
     }

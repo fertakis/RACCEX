@@ -39,10 +39,8 @@ inline void *malloc_safe_f(size_t size, const char *file, const int line) {
 	return ptr;
 }
 
-int get_server_connection_config(char **server, char **server_port)
+void get_server_connection_config(char **server, char **server_port)
 {
-	int ret = 0;
-
 	*server = getenv("REMOTE_PHI_SERVER"),
 	*server_port = getenv("REMOTE_PHI_PORT");
 
@@ -51,16 +49,13 @@ int get_server_connection_config(char **server, char **server_port)
 	{
 		*server = DEFAULT_SERVER_IP;
 		printf("Enviromental Variable 'REMOTE_PHI_SERVER' not defined, using default server ip: %s\n", *server);
-		ret = 1 ;
 	}
 	if(*server_port == NULL)
 	{
 		*server_port = DEFAULT_SERVER_PORT;
 		printf("Enviromental Variable 'REMOTE_PHI_PORT' not defined, using default server port: %s\n", *server_port);
-		ret = 1;
 	}
-	
-	return ret;
+	printf("end server config\n");	
 }
 
 int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {

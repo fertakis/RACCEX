@@ -78,12 +78,8 @@ int main(int argc, char *argv[]) {
 
 	if (argc == 1) {
 		printf("No port defined, trying env vars\n");
-		if (get_server_connection_config(&server, &server_port) < 2)
-			local_port = server_port;
-		else {
-			printf("Could not get env vars, using default %s\n", DEFAULT_SERVER_PORT);
-			local_port = (char *) DEFAULT_SERVER_PORT;
-		}
+		get_server_connection_config(&server, &server_port);
+		local_port = server_port;
 	} else {
 		local_port = argv[1];
 	}
