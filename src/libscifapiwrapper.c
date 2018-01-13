@@ -694,10 +694,11 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS){
-		nodes = malloc_safe(len*sizeof(uint16_t));
-		memcpy(nodes, result->extra_args[0].data, len*sizeof(uint16_t));
+		ret = result->int_args[0];
+		nodes = malloc_safe(ret*sizeof(uint16_t));
+		memcpy(nodes, result->extra_args[0].data, ret*sizeof(uint16_t));
 		self = malloc_safe(sizeof(uint16_t));
-		memcpy(self, result->extra_args[0].data+sizeof(uint16_t)*len, sizeof(uint16_t));
+		memcpy(self, result->extra_args[0].data+sizeof(uint16_t)*ret, sizeof(uint16_t));
 	}
 
 	free_deserialised_message(des_msg);
