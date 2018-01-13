@@ -581,17 +581,20 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			//TODO: scif_get_node_ids call goes here...
 			arg_count += 2 ;
 
-			int len = cmd->int_args[0], online_nodes;
+			int len = cmd->int_args[0];
 			uint16_t *nodes, *self;
 
 			nodes = malloc_safe(sizeof(uint16_t) * len);
 			self = malloc_safe(sizeof(uint16_t));
+			
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+				
+			phi_result = exec_scif_get_nodeIDs(nodes, len, self, int_res);
 
-			phi_result = exec_scif_get_nodeIDs(nodes, len, self, &online_nodes);
-
-			extra_args = malloc_safe(sizeof(uint16_t)*(online_nodes+1));
-			memcpy(extra_args, nodes, sizeof(uint16_t)*online_nodes);
-			memcpy(extra_args+sizeof(uint16_t)*online_nodes, self, sizeof(uint16_t));
+			extra_args = malloc_safe(sizeof(uint16_t)*((*int_res)+1));
+			memcpy(extra_args, nodes, sizeof(uint16_t)*(*int_res));
+			memcpy(extra_args+sizeof(uint16_t)*(*int_res), self, sizeof(uint16_t));
 
 			break;
 		}
