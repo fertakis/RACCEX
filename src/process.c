@@ -594,6 +594,8 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			
 			extra_args_size = sizeof(uint16_t)*((*int_res)+1);
 			extra_args = malloc_safe(extra_args_size);
+			extra_args = malloc_safe(sizeof(uint16_t)*((*int_res)+1));
+
 			memcpy(extra_args, nodes, sizeof(uint16_t)*(*int_res));
 			memcpy(extra_args+sizeof(uint16_t)*(*int_res), self, sizeof(uint16_t));
 
