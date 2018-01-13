@@ -364,7 +364,7 @@ int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, 
 }
 
 int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
-	int phi_result = 0, *int_res, int_res_count = 0, 
+	int phi_result = 0, *int_res = NULL, int_res_count = 0, 
 	uint_res_count = 0 , arg_count = 1;
 	PhiCmd *cmd = cmd_ptr;
 	uint64_t *uint_res = NULL; 
