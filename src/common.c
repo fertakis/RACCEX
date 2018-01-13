@@ -100,3 +100,14 @@ int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {
 	*payload = cmd;
 	return 0;
 }
+
+//TODO: Implement unpack function in order to be able to seperate transport layer
+//	from application layer.(In libscifapiwrapper absense of pointer to Cookie structure)
+int unpack_phi_cmd(var **args, PhiCmd *cmd ) 
+{
+	int ret = 0 ;
+	
+	printf("Unpacking PHI cmd ...");
+	
+	return ret;
+}

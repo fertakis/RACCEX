@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "common.h"
-#include "libscifapiwrapper.c"
+#include <scif.h>
 
 int main() {
 	scif_epd_t endPoint;

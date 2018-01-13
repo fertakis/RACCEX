@@ -87,7 +87,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 bin_PROGRAMS = server$(EXEEXT) libscifapiwrapper.so$(EXEEXT) \
-	test_server$(EXEEXT) test_client$(EXEEXT) hello_world$(EXEEXT)
+	test_client$(EXEEXT) hello_world$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -122,10 +122,6 @@ server_DEPENDENCIES =
 am_test_client_OBJECTS = test_client.$(OBJEXT)
 test_client_OBJECTS = $(am_test_client_OBJECTS)
 test_client_DEPENDENCIES =
-am_test_server_OBJECTS = test_server.$(OBJEXT) common.$(OBJEXT) \
-	common.pb-c.$(OBJEXT) client.$(OBJEXT) protocol.$(OBJEXT)
-test_server_OBJECTS = $(am_test_server_OBJECTS)
-test_server_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -159,11 +155,9 @@ am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(hello_world_SOURCES) $(libscifapiwrapper_so_SOURCES) \
-	$(server_SOURCES) $(test_client_SOURCES) \
-	$(test_server_SOURCES)
+	$(server_SOURCES) $(test_client_SOURCES)
 DIST_SOURCES = $(hello_world_SOURCES) $(libscifapiwrapper_so_SOURCES) \
-	$(server_SOURCES) $(test_client_SOURCES) \
-	$(test_server_SOURCES)
+	$(server_SOURCES) $(test_client_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -190,12 +184,12 @@ ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/fertakis/repos/remotePhiExec/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/konstantinos/repos/remotephiexec/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /home/fertakis/repos/remotePhiExec/missing autoconf
-AUTOHEADER = ${SHELL} /home/fertakis/repos/remotePhiExec/missing autoheader
-AUTOMAKE = ${SHELL} /home/fertakis/repos/remotePhiExec/missing automake-1.15
+AUTOCONF = ${SHELL} /home/konstantinos/repos/remotephiexec/missing autoconf
+AUTOHEADER = ${SHELL} /home/konstantinos/repos/remotephiexec/missing autoheader
+AUTOMAKE = ${SHELL} /home/konstantinos/repos/remotephiexec/missing automake-1.15
 AWK = mawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -221,7 +215,7 @@ LDFLAGS =  -L/usr/lib
 LIBOBJS = 
 LIBS = -lprotobuf-c 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/fertakis/repos/remotePhiExec/missing makeinfo
+MAKEINFO = ${SHELL} /home/konstantinos/repos/remotephiexec/missing makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
 PACKAGE = remotephiexec
@@ -241,10 +235,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = 
 VERSION = 0.1.0
-abs_builddir = /home/fertakis/repos/remotePhiExec/src
-abs_srcdir = /home/fertakis/repos/remotePhiExec/src
-abs_top_builddir = /home/fertakis/repos/remotePhiExec
-abs_top_srcdir = /home/fertakis/repos/remotePhiExec
+abs_builddir = /home/konstantinos/repos/remotephiexec/src
+abs_srcdir = /home/konstantinos/repos/remotephiexec/src
+abs_top_builddir = /home/konstantinos/repos/remotephiexec
+abs_top_srcdir = /home/konstantinos/repos/remotephiexec
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
@@ -264,7 +258,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/fertakis/repos/remotePhiExec/install-sh
+install_sh = ${SHELL} /home/konstantinos/repos/remotephiexec/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -295,8 +289,9 @@ libscifapiwrapper_so_CFLAGS = -fPIC -shared $(DEBUG_CFLAGS)
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h \
 	common.h common.c protocol.c protocol.h client.c client.h \
 	common.pb-c.c common.pb-c.h
-test_server_SOURCES = test_server.c common.c common.h common.pb-c.c \
-	common.pb-c.h client.c client.h protocol.c protocol.h
+
+#test_server_SOURCES = test_server.c common.c common.h common.pb-c.c common.pb-c.h client.c client.h
+#test_server_SOURCES += protocol.c protocol.h
 test_client_SOURCES = test_client.c
 test_client_LDADD = -lscif
 hello_world_SOURCES = hello_world.c
@@ -398,17 +393,12 @@ test_client$(EXEEXT): $(test_client_OBJECTS) $(test_client_DEPENDENCIES) $(EXTRA
 	@rm -f test_client$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_client_OBJECTS) $(test_client_LDADD) $(LIBS)
 
-test_server$(EXEEXT): $(test_server_OBJECTS) $(test_server_DEPENDENCIES) $(EXTRA_test_server_DEPENDENCIES) 
-	@rm -f test_server$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(test_server_OBJECTS) $(test_server_LDADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/client.Po
 include ./$(DEPDIR)/common.Po
 include ./$(DEPDIR)/common.pb-c.Po
 include ./$(DEPDIR)/hello_world-hello_world.Po
@@ -422,7 +412,6 @@ include ./$(DEPDIR)/process.Po
 include ./$(DEPDIR)/protocol.Po
 include ./$(DEPDIR)/server.Po
 include ./$(DEPDIR)/test_client.Po
-include ./$(DEPDIR)/test_server.Po
 
 .c.o:
 	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

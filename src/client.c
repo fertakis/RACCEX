@@ -93,7 +93,7 @@ int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)
     return 0;
 }
 
-int get_phi_cmd_result(PhiCmd **result, int socket_fd)
+int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)
 {
 	size_t len;
 	void *buf = NULL, *payload = NULL, *deserialised_message=NULL;
@@ -116,7 +116,8 @@ int get_phi_cmd_result(PhiCmd **result, int socket_fd)
 		res_code = ((PhiCmd *)*result)->phi_result_code;
 		printf("Server responded: \n| result code: %d\n", res_code);
 		
-		free_deserialised_message(deserialised_message);
+		//free_deserialised_message(deserialised_message);
+		*des_msg = deserialised_message;
 	}
 	
 	if(buf != NULL)

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include "common.pb-c.h"
 
 #define DEFAULT_SERVER_IP "localhost"
 #define DEFAULT_SERVER_PORT "8888"
@@ -91,6 +92,7 @@ enum scif_return_codes {
 
 void get_server_connection_config(char **server, char **server_port);
 int pack_phi_cmd(void ** payload, var **args, size_t arg_count, int type);
+int unpack_phi_cmd(var ** args, PhiCmd *cmd);
 
 void *malloc_safe_f(size_t size, const char *file, const int line);
 #define malloc_safe(size) malloc_safe_f(size, __FILE__, __LINE__)
