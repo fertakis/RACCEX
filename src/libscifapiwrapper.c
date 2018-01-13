@@ -55,7 +55,6 @@ scif_get_driver_version(void)
 
 	if(res_code == PHI_SUCCESS) {
 		version = (int)result->int_args[0];
-		free(result);
 	}
 
 	printf(" scif_get_driver_version executed \n");
@@ -88,7 +87,6 @@ scif_open(void)
 	if(res_code == PHI_SUCCESS) {
 		fd = (scif_epd_t)result->int_args[0];
 		uow.endp = fd;
-		free(result);
 	}
 	else 
 		fd = -1;
@@ -148,7 +146,6 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 
 	if(res_code == PHI_SUCCESS) {
 		ret = (uint16_t)result->int_args[0];
-		free(result);
 	}
 	else 
 		ret = -1;
@@ -743,9 +740,9 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	return ret;
 }
 
-__attribute__ ((constructor)) static void scif_lib_init(void)
+/*__attribute__ ((constructor)) static void scif_lib_init(void)
 {
 	int scif_driver_ver = scif_get_driver_version();
 	if ((scif_driver_ver > 0) && (scif_driver_ver != SCIF_VERSION))
 		scif_version_mismatch = 1;
-}
+}*/
