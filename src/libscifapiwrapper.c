@@ -700,6 +700,8 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 		else
 			memcpy(nodes, result->extra_args[0].data, ret*sizeof(uint16_t));
 		memcpy(self, result->extra_args[0].data+sizeof(uint16_t)*ret, sizeof(uint16_t));
+
+		printf("scif_get_nodeIDs() completed succesfuly with #nodes=%d and node[0]=%d and node[1]=%d \n", ret, nodes[0], nodes[1]);
 	}
 
 	free_deserialised_message(des_msg);
