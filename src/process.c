@@ -409,7 +409,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			int_res_count = 1;
 
 			phi_result = exec_scif_bind((scif_epd_t)cmd->int_args[0], 
-					(uint16_t)cmd->int_args[1], int_res);
+					(uint16_t)cmd->uint_args[0], int_res);
 
 			break;
 		case LISTEN:
