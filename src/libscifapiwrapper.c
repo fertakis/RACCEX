@@ -127,7 +127,8 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 	var arg_int = { .elements =1 }, arg_uint = { .elements = 1}, *args[] = { &arg_int, &arg_uint };
 	PhiCmd *result;  
 	void *des_msg = NULL;
-
+	
+	printf("scif_bind(epd=%d, pn %d)\n", epd, pn);
 	arg_int.type = INT;
 	arg_int.length = sizeof(int);
 	arg_int.data = &epd;
