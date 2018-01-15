@@ -1,0 +1,1 @@
+cmd_/home/konstantinos/repos/remotephiexec/src/kernel_modules/sample_driver.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/konstantinos/repos/remotephiexec/src/kernel_modules/sample_driver.ko /home/konstantinos/repos/remotephiexec/src/kernel_modules/sample_driver.o /home/konstantinos/repos/remotephiexec/src/kernel_modules/sample_driver.mod.o ;  true
