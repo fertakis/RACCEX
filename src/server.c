@@ -29,7 +29,7 @@
 int init_server_net(const char *port, struct sockaddr_in *sa) 
 {
 	int socket_fd;
-	
+
 	printf("Initialising server...\n");
 	/* Create TCP/IP socket, used as main chat channel */
 	if ((socket_fd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
@@ -59,17 +59,79 @@ int init_server_net(const char *port, struct sockaddr_in *sa)
 	return socket_fd;
 }
 
+void serve_client(int client_sfd)
+{
+	int  msg_type, resp_type = -1, arg_cnt;
+	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL;
+	client_node *cur_client = NULL;
+	uint32_t msg_length;
 
+	for(;;) {
+		msg_length = receive_message(&msg, client_sfd);
+		if (msg_length > 0)
+			msg_type = deserialise_message(&des_msg, &payload, msg, msg_length);
+
+		printf("Processing message\n");
+		switch (msg_type) {
+			case PHI_CMD:
+				arg_cnt = process_phi_cmd(&result, payload, &cur_client);
+				resp_type = PHI_CMD_RESULT;
+				break;
+			default:
+				printf("--------INVALID MESSAGE TYPE--------\n");
+				break;
+		}
+
+
+		if (msg != NULL) {
+			free(msg);
+			msg = NULL;
+		}
+		if (des_msg != NULL) {
+			free_deserialised_message(des_msg);
+			des_msg = NULL;
+			// payload should be invalid now
+			payload = NULL;
+		}
+
+		if (resp_type != -1) {
+			printf("Packing and Sending result\n");
+			pack_phi_cmd(&payload, result, arg_cnt, PHI_CMD_RESULT);
+			msg_length = serialise_message(&msg, resp_type, payload);
+			send_message(client_sfd, msg, msg_length);
+
+			if (result != NULL) {
+				// should be more freeing here...
+				free(result);
+				result = NULL;
+			}
+		}
+		printf(">>\nMessage processed, cleaning up...\n<<\n");
+		if (msg != NULL) {
+			free(msg);
+			msg = NULL;
+		}
+
+		if (cur_client == NULL) {
+			// TODO: freeing
+			printf("\n--------------\nClient finished.\n\n");
+			break;
+		}
+
+		//TODO: closing method should be implemented
+		//printf("\n-------------\nClient finished. Closing connection.\n");
+		//break;
+	}
+	close(client_sfd);
+	exit(0);
+}
 
 int main(int argc, char *argv[]) {
-	int server_sfd, client_sfd, msg_type, resp_type, arg_cnt;
+	int server_sfd, client_sfd;
 	struct sockaddr_in sa;
 	char *server, *server_port, *local_port, addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
-	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL;
-	//TODO: revise in order to support multiple connections 
-	client_node *cur_client = NULL;
-	uint32_t msg_length;
+	pid_t client;
 
 	if (argc > 2) {
 		printf("Usage: server <local_port>\n");
@@ -88,81 +150,32 @@ int main(int argc, char *argv[]) {
 	printf("\nServer listening on port %s for incoming connections...\n", local_port);
 
 	for (;;) {
-		resp_type = -1;
-		
 		fprintf(stderr, "Waiting for an incoming connection...\n");
 
-                /* Accept an incoming connection */
-                len = sizeof(struct sockaddr_in);
-                if ((client_sfd = accept(server_sfd, (struct sockaddr *)&sa, &len)) < 0) {
-                        perror("accept");
-                        exit(1);
-                }
-                if (!inet_ntop(AF_INET, &sa.sin_addr, addrstr, sizeof(addrstr))) {
-                        perror("could not format IP address");
-                        exit(1);
-                }
-                fprintf(stderr, "Incoming connection from %s:%d\n",
-                        addrstr, ntohs(sa.sin_port));
-
-		for(;;) {
-			msg_length = receive_message(&msg, client_sfd);
-			if (msg_length > 0)
-				msg_type = deserialise_message(&des_msg, &payload, msg, msg_length);
-
-			printf("Processing message\n");
-			switch (msg_type) {
-				case PHI_CMD:
-					arg_cnt = process_phi_cmd(&result, payload, &cur_client);
-					resp_type = PHI_CMD_RESULT;
-					break;
-				default:
-					printf("--------INVALID MESSAGE TYPE--------\n");
-					break;
-			}
-
-
-			if (msg != NULL) {
-				free(msg);
-				msg = NULL;
-			}
-			if (des_msg != NULL) {
-				free_deserialised_message(des_msg);
-				des_msg = NULL;
-				// payload should be invalid now
-				payload = NULL;
-			}
-
-			if (resp_type != -1) {
-				printf("Packing and Sending result\n");
-				pack_phi_cmd(&payload, result, arg_cnt, PHI_CMD_RESULT);
-				msg_length = serialise_message(&msg, resp_type, payload);
-				send_message(client_sfd, msg, msg_length);
-
-				if (result != NULL) {
-					// should be more freeing here...
-					free(result);
-					result = NULL;
-				}
-			}
-			printf(">>\nMessage processed, cleaning up...\n<<\n");
-			if (msg != NULL) {
-				free(msg);
-				msg = NULL;
-			}
-
-			if (cur_client == NULL) {
-				// TODO: freeing
-				printf("\n--------------\nClient finished.\n\n");
-				break;
-			}
-			
-			//TODO: closing method should be implemented
-			//printf("\n-------------\nClient finished. Closing connection.\n");
-			//break;
+		/* Accept an incoming connection */
+		len = sizeof(struct sockaddr_in);
+		if ((client_sfd = accept(server_sfd, (struct sockaddr *)&sa, &len)) < 0) {
+			perror("accept");
+			exit(1);
 		}
+		if (!inet_ntop(AF_INET, &sa.sin_addr, addrstr, sizeof(addrstr))) {
+			perror("could not format IP address");
+			exit(1);
+		}
+		fprintf(stderr, "Incoming connection from %s:%d\n",
+				addrstr, ntohs(sa.sin_port));	
+
+		if((client = fork()) < 0)
+		{
+			perror("fork");
+			exit(1);
+		}
+		else if (client == 0)
+		{
+			//client
+			serve_client(client_sfd);
+		}		
 	}
-	close(client_sfd);
 
 	//should never be here
 	return EXIT_FAILURE;

@@ -24,3 +24,7 @@ src/.deps/*
 ##################
 !tags
 !helloWorld
+
+# Unignore binaries #
+#####################
+!scif_tutorials/*
