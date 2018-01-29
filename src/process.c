@@ -432,7 +432,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 
 			phi_result = exec_scif_connect((scif_epd_t)cmd->int_args[0], 
 					(struct scif_portID *)cmd->extra_args[0].data, int_res);
-
+			printf("scif_connect executed\n");
 			break;
 		case ACCEPT:
 			printf("Executing scif_accept() ... \n");
@@ -625,9 +625,11 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 
 	if(phi_result != PHI_SUCCESS)
 	{
+		printf("phi_result not success\n");
 		errorno = malloc_safe(sizeof(int));
 		errorno = errno;
-		arg_count++;			
+		arg_count++;
+		printf("errorno was set!\n");			
 	}
 
 	res = malloc_safe(sizeof(var *) * arg_count);
