@@ -98,7 +98,8 @@ int exec_scif_close(scif_epd_t endp, client_node **cur_client)
 
 int exec_scif_bind(scif_epd_t endp, uint16_t pn, int *portno)
 {
-	int ret; 
+	int ret;
+	printf("executing scif_bind(%d, %d)\n",endp, pn);
 	if((*portno = scif_bind(endp , pn)) < 0)
 	{
 		perror("scif_bind");
@@ -106,6 +107,7 @@ int exec_scif_bind(scif_epd_t endp, uint16_t pn, int *portno)
 	}
 	else 
 		ret = SCIF_SUCCESS;
+	printf("ret=%d\n", *portno);
 	return ret; 
 }
 
