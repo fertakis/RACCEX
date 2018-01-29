@@ -29,7 +29,7 @@
 
 #define DEVICE_NODE "/dev/mic/scif"
 
-static int
+	static int
 scif_get_driver_version(void)
 {
 	int scif_version;
@@ -367,7 +367,7 @@ int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, 
 
 int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 	int phi_result = 0, *int_res = NULL, int_res_count = 0, 
-	uint_res_count = 0 , arg_count = 1;
+	    uint_res_count = 0 , arg_count = 1, *errorno = NULL;
 	PhiCmd *cmd = cmd_ptr;
 	uint64_t *uint_res = NULL; 
 	void *extra_args = NULL;
@@ -378,11 +378,11 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 	switch(cmd->type) {
 		case GET_VERSION:
 			printf("Executing get_driver_version...\n");
-			
+
 			arg_count++;
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
-			
+
 			phi_result = exec_scif_get_driver_version(int_res);
 
 			break;
@@ -476,26 +476,26 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 					int_res);
 			break;
 		case REGISTER:
-		{
-			printf("Executing scif_register() ... \n");
-			//TODO: scif_register call goes here...
-			arg_count++;
+			{
+				printf("Executing scif_register() ... \n");
+				//TODO: scif_register call goes here...
+				arg_count++;
 
-			extra_args_size = sizeof(void *) + sizeof(off_t);
-			extra_args = malloc_safe(extra_args_size);
+				extra_args_size = sizeof(void *) + sizeof(off_t);
+				extra_args = malloc_safe(extra_args_size);
 
-			void *addr;
-			off_t resulted_offset;							
+				void *addr;
+				off_t resulted_offset;							
 
-			phi_result = exec_scif_register((scif_epd_t)cmd->int_args[0],
-					&addr, (size_t)cmd->int_args[1],
-					(off_t)cmd->extra_args[0].data,
-					cmd->int_args[2], cmd->int_args[3],
-					&resulted_offset);	 								
-			memcpy(extra_args, &addr, sizeof(void *));
-			memcpy(extra_args + sizeof(void *), &resulted_offset, sizeof(off_t));
-			break;
-		}
+				phi_result = exec_scif_register((scif_epd_t)cmd->int_args[0],
+						&addr, (size_t)cmd->int_args[1],
+						(off_t)cmd->extra_args[0].data,
+						cmd->int_args[2], cmd->int_args[3],
+						&resulted_offset);	 								
+				memcpy(extra_args, &addr, sizeof(void *));
+				memcpy(extra_args + sizeof(void *), &resulted_offset, sizeof(off_t));
+				break;
+			}
 		case UNREGISTER:
 			printf("Executing scif_unregister() ... \n");
 			//TODO: scif_unregister call goes here...
@@ -527,20 +527,20 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 					(off_t)cmd->extra_args[1].data, cmd->int_args[2]);
 			break;
 		case VREAD_FROM:
-		{
-			printf("Executing scif_vread_from() ... \n");
-			//TODO: scif_vread_from call goes here...
-			arg_count++;
-			void *addr;
-			size_t len = (size_t)cmd->int_args[1];
-			addr = malloc_safe(len);
-			phi_result = exec_scif_vreadfrom((scif_epd_t)cmd->int_args[0],
-					addr, len, (off_t)cmd->extra_args[0].data,
-					cmd->int_args[2]);
-			extra_args = addr;
-			extra_args_size = len;
-			break;
-		}
+			{
+				printf("Executing scif_vread_from() ... \n");
+				//TODO: scif_vread_from call goes here...
+				arg_count++;
+				void *addr;
+				size_t len = (size_t)cmd->int_args[1];
+				addr = malloc_safe(len);
+				phi_result = exec_scif_vreadfrom((scif_epd_t)cmd->int_args[0],
+						addr, len, (off_t)cmd->extra_args[0].data,
+						cmd->int_args[2]);
+				extra_args = addr;
+				extra_args_size = len;
+				break;
+			}
 		case VWRITE_TO:
 			printf("Executing scif_vwrite_to) ... \n");
 			//TODO: scif_vwrite_to call goes here...
@@ -549,18 +549,18 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 					(off_t)cmd->extra_args[1].data,	cmd->int_args[2]);
 			break;
 		case FENCE_MARK:
-		{
-			printf("Executing scif_fence_mark() ... \n");
-			//TODO: scif_fence_mark call goes here...
-			arg_count++;
+			{
+				printf("Executing scif_fence_mark() ... \n");
+				//TODO: scif_fence_mark call goes here...
+				arg_count++;
 
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
+				int_res = malloc_safe(sizeof(int));
+				int_res_count = 1;
 
-			phi_result = exec_scif_fence_mark((scif_epd_t)cmd->int_args[0],
-					cmd->int_args[1], int_res);
-			break;
-		}
+				phi_result = exec_scif_fence_mark((scif_epd_t)cmd->int_args[0],
+						cmd->int_args[1], int_res);
+				break;
+			}
 		case FENCE_WAIT:
 			printf("Executing scif_fence_wait() ... \n");
 			//TODO: scif_fence_wait call goes here...
@@ -578,49 +578,56 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 					cmd->int_args[1]);
 			break;
 		case GET_NODE_IDS:
-		{
-			printf("Executing scif_get_node_ids) ... \n");
-			//TODO: scif_get_node_ids call goes here...
-			arg_count += 2 ;
+			{
+				printf("Executing scif_get_node_ids) ... \n");
+				//TODO: scif_get_node_ids call goes here...
+				arg_count += 2 ;
 
-			int len = cmd->int_args[0];
-			uint16_t *nodes, *self;
+				int len = cmd->int_args[0];
+				uint16_t *nodes, *self;
 
-			nodes = malloc_safe(sizeof(uint16_t) * len);
-			self = malloc_safe(sizeof(uint16_t));
-			
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
-				
-			phi_result = exec_scif_get_nodeIDs(nodes, len, self, int_res);
+				nodes = malloc_safe(sizeof(uint16_t) * len);
+				self = malloc_safe(sizeof(uint16_t));
 
-			extra_args_size = sizeof(uint16_t)*((*int_res)+1);
-			extra_args = malloc_safe(extra_args_size);
-			
-			memcpy(extra_args, nodes, sizeof(uint16_t)*(*int_res));
-			memcpy(extra_args+sizeof(uint16_t)*(*int_res), self, sizeof(uint16_t));
+				int_res = malloc_safe(sizeof(int));
+				int_res_count = 1;
 
-			break;
-		}
+				phi_result = exec_scif_get_nodeIDs(nodes, len, self, int_res);
+
+				extra_args_size = sizeof(uint16_t)*((*int_res)+1);
+				extra_args = malloc_safe(extra_args_size);
+
+				memcpy(extra_args, nodes, sizeof(uint16_t)*(*int_res));
+				memcpy(extra_args+sizeof(uint16_t)*(*int_res), self, sizeof(uint16_t));
+
+				break;
+			}
 		case POLL:
-		{
-			printf("Executing scif_poll() ... \n");
-			//TODO: scif_poll call goes here...
+			{
+				printf("Executing scif_poll() ... \n");
+				//TODO: scif_poll call goes here...
 
-			arg_count++;
+				arg_count++;
 
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
+				int_res = malloc_safe(sizeof(int));
+				int_res_count = 1;
 
-			phi_result = exec_scif_poll((struct scif_pollepd *)cmd->extra_args[0].data,
-					cmd->uint_args[0], (long)cmd->uint_args[1],
-					int_res);
-			break;
-		}
+				phi_result = exec_scif_poll((struct scif_pollepd *)cmd->extra_args[0].data,
+						cmd->uint_args[0], (long)cmd->uint_args[1],
+						int_res);
+				break;
+			}
 		case LIB_INIT:
 			printf("Executing scif_lib_init() ... \n");
 			//TODO: scif_lib_init call goes here...
 			break;	
+	}
+
+	if(phi_result != PHI_SUCCESS)
+	{
+		errorno = malloc_safe(sizeof(int));
+		errorno = errno;
+		arg_count++;			
 	}
 
 	res = malloc_safe(sizeof(var *) * arg_count);
@@ -647,7 +654,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			memcpy(res[it]->data, int_res, res[it]->length);
 			it++;
 		}
-		
+
 		//uint arguments
 		if(uint_res_count > 0)
 		{
@@ -659,9 +666,6 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			memcpy(res[it]->data, uint_res, res[it]->length);	
 			it++;
 		}
-		
-		//string arguments
-		//TODO: reevaluate 
 
 		//byte arguments
 		if(extra_args_size > 0)
@@ -672,17 +676,31 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			res[it]->length = extra_args_size;
 			res[it]->data = malloc_safe(extra_args_size);
 			memcpy(res[it]->data, extra_args, extra_args_size);
+			it++;
+		}
+		
+		//error number
+		if(errno != NULL)
+		{
+			res[it] = malloc_safe(sizeof(var));
+			res[it]->type = ERRORNO;
+			res[it]-> elements = 1;
+			res[it]->length = sizeof(int);
+			res[it]->data = malloc_safe(sizeof(int));
+			memcpy(res[it]->data, errorno, sizeof(int));
 		}
 	}
 
 	*result = res;	
-	
+
 	if(int_res != NULL)
 		free(int_res);
 	if(uint_res != NULL)
 		free(uint_res);
 	if (extra_args != NULL)
 		free(extra_args);
+	if(errorno != NULL)
+		free(errorno);
 
 	return arg_count;
 }

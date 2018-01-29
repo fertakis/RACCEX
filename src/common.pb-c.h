@@ -16,7 +16,6 @@ PROTOBUF_C__BEGIN_DECLS
 
 
 typedef struct _PhiCmd PhiCmd;
-typedef struct _PhiDevice PhiDevice;
 typedef struct _Cookie Cookie;
 
 
@@ -31,42 +30,29 @@ struct  _PhiCmd
   uint32_t type;
   uint32_t arg_count;
   int32_t phi_result_code;
+  protobuf_c_boolean has_phi_errorno;
+  int32_t phi_errorno;
   size_t n_int_args;
   int64_t *int_args;
   size_t n_uint_args;
   uint64_t *uint_args;
-  size_t n_str_args;
-  char **str_args;
   size_t n_extra_args;
   ProtobufCBinaryData *extra_args;
 };
 #define PHI_CMD__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&phi_cmd__descriptor) \
-    , 0, 0, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
-
-
-struct  _PhiDevice
-{
-  ProtobufCMessage base;
-  char *name;
-  protobuf_c_boolean is_busy;
-};
-#define PHI_DEVICE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&phi_device__descriptor) \
-    , NULL, 0 }
+    , 0, 0, 0, 0,0, 0,NULL, 0,NULL, 0,NULL }
 
 
 struct  _Cookie
 {
   ProtobufCMessage base;
   uint32_t type;
-  protobuf_c_boolean has_phi_error;
-  uint32_t phi_error;
   PhiCmd *phi_cmd;
 };
 #define COOKIE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&cookie__descriptor) \
-    , 0, 0,0, NULL }
+    , 0, NULL }
 
 
 /* PhiCmd methods */
@@ -87,25 +73,6 @@ PhiCmd *
                       const uint8_t       *data);
 void   phi_cmd__free_unpacked
                      (PhiCmd *message,
-                      ProtobufCAllocator *allocator);
-/* PhiDevice methods */
-void   phi_device__init
-                     (PhiDevice         *message);
-size_t phi_device__get_packed_size
-                     (const PhiDevice   *message);
-size_t phi_device__pack
-                     (const PhiDevice   *message,
-                      uint8_t             *out);
-size_t phi_device__pack_to_buffer
-                     (const PhiDevice   *message,
-                      ProtobufCBuffer     *buffer);
-PhiDevice *
-       phi_device__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   phi_device__free_unpacked
-                     (PhiDevice *message,
                       ProtobufCAllocator *allocator);
 /* Cookie methods */
 void   cookie__init
@@ -131,9 +98,6 @@ void   cookie__free_unpacked
 typedef void (*PhiCmd_Closure)
                  (const PhiCmd *message,
                   void *closure_data);
-typedef void (*PhiDevice_Closure)
-                 (const PhiDevice *message,
-                  void *closure_data);
 typedef void (*Cookie_Closure)
                  (const Cookie *message,
                   void *closure_data);
@@ -144,7 +108,6 @@ typedef void (*Cookie_Closure)
 /* --- descriptors --- */
 
 extern const ProtobufCMessageDescriptor phi_cmd__descriptor;
-extern const ProtobufCMessageDescriptor phi_device__descriptor;
 extern const ProtobufCMessageDescriptor cookie__descriptor;
 
 PROTOBUF_C__END_DECLS

@@ -17,7 +17,8 @@ typedef enum var_type_enum {
     UINT,
     STRING,
     BYTES,
-    PHI_RESULT_CODE
+    PHI_RESULT_CODE, 
+    ERRORNO
 } var_type;
 
 typedef struct var_struct {
