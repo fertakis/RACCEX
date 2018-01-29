@@ -124,7 +124,8 @@ int exec_scif_listen(scif_epd_t endp, int backlog)
 
 int exec_scif_connect(scif_epd_t endp, struct scif_portID *dst, int *portID)
 {
-	int ret; 
+	int ret;
+	printf("scif_connect(endp = %d, remote_node=%d, remote_port=%d\n", endp, dst->node, dst->port);
 	if((*portID = scif_connect(endp, dst)) < 0)
 	{
 		perror("scif_connect");
