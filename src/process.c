@@ -682,8 +682,9 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 		}
 		
 		//error number
-		if(errno != NULL)
+		if(errorno != NULL)
 		{
+			printf("wrapping error\n");
 			res[it] = malloc_safe(sizeof(var));
 			res[it]->type = ERRORNO;
 			res[it]-> elements = 1;
