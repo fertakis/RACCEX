@@ -80,10 +80,6 @@ int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {
 				cmd->n_uint_args = args[i]->elements;
 				cmd->uint_args = args[i]->data;
 				break;
-			case STRING:
-				cmd->n_str_args = args[i]->elements;
-				cmd->str_args = args[i]->data;
-				break;
 			case BYTES:
 				//cmd->n_extra_args = args[i]->elements;
 				cmd->n_extra_args = 1;
@@ -93,6 +89,9 @@ int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {
 				break;
 			case PHI_RESULT_CODE:
 				cmd->phi_result_code = *(int *)args[i]->data;
+				break;
+			case ERRORNO:
+				cmd->phi_errorno = *(int *)args[i]->data;
 				break;
 		}
 	}

@@ -88,8 +88,10 @@ scif_open(void)
 		fd = (scif_epd_t)result->int_args[0];
 		uow.endp = fd;
 	}
-	else 
+	else { 
 		fd = -1;
+		errno  = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 	return fd;
@@ -98,10 +100,12 @@ scif_open(void)
 	int
 scif_close(scif_epd_t epd)
 {
-	int res_code;
+	int res_code, ret = 0;
 	var arg = { .elements = 1}, *args[] = { &arg };
 	PhiCmd *result;
 	void *des_msg = NULL;
+	
+	printf("scif_close(epd=%d)\n",epd);
 
 	arg.type = INT;
 	arg.length = sizeof(int);
@@ -114,10 +118,15 @@ scif_close(scif_epd_t epd)
 	}	
 
 	res_code = get_phi_cmd_result(&result, &des_msg,  uow.socket_fd);
+	
+	if(res_code != PHI_SUCCESS) {
+		ret = -1;
+		errno  = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 
-	return res_code;
+	return ret;
 }
 
 	int
@@ -148,8 +157,10 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 	if(res_code == PHI_SUCCESS) {
 		ret = (uint16_t)result->int_args[0];
 	}
-	else 
+	else {
 		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 	
 	free_deserialised_message(des_msg);
 	
@@ -159,11 +170,12 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 	int
 scif_listen(scif_epd_t epd, int backlog)
 {
-	int res_code, ret = -1;
+	int res_code, ret = 0;
 	var arg = { .elements = 2 }, *args[] = { &arg };
 	PhiCmd *result;  
 	void *des_msg = NULL;
-
+	
+	printf("scif_listen(epd=%d, backlog= %d)\n", epd, backlog);
 	arg.type = INT;
 	arg.length = sizeof(int) * arg.elements;
 	int *data = (int *)malloc_safe(arg.length);
@@ -179,8 +191,10 @@ scif_listen(scif_epd_t epd, int backlog)
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 
-	if(res_code == PHI_SUCCESS)
-		ret = 0 ;
+	if(res_code != PHI_SUCCESS) {
+		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 	
 	free_deserialised_message(des_msg);
 	
@@ -194,6 +208,8 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 	var arg_int = { .elements = 1}, arg_bytes = { .elements = 1}, *args[] = { &arg_int, &arg_bytes};
 	PhiCmd *result; 
 	void *des_msg = NULL;
+
+	printf("executing scif_connect(epd=%d,dst->node=%d, dst->port=%d\n",epd, dst->node, dst->port);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int);
@@ -212,6 +228,10 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS) 
 		ret = (int)result->int_args[0];
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 	
 	free_deserialised_message(des_msg);
 	
@@ -226,6 +246,8 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 	var arg_int = { .elements =2 }, arg_bytes = { .elements = 1}, *args[]= { &arg_int, &arg_bytes};
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	
+	printf("scif_accept(epd=%d...\n", epd);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
@@ -248,6 +270,10 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 	if(res_code == SCIF_SUCCESS) {
 		newepd = (scif_epd_t *)&result->int_args[0];
 		ret = 0;
+	}
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;	
 	}
 
 	free_deserialised_message(des_msg);
@@ -286,6 +312,10 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	if(res_code == SCIF_SUCCESS) {
 		ret = (int)result->int_args[0];
 	}
+	else {
+		ret = -1 ;
+		errno = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 
@@ -317,7 +347,11 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS) {
 		msg = (void *)result->extra_args[0].data;
-		ret = 0;
+		ret = (int)result->int_args[0];
+	}
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
 	}
 
 	free_deserialised_message(des_msg);
@@ -359,8 +393,10 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 		memcpy(addr,result->extra_args[0].data, sizeof(void *));
 		memcpy(&ret, result->extra_args[0].data + sizeof(void *), sizeof(off_t));
 	}
-	else
-		ret = (off_t *)-1;
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno; 
+	}
 
 	free_deserialised_message(des_msg);
 
@@ -368,7 +404,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 }
 
 	int
-scif_unregister(scif_epd_t epd, off_t offset, size_t len)
+scif_unreqgister(scif_epd_t epd, off_t offset, size_t len)
 {
 	int res_code, ret = -1;
 	var arg_int = { .elements = 2 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_bytes}; 
@@ -395,6 +431,10 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 
@@ -446,6 +486,10 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 
@@ -482,6 +526,10 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 
@@ -520,6 +568,10 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 		memcpy(addr, result->extra_args[0].data, len);
 		ret = 0;
 	}
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 
@@ -557,6 +609,10 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 
@@ -589,6 +645,10 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 		mark = (int *)result->int_args[0];
 		ret = 0;
 	}
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 
@@ -619,6 +679,10 @@ scif_fence_wait(scif_epd_t epd, int mark)
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 
@@ -663,6 +727,10 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
+	}
 
 	free_deserialised_message(des_msg);
 
@@ -672,7 +740,7 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	int
 scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 {
-	int res_code, ret = -1; 
+	int res_code, ret = 1; 
 	var arg = { .elements = 1 }, *args[] = { &arg };
 	PhiCmd *result;
 	void *des_msg = NULL;
@@ -694,7 +762,7 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	} 	
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
-	if(res_code == SCIF_SUCCESS){
+	if(res_code == SCIF_SUCCESS) {
 		ret = result->int_args[0];
 		if (ret > len)
 			memcpy(nodes, result->extra_args[0].data, len*sizeof(uint16_t));
@@ -703,6 +771,10 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 		memcpy(self, result->extra_args[0].data+sizeof(uint16_t)*ret, sizeof(uint16_t));
 
 		printf("scif_get_nodeIDs() completed succesfuly with #nodes=%d and node[0]=%d and node[1]=%d \n", ret, nodes[0], nodes[1]);
+	}
+	else {
+		ret = 1;
+		errno = (int)result->phi_errorno;
 	}
 
 	free_deserialised_message(des_msg);
@@ -738,6 +810,10 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS){
 		ret = result->int_args[0];
+	}
+	else {
+		ret = -1;
+		errno = (int)result->phi_errorno;
 	}
 
 	free_deserialised_message(des_msg);

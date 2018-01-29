@@ -2,19 +2,13 @@ message PhiCmd {
     required uint32 type = 1;
     required uint32 arg_count = 2;
     required int32 phi_result_code = 3;
-    repeated int64 int_args = 4;
-    repeated uint64 uint_args = 5; 
-    repeated string str_args = 6;
+    optional int32 phi_errorno = 4;
+    repeated int64 int_args = 5;
+    repeated uint64 uint_args = 6; 
     repeated bytes extra_args = 7;
-}
-
-message PhiDevice {
-    required string name = 1;
-    required bool is_busy = 2 [default = false];
 }
 
 message Cookie {
     required uint32 type = 1;
-    optional uint32 phi_error = 2 ;
     optional PhiCmd phi_cmd = 3;
 }

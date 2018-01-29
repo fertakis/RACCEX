@@ -115,8 +115,9 @@ int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)
 		*result = (PhiCmd *)payload;
 		res_code = ((PhiCmd *)*result)->phi_result_code;
 		printf("Server responded: \n| result code: %d\n", res_code);
+		if(res_code != 0)
+			printf("error detected !\n");
 		
-		//free_deserialised_message(deserialised_message);
 		*des_msg = deserialised_message;
 	}
 	
