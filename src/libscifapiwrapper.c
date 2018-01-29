@@ -404,7 +404,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 }
 
 	int
-scif_unreqgister(scif_epd_t epd, off_t offset, size_t len)
+scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 {
 	int res_code, ret = -1;
 	var arg_int = { .elements = 2 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_bytes}; 
