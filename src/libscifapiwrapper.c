@@ -231,9 +231,12 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 	else {
 		ret = -1;
 		errno = (int)result->phi_errorno;
+		printf("Error detected : %s\n", strerror(errno));
 	}
 	
 	free_deserialised_message(des_msg);
+	
+	printf("ret =%d\n", ret);
 	
 	return ret;
 

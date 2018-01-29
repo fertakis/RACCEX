@@ -629,7 +629,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 		errorno = malloc_safe(sizeof(int));
 		*errorno = errno;
 		arg_count++;
-		printf("errorno was set!\n");			
+		printf("errorno was set!\nerrno=%d\n", errno);			
 	}
 
 	res = malloc_safe(sizeof(var *) * arg_count);
