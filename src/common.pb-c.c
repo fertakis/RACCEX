@@ -9,7 +9,7 @@
 void   phi_cmd__init
                      (PhiCmd         *message)
 {
-  static PhiCmd init_value = PHI_CMD__INIT;
+  static const PhiCmd init_value = PHI_CMD__INIT;
   *message = init_value;
 }
 size_t phi_cmd__get_packed_size
@@ -46,13 +46,19 @@ void   phi_cmd__free_unpacked
                      (PhiCmd *message,
                       ProtobufCAllocator *allocator)
 {
+<<<<<<< HEAD
   PROTOBUF_C_ASSERT (message->base.descriptor == &phi_cmd__descriptor);
+=======
+  if(!message)
+    return;
+  assert(message->base.descriptor == &phi_cmd__descriptor);
+>>>>>>> ecd135fc9ce8f98ec0a96eeaebda5c800b6df696
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 void   cookie__init
                      (Cookie         *message)
 {
-  static Cookie init_value = COOKIE__INIT;
+  static const Cookie init_value = COOKIE__INIT;
   *message = init_value;
 }
 size_t cookie__get_packed_size
@@ -89,7 +95,13 @@ void   cookie__free_unpacked
                      (Cookie *message,
                       ProtobufCAllocator *allocator)
 {
+<<<<<<< HEAD
   PROTOBUF_C_ASSERT (message->base.descriptor == &cookie__descriptor);
+=======
+  if(!message)
+    return;
+  assert(message->base.descriptor == &cookie__descriptor);
+>>>>>>> ecd135fc9ce8f98ec0a96eeaebda5c800b6df696
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[7] =
