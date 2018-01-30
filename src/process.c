@@ -157,7 +157,7 @@ int exec_scif_send(scif_epd_t endp, void *msg, int len, int flags,
 		int *send_count)
 {
 	int ret;
-	printf("executing scif_send(endp = %d, len =%d, fl;ags=%d\n", endp, len, flags);
+	printf("executing scif_send(endp = %d, len =%d, flags=%d\n", endp, len, flags);
 	if((*send_count = scif_send(endp, msg, len, flags)) < 0)
 	{
 		perror("scif_send");
@@ -165,6 +165,7 @@ int exec_scif_send(scif_epd_t endp, void *msg, int len, int flags,
 	}
 	else
 		ret = SCIF_SUCCESS;
+	printf("sended %d bytes\n", *send_count);
 	return ret; 
 }
 
