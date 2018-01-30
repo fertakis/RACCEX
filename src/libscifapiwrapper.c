@@ -75,6 +75,7 @@ scif_open(void)
 	if(uow.ref_count == 0)
 		establish_connection(&uow);
 	uow.ref_count++;
+	printf("ref_count=%d\n", uow.ref_count);
 
 	if(send_phi_cmd(uow.socket_fd, NULL, 0, OPEN) < 0 )
 	{
@@ -128,8 +129,6 @@ scif_close(scif_epd_t epd)
 	uow.ref_count--;
 	if(uow.ref_count == 0) {
 		close(uow.socket_fd);
-		uow.socket_fd = -1;
-		uow.endp = -1;
 	}
 
 	return ret;

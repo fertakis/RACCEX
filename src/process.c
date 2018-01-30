@@ -153,11 +153,12 @@ int exec_scif_accept(scif_epd_t endp, struct scif_portID *peer,
 	return ret; 
 }
 
-int exec_scif_send(scif_epd_t endp, void **msg, int len, int flags, 
+int exec_scif_send(scif_epd_t endp, void *msg, int len, int flags, 
 		int *send_count)
 {
 	int ret;
-	if((*send_count = scif_send(endp, *msg, len, flags)) < 0)
+	printf("executing scif_send(endp = %d, len =%d, fl;ags=%d\n", endp, len, flags);
+	if((*send_count = scif_send(endp, msg, len, flags)) < 0)
 	{
 		perror("scif_send");
 		ret = SCIF_SEND_FAIL;

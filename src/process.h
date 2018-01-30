@@ -13,7 +13,7 @@ int exec_scif_bind(scif_epd_t endp, uint16_t pn, int *portno);
 int exec_scif_listen(scif_epd_t endp, int backlog);
 int exec_scif_connect(scif_epd_t endp, struct scif_portID *dst, int *portID);
 int exec_scif_accept(scif_epd_t endp, struct scif_portID *peer, scif_epd_t *newepd, int flags);
-int exec_scif_send(scif_epd_t epd, void **msg, int len, int flags, int *send_count);
+int exec_scif_send(scif_epd_t epd, void *msg, int len, int flags, int *send_count);
 int exec_scif_recv(scif_epd_t epd, void *msg, int len, int flags, int *read_count);
 int exec_scif_register(scif_epd_t endp, void **addr, size_t len, off_t offset, int prot_flags, int map_flags, off_t *resulted_off_t);
 int exec_scif_unregister(scif_epd_t endp, off_t offset, size_t len);
