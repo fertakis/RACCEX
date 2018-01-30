@@ -297,6 +297,8 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 1}, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	
+	printf("executing scif_send(endp=%d, len=%d, flags=%d\n", epd, len, flags);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
