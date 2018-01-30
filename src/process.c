@@ -459,8 +459,8 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			int_res_count = 1; 
 
 			phi_result = exec_scif_send((scif_epd_t)cmd->int_args[0], 
-					(void *)cmd->extra_args[0].data, cmd->int_args[1], 
-					cmd->int_args[2], int_res);	
+					(void *)cmd->extra_args[0].data, (int)cmd->int_args[1], 
+					(int)cmd->int_args[2], int_res);	
 
 			break;
 		case RECV:
