@@ -6,12 +6,11 @@
 typedef struct _unitofwork {
 	int endp;
  	int socket_fd;
+	int ref_count;
 } unitofwork ;
 
 
 int init_client_connection(const char *s_ip, const char *s_port);
-
-void init_params(unitofwork *uow);
 
 void establish_connection(unitofwork *uow);
 

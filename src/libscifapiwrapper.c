@@ -24,7 +24,7 @@
 #include "client.h"
 #include "protocol.h"
 
-unitofwork uow;
+unitofwork uow = { .socket_fd = -1, .endp = -1, .ref_count = 0};
 
 static uint8_t scif_version_mismatch;
 
@@ -35,10 +35,6 @@ scif_get_driver_version(void)
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 
-	printf("initi params\n");
-	init_params(&uow);
-
-	printf("init connection\n");
 	//initialise socket & establish connection
 	establish_connection(&uow);
 
@@ -59,7 +55,10 @@ scif_get_driver_version(void)
 
 	printf(" scif_get_driver_version executed \n");
 	free_deserialised_message(des_msg);
-
+	
+	//close connection
+	close(uow.socket_fd);
+	
 	return version;
 }
 
@@ -73,9 +72,9 @@ scif_open(void)
 
 	printf("scif_open...\n");
 
-	init_params(&uow);
-
-	establish_connection(&uow);
+	if(uow.ref_count == 0)
+		establish_connection(&uow);
+	uow.ref_count++;
 
 	if(send_phi_cmd(uow.socket_fd, NULL, 0, OPEN) < 0 )
 	{
@@ -125,6 +124,13 @@ scif_close(scif_epd_t epd)
 	}
 
 	free_deserialised_message(des_msg);
+	
+	uow.ref_count--;
+	if(uow.ref_count == 0) {
+		close(uow.socket_fd);
+		uow.socket_fd = -1;
+		uow.endp = -1;
+	}
 
 	return ret;
 }
@@ -750,9 +756,8 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 
 	printf("get_scif_nodes\n");	
 
-	init_params(&uow);
-
-	establish_connection(&uow);
+	if(uow.ref_count == 0)
+		establish_connection(&uow);
 
 	arg.type = INT;
 	arg.length = sizeof(int);
@@ -781,6 +786,11 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	}
 
 	free_deserialised_message(des_msg);
+	
+	if(uow.ref_count == 0) {
+		close(uow.socket_fd);
+		uow.socket_fd = -1;
+	}
 
 	return ret;
 }
