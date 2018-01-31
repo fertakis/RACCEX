@@ -56,7 +56,7 @@ target_arch=$(shell $(CC) -dumpmachine | sed 's:-.*::')
 ifeq ($(target_arch),x86_64)
 TESTS = $(BOTHTESTS:=_host)
 %_host: %.c
-	$(CC) $(CFLAGS) $(LDFLAGS)  -Wall -DHOST $< -lscif -lpthread -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS)  -Wall -DHOST $< -g -lscif -lpthread -o $@
 else ifeq ($(target_arch),k1om)
 TESTS = $(BOTHTESTS:=_mic)
 %_mic: %.c
