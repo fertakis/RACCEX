@@ -464,7 +464,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 					(int)cmd->int_args[2], int_res);	
 
 			break;
-		case RECV:
+		case RECV: { 
 			printf("Executing scif_recv() ... \n");
 			//TODO: scif_recv call goes here...
 			void *data;
@@ -479,6 +479,7 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 					&extra_args, cmd->int_args[1], cmd->int_args[2],
 					int_res);
 			break;
+		}
 		case REGISTER:
 			{
 				printf("Executing scif_register() ... \n");
