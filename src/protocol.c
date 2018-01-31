@@ -110,7 +110,9 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 	// message payload...
 	//cookie__free_unpacked(msg, NULL);
 	*result = msg; 
-
+	if(msg->phi_cmd->type == SEND)
+		printf("arg_cnt = %d, epd=%d, len=%d, flags=%d\n", msg->phi_cmd->arg_count, ((int*)msg->phi_cmd->int_args)[0],
+				 ((int*)msg->phi_cmd->int_args)[1], ((int*)msg->phi_cmd->int_args)[2]);
 	return msg->type;
 
 }
