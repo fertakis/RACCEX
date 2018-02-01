@@ -7,8 +7,8 @@ typedef struct client_node_s {
 	int id;
 } client_node;
 
-int exec_scif_open(scif_epd_t *endp, client_node **cur_client);
-int exec_scif_close(scif_epd_t endp, client_node **cur_client);
+int exec_scif_open(scif_epd_t *endp);
+int exec_scif_close(scif_epd_t endp);
 int exec_scif_bind(scif_epd_t endp, uint16_t pn, int *portno);
 int exec_scif_listen(scif_epd_t endp, int backlog);
 int exec_scif_connect(scif_epd_t endp, struct scif_portID *dst, int *portID);
@@ -29,6 +29,6 @@ int exec_scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval, off_t roff
 int exec_scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self, int *online_nodes);
 int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, int *poll_res);
 
-int process_phi_cmd(void **result, void *cmd_ptr,client_node **cur_client);
+int process_phi_cmd(void **result, void *cmd_ptr);
 
 #endif /* PROCESS_H */

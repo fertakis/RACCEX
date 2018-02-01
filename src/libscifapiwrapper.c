@@ -356,7 +356,7 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
 	if(res_code == SCIF_SUCCESS) {
-		msg = (void *)result->extra_args[0].data;
+		memcpy(msg, result->extra_args[0].data, result->extra_args[0].len);
 		ret = (int)result->int_args[0];
 	}
 	else {

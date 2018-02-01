@@ -136,7 +136,11 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 	buf = malloc_safe(sizeof(uint32_t));
 	
 	// read message length
-	insist_read(socket_fd, buf, sizeof(uint32_t));
+	if((ret = insist_read(socket_fd, buf, sizeof(uint32_t))) <= 0 ) {
+		free(buf);
+		return ret; 
+	}
+			
 
 	msg_len = ntohl(*(uint32_t *)buf);
 	printf("Going to read a message of %u bytes...\n", msg_len);
@@ -144,7 +148,10 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 	buf = realloc(buf, msg_len);
 	
 	// read message
-	insist_read(socket_fd, buf, msg_len);
+	if((ret = insist_read(socket_fd, buf, msg_len)) <=0) {
+		free(buf);
+		return ret;
+	}
 	
 	*serialised_msg = buf;
 

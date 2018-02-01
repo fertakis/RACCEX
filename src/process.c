@@ -58,7 +58,7 @@ int exec_scif_get_driver_version(int *version)
 		ret = SCIF_SUCCESS;
 	return ret;
 }
-int exec_scif_open(scif_epd_t *endp, client_node **cur_client)
+int exec_scif_open(scif_epd_t *endp)
 {
 	scif_epd_t t_endp;
 	int ret;
@@ -72,14 +72,12 @@ int exec_scif_open(scif_epd_t *endp, client_node **cur_client)
 	{
 		ret = SCIF_SUCCESS;
 		*endp = t_endp;
-		*cur_client = (client_node *)malloc_safe(sizeof(client_node));
-		(*cur_client)->id = *endp;
-		printf("current client initialised with endp = %d\n", (*cur_client)->id);
+		printf("current client initialised with endp = %d\n", *endp);
 	}
 	return ret; 
 }
 
-int exec_scif_close(scif_epd_t endp, client_node **cur_client)
+int exec_scif_close(scif_epd_t endp)
 {
 	int ret;
 
@@ -90,8 +88,6 @@ int exec_scif_close(scif_epd_t endp, client_node **cur_client)
 	} else 
 	{
 		ret = SCIF_SUCCESS;
-		free(*cur_client);
-		*cur_client = NULL;
 	}
 	return ret; 
 }
@@ -368,7 +364,7 @@ int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, 
 	return ret;
 }
 
-int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
+int process_phi_cmd(void **result, void *cmd_ptr) {
 	int phi_result = 0, int_res_count = 0, uint_res_count = 0 , arg_count = 1;
 	int *int_res = NULL, *errorno = NULL;
 	PhiCmd *cmd = cmd_ptr;
@@ -395,14 +391,14 @@ int process_phi_cmd(void **result, void *cmd_ptr, client_node  **cur_client) {
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
 
-			phi_result = exec_scif_open(int_res, cur_client);
+			phi_result = exec_scif_open(int_res);
 
 			break;
 		case CLOSE:
 			printf("Executing scif_close() ... \n");
 			//TODO: scif_close call goes here...
 
-			phi_result = exec_scif_close((scif_epd_t)cmd->int_args[0], cur_client);
+			phi_result = exec_scif_close((scif_epd_t)cmd->int_args[0]);
 
 			break;
 		case BIND:

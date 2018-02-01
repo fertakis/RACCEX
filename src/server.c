@@ -63,18 +63,23 @@ void serve_client(int client_sfd)
 {
 	int  msg_type, resp_type = -1, arg_cnt;
 	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL;
-	client_node *cur_client = NULL;
+	//client_node *cur_client = NULL;
 	uint32_t msg_length;
 
 	for(;;) {
 		msg_length = receive_message(&msg, client_sfd);
 		if (msg_length > 0)
 			msg_type = deserialise_message(&des_msg, &payload, msg, msg_length);
+		else {
+			printf("\n--------------\nClient finished.\n\n");
+			break;
+		}
+
 
 		printf("Processing message\n");
 		switch (msg_type) {
 			case PHI_CMD:
-				arg_cnt = process_phi_cmd(&result, payload, &cur_client);
+				arg_cnt = process_phi_cmd(&result, payload);
 				resp_type = PHI_CMD_RESULT;
 				break;
 			default:
@@ -112,15 +117,6 @@ void serve_client(int client_sfd)
 			msg = NULL;
 		}
 
-		if (cur_client == NULL) {
-			// TODO: freeing
-			printf("\n--------------\nClient finished.\n\n");
-			break;
-		}
-
-		//TODO: closing method should be implemented
-		//printf("\n-------------\nClient finished. Closing connection.\n");
-		//break;
 	}
 	close(client_sfd);
 	exit(0);
