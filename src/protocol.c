@@ -143,12 +143,12 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 			
 
 	msg_len = ntohl(*(uint32_t *)buf);
-	printf("Going to read a message of %u bytes...\n", msg_len);
+	printf("Going to read a message of %u bytes..., pid %d \n", msg_len, getpid());
 	
 	buf = realloc(buf, msg_len);
 	
 	// read message
-	if((ret = insist_read(socket_fd, buf, msg_len)) <=0) {
+	if((ret = insist_read(socket_fd, buf, msg_len)) <= 0) {
 		free(buf);
 		return ret;
 	}
