@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <netdb.h>
-
+#include <pthread.h>
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -21,33 +21,35 @@
 #include "client.h"
 #include "common.pb-c.h"
 
+static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER; 
+
 /* Insist untill all of the data has been read */
 ssize_t insist_read(int fd, void *buf, size_t cnt)
 {
-    ssize_t ret;
-    size_t orig_cnt = cnt;
+	ssize_t ret;
+	size_t orig_cnt = cnt;
 
-    while (cnt > 0) {
-        ret = read(fd, buf, cnt);
-        if(ret <=0)
-            return ret;
-        buf += ret;
-        cnt -= ret;
-    }
-    return orig_cnt;
+	while (cnt > 0) {
+		ret = read(fd, buf, cnt);
+		if(ret <=0)
+			return ret;
+		buf += ret;
+		cnt -= ret;
+	}
+	return orig_cnt;
 }
 /* Insist until all of the data has been written */
 ssize_t insist_write(int fd, const void *buf, size_t cnt)
 {
 	ssize_t ret;
 	size_t orig_cnt = cnt;
-	
+
 	while (cnt > 0) {
-	        ret = write(fd, buf, cnt);
-	        if (ret < 0)
-	                return ret;
-	        buf += ret;
-	        cnt -= ret;
+		ret = write(fd, buf, cnt);
+		if (ret < 0)
+			return ret;
+		buf += ret;
+		cnt -= ret;
 	}
 
 	return orig_cnt;
@@ -94,7 +96,7 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 		fprintf(stderr, "message unpacking failed\n");
 		return -1;
 	}
-	
+
 	switch (msg->type) {
 		case PHI_CMD:
 			printf("--------------\nIs PHI_CMD\n");
@@ -105,14 +107,14 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 			*payload = msg->phi_cmd;
 			break;
 	}
-	
+
 	// We can't call this here unless we make a *deep* copy of the
 	// message payload...
 	//cookie__free_unpacked(msg, NULL);
 	*result = msg; 
 	if(msg->phi_cmd->type == SEND)
 		printf("arg_cnt = %d, epd=%d, len=%d, flags=%d\n", msg->phi_cmd->arg_count, ((int*)msg->phi_cmd->int_args)[0],
-				 ((int*)msg->phi_cmd->int_args)[1], ((int*)msg->phi_cmd->int_args)[2]);
+				((int*)msg->phi_cmd->int_args)[1], ((int*)msg->phi_cmd->int_args)[2]);
 	return msg->type;
 
 }
@@ -123,36 +125,45 @@ void free_deserialised_message(void *msg) {
 }
 
 ssize_t send_message (int socket_fd, void *buffer, size_t len)
-{
-    printf("Sending %zu bytes...\n",len);
-    return insist_write(socket_fd, buffer, len);
+{ 
+	ssize_t ret = 0 ;
+	printf("Sending %zu bytes...\n",len);
+	
+	pthread_mutex_lock(&lock);
+	ret =  insist_write(socket_fd, buffer, len);
+	pthread_mutex_unlock(&lock);
+	return ret;
 }
 
 uint32_t receive_message(void **serialised_msg, int socket_fd) {
 	void *buf;
 	uint32_t msg_len;
 	int ret = 0;
-
+	
 	buf = malloc_safe(sizeof(uint32_t));
 	
+	pthread_mutex_lock(&lock);
+
 	// read message length
 	if((ret = insist_read(socket_fd, buf, sizeof(uint32_t))) <= 0 ) {
 		free(buf);
 		return ret; 
 	}
-			
+
 
 	msg_len = ntohl(*(uint32_t *)buf);
 	printf("Going to read a message of %u bytes..., pid %d \n", msg_len, getpid());
-	
+
 	buf = realloc(buf, msg_len);
-	
+
 	// read message
 	if((ret = insist_read(socket_fd, buf, msg_len)) <= 0) {
 		free(buf);
 		return ret;
 	}
 	
+	pthread_mutex_unlock(&lock);
+
 	*serialised_msg = buf;
 
 	return msg_len;
