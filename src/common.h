@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include "common.pb-c.h"
 
 #define DEFAULT_SERVER_IP "localhost"
@@ -89,6 +90,11 @@ enum scif_return_codes {
 	SCIF_POLL_FAIL,
 	SCIF_LIB_INIT_FAIL
 };
+
+typedef struct thread_management {
+	pthread_t thread_id;
+	int sockfd;
+} thr_mng;
 
 
 void get_server_connection_config(char **server, char **server_port);

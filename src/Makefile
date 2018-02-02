@@ -190,7 +190,7 @@ AM_DEFAULT_VERBOSITY = 1
 AUTOCONF = ${SHELL} /home/fertakis/repos/remotePhiExec/missing autoconf
 AUTOHEADER = ${SHELL} /home/fertakis/repos/remotePhiExec/missing autoheader
 AUTOMAKE = ${SHELL} /home/fertakis/repos/remotePhiExec/missing automake-1.15
-AWK = mawk
+AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g
@@ -297,7 +297,7 @@ test_client_LDADD = -lscif
 hello_world_SOURCES = hello_world.c
 hello_world_CFLAGS = -fopenmp
 CLEANFILES = ./common.pb-c.c ./common.pb-c.h
-server_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L/home/fertakis/repos/remotePhiExec/src/ -lscif
+server_LDADD = $(PROTOBUF_C_LIBS) -lpthread -L/home/fertakis/repos/remotePhiExec/src/ -lscif
 libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L/home/fertakis/repos/remotePhiExec/src/ -lscif -ldl
 EXTRA_DIST = common.proto
 all: $(BUILT_SOURCES)

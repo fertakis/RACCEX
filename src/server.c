@@ -13,7 +13,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <netdb.h>
-
+#include <pthread.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -59,15 +59,16 @@ int init_server_net(const char *port, struct sockaddr_in *sa)
 	return socket_fd;
 }
 
-void serve_client(int client_sfd)
+void *serve_client(void *arg)
 {
 	int  msg_type, resp_type = -1, arg_cnt;
 	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL;
 	//client_node *cur_client = NULL;
 	uint32_t msg_length;
+	thr_mng *client = arg; 
 
 	for(;;) {
-		msg_length = receive_message(&msg, client_sfd);
+		msg_length = receive_message(&msg, client->sockfd);
 		if (msg_length > 0)
 			msg_type = deserialise_message(&des_msg, &payload, msg, msg_length);
 		else {
@@ -103,7 +104,7 @@ void serve_client(int client_sfd)
 			printf("Packing and Sending result\n");
 			pack_phi_cmd(&payload, result, arg_cnt, PHI_CMD_RESULT);
 			msg_length = serialise_message(&msg, resp_type, payload);
-			send_message(client_sfd, msg, msg_length);
+			send_message(client->sockfd, msg, msg_length);
 
 			if (result != NULL) {
 				// should be more freeing here...
@@ -118,8 +119,9 @@ void serve_client(int client_sfd)
 		}
 
 	}
-	close(client_sfd);
-	exit(0);
+	close(client->sockfd);
+	free(client);
+	return NULL;
 }
 
 int main(int argc, char *argv[]) {
@@ -127,7 +129,8 @@ int main(int argc, char *argv[]) {
 	struct sockaddr_in sa;
 	char *server, *server_port, *local_port, addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
-	pid_t client;
+	//pid_t client;
+	thr_mng *client;
 
 	if (argc > 2) {
 		printf("Usage: server <local_port>\n");
@@ -160,8 +163,23 @@ int main(int argc, char *argv[]) {
 		}
 		fprintf(stderr, "Incoming connection from %s:%d\n",
 				addrstr, ntohs(sa.sin_port));	
-
-		if((client = fork()) < 0)
+		
+		/*Allocate memory for thread management struct */
+		client = malloc_safe(sizeof(thr_mng));	
+		if(client == NULL) { 
+			printf("Problem allocating memory for new client\n");
+			close(client_sfd);
+			continue;
+		}
+	
+		if(pthread_create(&client->thread_id, NULL, serve_client, client) != 0 ) {
+			perror("pthread_create");
+			printf("error spawning thread for new client\n");
+			close(client_sfd);
+			continue;
+		}
+		
+		/*if((client = fork()) < 0)
 		{
 			perror("fork");
 			exit(1);
@@ -170,7 +188,7 @@ int main(int argc, char *argv[]) {
 		{
 			//client
 			serve_client(client_sfd);
-		}		
+		}*/		
 	}
 
 	//should never be here

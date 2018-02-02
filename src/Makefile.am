@@ -32,7 +32,7 @@ common.pb-c.h: @srcdir@/common.pb-c.c
 CLEANFILES = @builddir@/common.pb-c.c @builddir@/common.pb-c.h
 
 
-server_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L/home/fertakis/repos/remotePhiExec/src/ -lscif
+server_LDADD = $(PROTOBUF_C_LIBS) -lpthread -L/home/fertakis/repos/remotePhiExec/src/ -lscif
 libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L/home/fertakis/repos/remotePhiExec/src/ -lscif -ldl
 
 EXTRA_DIST = common.proto
