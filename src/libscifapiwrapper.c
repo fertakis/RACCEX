@@ -788,10 +788,10 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 
 	free_deserialised_message(des_msg);
 	
-	if(uow.ref_count == 0) {
+	/*if(uow.ref_count == 0) {
 		close(uow.socket_fd);
 		uow.socket_fd = -1;
-	}
+	}*/
 
 	return ret;
 }
