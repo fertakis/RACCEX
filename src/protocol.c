@@ -21,7 +21,7 @@
 #include "client.h"
 #include "common.pb-c.h"
 
-static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER; 
+//static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER; 
 
 /* Insist untill all of the data has been read */
 ssize_t insist_read(int fd, void *buf, size_t cnt)
@@ -129,9 +129,9 @@ ssize_t send_message (int socket_fd, void *buffer, size_t len)
 	ssize_t ret = 0 ;
 	printf("Sending %zu bytes...\n",len);
 	
-	pthread_mutex_lock(&lock);
+	//pthread_mutex_lock(&lock);
 	ret =  insist_write(socket_fd, buffer, len);
-	pthread_mutex_unlock(&lock);
+	//pthread_mutex_unlock(&lock);
 	return ret;
 }
 
@@ -142,7 +142,7 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 	
 	buf = malloc_safe(sizeof(uint32_t));
 	
-	pthread_mutex_lock(&lock);
+	//pthread_mutex_lock(&lock);
 
 	// read message length
 	if((ret = insist_read(socket_fd, buf, sizeof(uint32_t))) <= 0 ) {
@@ -162,7 +162,7 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 		return ret;
 	}
 	
-	pthread_mutex_unlock(&lock);
+	//pthread_mutex_unlock(&lock);
 
 	*serialised_msg = buf;
 
