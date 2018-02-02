@@ -171,7 +171,8 @@ int main(int argc, char *argv[]) {
 			close(client_sfd);
 			continue;
 		}
-	
+		client->sockfd = client_sfd;
+
 		if(pthread_create(&client->thread_id, NULL, serve_client, client) != 0 ) {
 			perror("pthread_create");
 			printf("error spawning thread for new client\n");
