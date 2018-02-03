@@ -24,30 +24,31 @@
 #include "client.h"
 #include "protocol.h"
 
-unitofwork uow = { .socket_fd = -1, .endp = -1, .ref_count = 0};
-
+//unitofwork uow = { .socket_fd = -1, .endp = -1, .ref_count = 0};
+struct thread_mng_list threads;
 static uint8_t scif_version_mismatch;
 
 	static	int
 scif_get_driver_version(void)
 {
-	int res_code, version = -1;
+	//TODO:Needs revision to support multithreading
+	/*int res_code, version = -1;
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
-
+	
 	//initialise socket & establish connection
 	establish_connection(&uow);
 
 	printf("send cookie\n");
 	//prepare & send cmd	
-	if(send_phi_cmd(uow.socket_fd, NULL, 0, GET_VERSION) == -1) 
+	if(send_phi_cmd(<uow->sockfd>, NULL, 0, GET_VERSION) == -1) 
 	{
 		fprintf(stderr, "Error sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	//receive resutls
-	get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 
 	if(res_code == PHI_SUCCESS) {
 		version = (int)result->int_args[0];
@@ -55,11 +56,11 @@ scif_get_driver_version(void)
 
 	printf(" scif_get_driver_version executed \n");
 	free_deserialised_message(des_msg);
-	
+
 	//close connection
-	close(uow.socket_fd);
-	
-	return version;
+	close(uow->sockfd);*/
+
+	return -1;
 }
 
 	scif_epd_t
@@ -69,24 +70,26 @@ scif_open(void)
 	scif_epd_t fd;
 	PhiCmd *result;
 	void *des_msg = NULL;
+	thr_mng *uow;
 
 	printf("scif_open...\n");
 
-	if(uow.ref_count == 0)
-		establish_connection(&uow);
-	uow.ref_count++;
-	printf("ref_count=%d\n", uow.ref_count);
+	uow = identify_thread(&threads);
 
-	if(send_phi_cmd(uow.socket_fd, NULL, 0, OPEN) < 0 )
+	if(uow->sockfd < 0)
+		establish_connection(uow);
+	uow->ref_count++;
+	printf("ref_count=%d\n", uow->ref_count);
+
+	if(send_phi_cmd(uow->sockfd, NULL, 0, OPEN) < 0 )
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == PHI_SUCCESS) {
 		fd = (scif_epd_t)result->int_args[0];
-		uow.endp = fd;
 	}
 	else { 
 		fd = -1;
@@ -104,31 +107,38 @@ scif_close(scif_epd_t epd)
 	var arg = { .elements = 1}, *args[] = { &arg };
 	PhiCmd *result;
 	void *des_msg = NULL;
-	
+	thr_mng *uow;
+
 	printf("scif_close(epd=%d)\n",epd);
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg.type = INT;
 	arg.length = sizeof(int);
 	arg.data = &epd;
 
-	if(send_phi_cmd(uow.socket_fd, args, 1, CLOSE) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 1, CLOSE) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
 	}	
 
-	res_code = get_phi_cmd_result(&result, &des_msg,  uow.socket_fd);
-	
+	res_code = get_phi_cmd_result(&result, &des_msg,  uow->sockfd);
+
 	if(res_code != PHI_SUCCESS) {
 		ret = -1;
 		errno  = (int)result->phi_errorno;
 	}
 
 	free_deserialised_message(des_msg);
-	
-	uow.ref_count--;
-	if(uow.ref_count == 0) {
-		close(uow.socket_fd);
+
+	uow->ref_count--;
+	if(uow->ref_count == 0) {
+		close(uow->sockfd);
+		uow->sockfd = -1;
 	}
 
 	return ret;
@@ -141,8 +151,15 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 	var arg_int = { .elements =1 }, arg_uint = { .elements = 1}, *args[] = { &arg_int, &arg_uint };
 	PhiCmd *result;  
 	void *des_msg = NULL;
-	
+	thr_mng *uow;
+
 	printf("scif_bind(epd=%d, pn %d)\n", epd, pn);
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
+
 	arg_int.type = INT;
 	arg_int.length = sizeof(int);
 	arg_int.data = &epd;
@@ -151,13 +168,13 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 	arg_uint.length = sizeof(uint16_t);
 	arg_uint.data = &pn;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, BIND) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, BIND) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
 	}	
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 
 	if(res_code == PHI_SUCCESS) {
 		ret = (uint16_t)result->int_args[0];
@@ -166,9 +183,9 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 		ret = -1;
 		errno = (int)result->phi_errorno;
 	}
-	
+
 	free_deserialised_message(des_msg);
-	
+
 	return ret;
 }
 
@@ -179,8 +196,15 @@ scif_listen(scif_epd_t epd, int backlog)
 	var arg = { .elements = 2 }, *args[] = { &arg };
 	PhiCmd *result;  
 	void *des_msg = NULL;
-	
+	thr_mng *uow;
+
 	printf("scif_listen(epd=%d, backlog= %d)\n", epd, backlog);
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
+
 	arg.type = INT;
 	arg.length = sizeof(int) * arg.elements;
 	int *data = (int *)malloc_safe(arg.length);
@@ -188,21 +212,21 @@ scif_listen(scif_epd_t epd, int backlog)
 	data[1] = backlog;
 	arg.data = data;
 
-	if(send_phi_cmd(uow.socket_fd, args, 1, LISTEN) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 1, LISTEN) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
 	}	
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 
 	if(res_code != PHI_SUCCESS) {
 		ret = -1;
 		errno = (int)result->phi_errorno;
 	}
-	
+
 	free_deserialised_message(des_msg);
-	
+
 	return ret;
 }
 
@@ -213,8 +237,14 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 	var arg_int = { .elements = 1}, arg_bytes = { .elements = 1}, *args[] = { &arg_int, &arg_bytes};
 	PhiCmd *result; 
 	void *des_msg = NULL;
+	thr_mng *uow;
 
 	printf("executing scif_connect(epd=%d,dst->node=%d, dst->port=%d\n",epd, dst->node, dst->port);
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int);
@@ -224,13 +254,13 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 	arg_bytes.length = sizeof(struct scif_portID);
 	arg_bytes.data = dst;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, CONNECT) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, CONNECT) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
 	}	
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) 
 		ret = (int)result->int_args[0];
 	else {
@@ -238,11 +268,11 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 		errno = (int)result->phi_errorno;
 		printf("Error detected : %s\n", strerror(errno));
 	}
-	
+
 	free_deserialised_message(des_msg);
-	
+
 	printf("ret =%d\n", ret);
-	
+
 	return ret;
 
 }
@@ -254,8 +284,14 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 	var arg_int = { .elements =2 }, arg_bytes = { .elements = 1}, *args[]= { &arg_int, &arg_bytes};
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
-	
+	thr_mng *uow;
+
 	printf("scif_accept(epd=%d...\n", epd);
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
@@ -268,13 +304,13 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 	arg_bytes.length = sizeof(struct scif_portID);
 	arg_bytes.data = peer;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, ACCEPT) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, ACCEPT) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
 	}	
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		newepd = (scif_epd_t *)&result->int_args[0];
 		ret = 0;
@@ -285,7 +321,7 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 	}
 
 	free_deserialised_message(des_msg);
-	
+
 	return ret;
 
 }
@@ -297,8 +333,14 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 1}, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
-	
+	thr_mng *uow;
+
 	printf("executing scif_send(endp=%d, len=%d, flags=%d\n", epd, len, flags);
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
@@ -312,13 +354,13 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	arg_bytes.length = len;
 	arg_bytes.data = msg;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, SEND) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, SEND) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		ret = (int)result->int_args[0];
 	}
@@ -339,6 +381,12 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 	var arg_int = { .elements = 3 }, *args[] = { &arg_int}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
@@ -348,13 +396,13 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 	data[2] = flags;
 	arg_int.data = data;
 
-	if(send_phi_cmd(uow.socket_fd, args, 1, RECV) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 1, RECV) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(msg, result->extra_args[0].data, result->extra_args[0].len);
 		ret = (int)result->int_args[0];
@@ -365,7 +413,7 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 	}
 
 	free_deserialised_message(des_msg);
-	
+
 	return ret;
 }
 
@@ -378,6 +426,12 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	var arg_int = { .elements = 4 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
@@ -392,13 +446,13 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	arg_bytes.length = sizeof(off_t);
 	arg_bytes.data = &offset;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, REGISTER) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, REGISTER) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(addr,result->extra_args[0].data, sizeof(void *));
 		memcpy(&ret, result->extra_args[0].data + sizeof(void *), sizeof(off_t));
@@ -420,6 +474,12 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	var arg_int = { .elements = 2 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
@@ -432,13 +492,13 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	arg_bytes.length = sizeof(off_t);
 	arg_bytes.data = &offset;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, UNREGISTER) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, UNREGISTER) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
 	else {
@@ -472,6 +532,12 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
@@ -487,13 +553,13 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	((off_t *)arg_bytes.data)[0] = loffset;
 	((off_t *)arg_bytes.data)[1] = roffset;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, READ_FROM) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, READ_FROM) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
 	else {
@@ -512,6 +578,12 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
+
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
@@ -527,13 +599,13 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	((off_t *)arg_bytes.data)[0] = loffset;
 	((off_t *)arg_bytes.data)[1] = roffset;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, WRITE_TO) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, WRITE_TO) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
 	else {
@@ -553,6 +625,12 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
+	
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
@@ -567,13 +645,13 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	arg_bytes.data = (off_t *)malloc_safe(arg_bytes.length);
 	*((off_t *)arg_bytes.data) = offset;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, VREAD_FROM) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, VREAD_FROM) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		memcpy(addr, result->extra_args[0].data, len);
 		ret = 0;
@@ -595,7 +673,12 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
+	
+	uow = identify_thread(&threads);
 
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
 	int *data = malloc_safe(arg_int.length);
@@ -610,13 +693,13 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	memcpy(arg_bytes.data, addr, len);
 	memcpy(arg_bytes.data + len, &offset, sizeof(off_t));
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, VWRITE_TO) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, VWRITE_TO) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
 	else {
@@ -636,7 +719,12 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 	var arg_int = { .elements = 2 }, *args[] = { &arg_int}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
 
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
 	int *data = malloc_safe(arg_int.length);
@@ -644,15 +732,15 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 	data[1] = flags;
 	arg_int.data = data;
 
-	if(send_phi_cmd(uow.socket_fd, args, 1, FENCE_MARK) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 1, FENCE_MARK) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
-		mark = (int *)result->int_args[0];
+		memcpy(mark, &result->int_args[0], sizeof(int));
 		ret = 0;
 	}
 	else {
@@ -672,7 +760,12 @@ scif_fence_wait(scif_epd_t epd, int mark)
 	var arg_int = { .elements = 2 }, *args[] = { &arg_int}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
 
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
 	int *data = malloc_safe(arg_int.length);
@@ -680,13 +773,13 @@ scif_fence_wait(scif_epd_t epd, int mark)
 	data[1] = mark;
 	arg_int.data = data;
 
-	if(send_phi_cmd(uow.socket_fd, args, 1, FENCE_WAIT) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 1, FENCE_WAIT) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
 	else {
@@ -708,7 +801,12 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	    *args[] = { &arg_int, &arg_uint, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
 
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
 	int *data = malloc_safe(arg_int.length);
@@ -728,13 +826,13 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	((off_t *)arg_bytes.data)[0] = loff;
 	((off_t *)arg_bytes.data)[1] = roff;
 
-	if(send_phi_cmd(uow.socket_fd, args, 3, FENCE_SIGNAL) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 3, FENCE_SIGNAL) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
 		ret = 0;
 	else {
@@ -754,23 +852,25 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	var arg = { .elements = 1 }, *args[] = { &arg };
 	PhiCmd *result;
 	void *des_msg = NULL;
+	thr_mng *uow;
 
 	printf("get_scif_nodes\n");	
+	uow = identify_thread(&threads);
 
-	if(uow.ref_count == 0)
-		establish_connection(&uow);
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg.type = INT;
 	arg.length = sizeof(int);
 	arg.data = &len;
 
-	if(send_phi_cmd(uow.socket_fd, args, 1, GET_NODE_IDS) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 1, GET_NODE_IDS) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	} 	
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		ret = result->int_args[0];
 		if (ret > len)
@@ -787,11 +887,11 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	}
 
 	free_deserialised_message(des_msg);
-	
+
 	/*if(uow.ref_count == 0) {
-		close(uow.socket_fd);
-		uow.socket_fd = -1;
-	}*/
+	  close(uow->sockfd);
+	  uow->sockfd = -1;
+	  }*/
 
 	return ret;
 }
@@ -804,6 +904,12 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	    *args[] = { &arg_uint, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
+	thr_mng *uow;
+	
+	uow = identify_thread(&threads);
+
+	if(uow->sockfd < 0)
+		establish_connection(uow);
 
 	arg_uint.type = UINT;
 	arg_uint.length = sizeof(uint64_t)*arg_uint.elements;
@@ -815,13 +921,13 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	arg_bytes.length = sizeof(struct scif_pollepd);
 	arg_bytes.data = ufds;
 
-	if(send_phi_cmd(uow.socket_fd, args, 2, POLL) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 2, POLL) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow.socket_fd);
+	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		ret = result->int_args[0];
 	}
@@ -835,9 +941,10 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	return ret;
 }
 
-/*__attribute__ ((constructor)) static void scif_lib_init(void)
+__attribute__ ((constructor)) static void scif_lib_init(void)
 {
-	int scif_driver_ver = scif_get_driver_version();
-	if ((scif_driver_ver > 0) && (scif_driver_ver != SCIF_VERSION))
-		scif_version_mismatch = 1;
-}*/
+	/*int scif_driver_ver = scif_get_driver_version();
+	  if ((scif_driver_ver > 0) && (scif_driver_ver != SCIF_VERSION))
+	  scif_version_mismatch = 1;*/
+	initialise_thr_mng_list(&threads);
+}

@@ -5,8 +5,9 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 ACCEPT	common.h	/^	ACCEPT,$/;"	e	enum:__anon1
-ACLOCAL	Makefile	/^ACLOCAL = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/missing aclocal-1.15$/;"	m
+ACLOCAL	Makefile	/^ACLOCAL = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing aclocal-1.15$/;"	m
 ACLOCAL_M4	Makefile	/^ACLOCAL_M4 = $(top_srcdir)\/aclocal.m4$/;"	m
+ALLOC_H	alloc.h	2;"	d
 AMTAR	Makefile	/^AMTAR = $${TAR-tar}$/;"	m
 AM_CFLAGS	Makefile	/^AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I\/usr\/include\/google \\$/;"	m
 AM_DEFAULT_VERBOSITY	Makefile	/^AM_DEFAULT_VERBOSITY = 1$/;"	m
@@ -16,13 +17,14 @@ AM_V_GEN	Makefile	/^AM_V_GEN = $(am__v_GEN_$(V))$/;"	m
 AM_V_P	Makefile	/^AM_V_P = $(am__v_P_$(V))$/;"	m
 AM_V_at	Makefile	/^AM_V_at = $(am__v_at_$(V))$/;"	m
 AM_V_lt	Makefile	/^AM_V_lt = $(am__v_lt_$(V))$/;"	m
-AUTOCONF	Makefile	/^AUTOCONF = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/missing autoconf$/;"	m
-AUTOHEADER	Makefile	/^AUTOHEADER = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/missing autoheader$/;"	m
-AUTOMAKE	Makefile	/^AUTOMAKE = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/missing automake-1.15$/;"	m
-AWK	Makefile	/^AWK = mawk$/;"	m
+AUTOCONF	Makefile	/^AUTOCONF = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing autoconf$/;"	m
+AUTOHEADER	Makefile	/^AUTOHEADER = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing autoheader$/;"	m
+AUTOMAKE	Makefile	/^AUTOMAKE = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing automake-1.15$/;"	m
+AWK	Makefile	/^AWK = gawk$/;"	m
 BIND	common.h	/^	BIND,$/;"	e	enum:__anon1
 BUILT_SOURCES	Makefile	/^BUILT_SOURCES = .\/common.pb-c.c .\/common.pb-c.h$/;"	m
-BYTES	common.h	/^    BYTES$/;"	e	enum:var_type_enum
+BYTES	common.h	/^    BYTES,$/;"	e	enum:var_type_enum
+CACHE_LINE_SIZE	skipList.h	5;"	d
 CC	Makefile	/^CC = gcc$/;"	m
 CCDEPMODE	Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
 CCLD	Makefile	/^CCLD = $(CC)$/;"	m
@@ -35,7 +37,7 @@ COMPILE	Makefile	/^COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_
 CONFIG_CLEAN_FILES	Makefile	/^CONFIG_CLEAN_FILES =$/;"	m
 CONFIG_CLEAN_VPATH_FILES	Makefile	/^CONFIG_CLEAN_VPATH_FILES =$/;"	m
 CONNECT	common.h	/^	CONNECT,$/;"	e	enum:__anon1
-COOKIE__INIT	common.pb-c.h	68;"	d
+COOKIE__INIT	common.pb-c.h	53;"	d
 CPPFLAGS	Makefile	/^CPPFLAGS = $/;"	m
 CTAGS	Makefile	/^CTAGS = ctags$/;"	m
 CXX	Makefile	/^CXX = g++$/;"	m
@@ -46,17 +48,18 @@ Cookie	common.pb-c.h	/^typedef struct _Cookie Cookie;$/;"	t	typeref:struct:_Cook
 Cookie_Closure	common.pb-c.h	/^typedef void (*Cookie_Closure)$/;"	t
 DEBUG_CFLAGS	Makefile	/^DEBUG_CFLAGS = $/;"	m
 DEFAULT_INCLUDES	Makefile	/^DEFAULT_INCLUDES = -I.$/;"	m
-DEFAULT_SERVER_IP	common.h	7;"	d
-DEFAULT_SERVER_PORT	common.h	8;"	d
+DEFAULT_SERVER_IP	common.h	9;"	d
+DEFAULT_SERVER_PORT	common.h	10;"	d
 DEFS	Makefile	/^DEFS = -DPACKAGE_NAME=\\"remotephiexec\\" -DPACKAGE_TARNAME=\\"remotephiexec\\" -DPACKAGE_VERSION=\\"0.1.0\\" -DPACKAGE_STRING=\\"remotephiexec\\ 0.1.0\\" -DPACKAGE_BUGREPORT=\\"\\" -DPACKAGE_URL=\\"\\" -DPACKAGE=\\"remotephiexec\\" -DVERSION=\\"0.1.0\\" -DHAVE_LIBPROTOBUF_C=1$/;"	m
 DEPDIR	Makefile	/^DEPDIR = .deps$/;"	m
-DEVICE_NODE	libscifapiwrapper.c	21;"	d	file:
+DEVICE_NODE	process.c	30;"	d	file:
 DISTFILES	Makefile	/^DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)$/;"	m
 DIST_COMMON	Makefile	/^DIST_COMMON = $(srcdir)\/Makefile.am $(am__DIST_COMMON)$/;"	m
-DIST_SOURCES	Makefile	/^DIST_SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES) \\$/;"	m
+DIST_SOURCES	Makefile	/^DIST_SOURCES = $(hello_world_SOURCES) $(libscifapiwrapper_so_SOURCES) \\$/;"	m
 ECHO_C	Makefile	/^ECHO_C = $/;"	m
 ECHO_N	Makefile	/^ECHO_N = -n$/;"	m
 ECHO_T	Makefile	/^ECHO_T = $/;"	m
+ERRORNO	common.h	/^    ERRORNO$/;"	e	enum:var_type_enum
 ETAGS	Makefile	/^ETAGS = etags$/;"	m
 EXEEXT	Makefile	/^EXEEXT = $/;"	m
 EXTRA_DIST	Makefile	/^EXTRA_DIST = common.proto$/;"	m
@@ -81,7 +84,7 @@ LIB_INIT	common.h	/^	LIB_INIT$/;"	e	enum:__anon1
 LINK	Makefile	/^LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@$/;"	m
 LISTEN	common.h	/^	LISTEN,$/;"	e	enum:__anon1
 LTLIBOBJS	Makefile	/^LTLIBOBJS = $/;"	m
-MAKEINFO	Makefile	/^MAKEINFO = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/missing makeinfo$/;"	m
+MAKEINFO	Makefile	/^MAKEINFO = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing makeinfo$/;"	m
 MKDIR_P	Makefile	/^MKDIR_P = \/bin\/mkdir -p$/;"	m
 MMAP	common.h	/^	MMAP,$/;"	e	enum:__anon1
 MUNMAP	common.h	/^	MUNMAP,$/;"	e	enum:__anon1
@@ -99,11 +102,11 @@ PACKAGE_VERSION	Makefile	/^PACKAGE_VERSION = 0.1.0$/;"	m
 PATH_SEPARATOR	Makefile	/^PATH_SEPARATOR = :$/;"	m
 PHI_CMD	common.h	/^	PHI_CMD = 0,$/;"	e	enum:__anon1
 PHI_CMD_RESULT	common.h	/^	PHI_CMD_RESULT,$/;"	e	enum:__anon1
-PHI_CMD__INIT	common.pb-c.h	44;"	d
-PHI_DEVICE__INIT	common.pb-c.h	55;"	d
+PHI_CMD__INIT	common.pb-c.h	42;"	d
 PHI_ERROR	common.h	/^	PHI_ERROR$/;"	e	enum:phi_result_code
 PHI_RESULTS	phi_errors.c	1;"	d	file:
 PHI_RESULTS	phi_errors.h	1;"	d
+PHI_RESULT_CODE	common.h	/^    PHI_RESULT_CODE, $/;"	e	enum:var_type_enum
 PHI_RESULT_STRING	phi_errors.c	/^static const char *PHI_RESULT_STRING[] = {$/;"	v	file:
 PHI_RESULT_STRING	phi_errors.h	/^static const char *PHI_RESULT_STRING[] = {$/;"	v
 PHI_RESULT_STRING_ARR_SIZE	phi_errors.c	12;"	d	file:
@@ -125,8 +128,6 @@ PROTOCOL_H	protocol.h	2;"	d
 PROTOC_C	Makefile	/^PROTOC_C = protoc-c$/;"	m
 PhiCmd	common.pb-c.h	/^typedef struct _PhiCmd PhiCmd;$/;"	t	typeref:struct:_PhiCmd
 PhiCmd_Closure	common.pb-c.h	/^typedef void (*PhiCmd_Closure)$/;"	t
-PhiDevice	common.pb-c.h	/^typedef struct _PhiDevice PhiDevice;$/;"	t	typeref:struct:_PhiDevice
-PhiDevice_Closure	common.pb-c.h	/^typedef void (*PhiDevice_Closure)$/;"	t
 READ_FROM	common.h	/^	READ_FROM,$/;"	e	enum:__anon1
 RECV	common.h	/^	RECV,$/;"	e	enum:__anon1
 REGISTER	common.h	/^	REGISTER,$/;"	e	enum:__anon1
@@ -134,38 +135,55 @@ RES	phi_errors.c	10;"	d	file:
 RES	phi_errors.c	6;"	d	file:
 RES	phi_errors.h	10;"	d
 RES	phi_errors.h	6;"	d
+SCIF_ACCEPT_FAIL	common.h	/^	SCIF_ACCEPT_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_BIND_FAIL	common.h	/^	SCIF_BIND_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_CLOSE_FAIL	common.h	/^	SCIF_CLOSE_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_CONNECT_FAIL	common.h	/^	SCIF_CONNECT_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_FENCE_MARK_FAIL	common.h	/^	SCIF_FENCE_MARK_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_FENCE_SIGNAL_FAIL	common.h	/^	SCIF_FENCE_SIGNAL_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_FENCE_WAIT_FAIL	common.h	/^	SCIF_FENCE_WAIT_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_GET_DRIVER_VERSION_FAIL	common.h	/^	SCIF_GET_DRIVER_VERSION_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_GET_NODE_IDS_FAIL	common.h	/^	SCIF_GET_NODE_IDS_FAIL,$/;"	e	enum:scif_return_codes
 SCIF_INSTALL_PATH	Makefile	/^SCIF_INSTALL_PATH = $/;"	m
-SCIF_OPEN_FAIL	common.h	/^	SCIF_OPEN_FAIL$/;"	e	enum:scif_return_codes
+SCIF_LIB_INIT_FAIL	common.h	/^	SCIF_LIB_INIT_FAIL$/;"	e	enum:scif_return_codes
+SCIF_LISTEN_FAIL	common.h	/^	SCIF_LISTEN_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_MMAP_FAIL	common.h	/^	SCIF_MMAP_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_MUNMAP_FAIL	common.h	/^	SCIF_MUNMAP_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_OPEN_FAIL	common.h	/^	SCIF_OPEN_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_POLL_FAIL	common.h	/^	SCIF_POLL_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_READ_FROM_FAIL	common.h	/^	SCIF_READ_FROM_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_RECV_FAIL	common.h	/^	SCIF_RECV_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_REGISTER_FAIL	common.h	/^	SCIF_REGISTER_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_SEND_FAIL	common.h	/^	SCIF_SEND_FAIL,$/;"	e	enum:scif_return_codes
 SCIF_SUCCESS	common.h	/^	SCIF_SUCCESS=0,$/;"	e	enum:scif_return_codes
+SCIF_UNREGISTER_FAIL	common.h	/^	SCIF_UNREGISTER_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_VREAD_FROM_FAIL	common.h	/^	SCIF_VREAD_FROM_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_VWRITE_TO_FAIL	common.h	/^	SCIF_VWRITE_TO_FAIL,$/;"	e	enum:scif_return_codes
+SCIF_WRITE_TO_FAIL	common.h	/^	SCIF_WRITE_TO_FAIL,$/;"	e	enum:scif_return_codes
 SEND	common.h	/^	SEND,$/;"	e	enum:__anon1
 SET_MAKE	Makefile	/^SET_MAKE = $/;"	m
 SHELL	Makefile	/^SHELL = \/bin\/bash$/;"	m
-SOURCES	Makefile	/^SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES) \\$/;"	m
+SKIPLIST_H	skipList.h	3;"	d
+SOURCES	Makefile	/^SOURCES = $(hello_world_SOURCES) $(libscifapiwrapper_so_SOURCES) \\$/;"	m
 STRING	common.h	/^    STRING,$/;"	e	enum:var_type_enum
 STRIP	Makefile	/^STRIP = $/;"	m
-TCP_BACKLOG	common.h	12;"	d
-TCP_PORT	common.h	11;"	d
+TCP_BACKLOG	common.h	14;"	d
+TCP_PORT	common.h	13;"	d
 TEST	common.h	/^	TEST,$/;"	e	enum:__anon1
 UINT	common.h	/^    UINT,$/;"	e	enum:var_type_enum
 UNREGISTER	common.h	/^	UNREGISTER,$/;"	e	enum:__anon1
-V	libscifapiwrapper.c	33;"	d	file:
 VERSION	Makefile	/^VERSION = 0.1.0$/;"	m
 VREAD_FROM	common.h	/^	VREAD_FROM,$/;"	e	enum:__anon1
 VWRITE_TO	common.h	/^	VWRITE_TO,$/;"	e	enum:__anon1
 WRITE_TO	common.h	/^	WRITE_TO,$/;"	e	enum:__anon1
+XMALLOC	alloc.h	7;"	d
 _Cookie	common.pb-c.h	/^struct  _Cookie$/;"	s
 _PhiCmd	common.pb-c.h	/^struct  _PhiCmd$/;"	s
-_PhiDevice	common.pb-c.h	/^struct  _PhiDevice$/;"	s
-__V	libscifapiwrapper.c	27;"	d	file:
-___str	libscifapiwrapper.c	30;"	d	file:
-__str	libscifapiwrapper.c	29;"	d	file:
-__symver	libscifapiwrapper.c	25;"	d	file:
-__symver_tag	libscifapiwrapper.c	23;"	d	file:
 _unitofwork	client.h	/^typedef struct _unitofwork {$/;"	s
-abs_builddir	Makefile	/^abs_builddir = \/home\/konstantinos\/repos\/remotephiexec\/src$/;"	m
-abs_srcdir	Makefile	/^abs_srcdir = \/home\/konstantinos\/repos\/remotephiexec\/src$/;"	m
-abs_top_builddir	Makefile	/^abs_top_builddir = \/home\/konstantinos\/repos\/remotephiexec$/;"	m
-abs_top_srcdir	Makefile	/^abs_top_srcdir = \/home\/konstantinos\/repos\/remotephiexec$/;"	m
+abs_builddir	Makefile	/^abs_builddir = \/home\/fertakis\/repos\/remotePhiExec\/src$/;"	m
+abs_srcdir	Makefile	/^abs_srcdir = \/home\/fertakis\/repos\/remotePhiExec\/src$/;"	m
+abs_top_builddir	Makefile	/^abs_top_builddir = \/home\/fertakis\/repos\/remotePhiExec$/;"	m
+abs_top_srcdir	Makefile	/^abs_top_srcdir = \/home\/fertakis\/repos\/remotePhiExec$/;"	m
 ac_ct_CC	Makefile	/^ac_ct_CC = gcc$/;"	m
 ac_ct_CXX	Makefile	/^ac_ct_CXX = g++$/;"	m
 am__DIST_COMMON	Makefile	/^am__DIST_COMMON = $(srcdir)\/Makefile.in $(top_srcdir)\/depcomp$/;"	m
@@ -206,97 +224,136 @@ am__v_at_1	Makefile	/^am__v_at_1 = $/;"	m
 am__v_lt_	Makefile	/^am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))$/;"	m
 am__v_lt_0	Makefile	/^am__v_lt_0 = --silent$/;"	m
 am__v_lt_1	Makefile	/^am__v_lt_1 = $/;"	m
+am_hello_world_OBJECTS	Makefile	/^am_hello_world_OBJECTS = hello_world-hello_world.$(OBJEXT)$/;"	m
 am_libscifapiwrapper_so_OBJECTS	Makefile	/^am_libscifapiwrapper_so_OBJECTS =  \\$/;"	m
 am_server_OBJECTS	Makefile	/^am_server_OBJECTS = server.$(OBJEXT) process.$(OBJEXT) \\$/;"	m
-am_test_server_OBJECTS	Makefile	/^am_test_server_OBJECTS = test_server.$(OBJEXT) common.$(OBJEXT) \\$/;"	m
-arg_count	common.pb-c.h	/^  uint32_t *arg_count;$/;"	m	struct:_PhiCmd
+am_test_client_OBJECTS	Makefile	/^am_test_client_OBJECTS = test_client.$(OBJEXT)$/;"	m
+arg_count	common.pb-c.h	/^  uint32_t arg_count;$/;"	m	struct:_PhiCmd
 base	common.pb-c.h	/^  ProtobufCMessage base;$/;"	m	struct:_Cookie
 base	common.pb-c.h	/^  ProtobufCMessage base;$/;"	m	struct:_PhiCmd
-base	common.pb-c.h	/^  ProtobufCMessage base;$/;"	m	struct:_PhiDevice
 bin_PROGRAMS	Makefile	/^bin_PROGRAMS = server$(EXEEXT) libscifapiwrapper.so$(EXEEXT) \\$/;"	m
 bindir	Makefile	/^bindir = ${exec_prefix}\/bin$/;"	m
 build_alias	Makefile	/^build_alias = $/;"	m
 builddir	Makefile	/^builddir = .$/;"	m
-compatible_version	libscifapiwrapper.c	35;"	d	file:
+client_node	process.h	/^} client_node;$/;"	t	typeref:struct:client_node_s
+client_node_s	process.h	/^typedef struct client_node_s {$/;"	s
 cookie__descriptor	common.pb-c.c	/^const ProtobufCMessageDescriptor cookie__descriptor =$/;"	v
-cookie__field_descriptors	common.pb-c.c	/^static const ProtobufCFieldDescriptor cookie__field_descriptors[3] =$/;"	v	file:
+cookie__field_descriptors	common.pb-c.c	/^static const ProtobufCFieldDescriptor cookie__field_descriptors[2] =$/;"	v	file:
 cookie__field_indices_by_name	common.pb-c.c	/^static const unsigned cookie__field_indices_by_name[] = {$/;"	v	file:
 cookie__free_unpacked	common.pb-c.c	/^void   cookie__free_unpacked$/;"	f
 cookie__get_packed_size	common.pb-c.c	/^size_t cookie__get_packed_size$/;"	f
 cookie__init	common.pb-c.c	/^void   cookie__init$/;"	f
-cookie__number_ranges	common.pb-c.c	/^static const ProtobufCIntRange cookie__number_ranges[1 + 1] =$/;"	v	file:
+cookie__number_ranges	common.pb-c.c	/^static const ProtobufCIntRange cookie__number_ranges[2 + 1] =$/;"	v	file:
 cookie__pack	common.pb-c.c	/^size_t cookie__pack$/;"	f
 cookie__pack_to_buffer	common.pb-c.c	/^size_t cookie__pack_to_buffer$/;"	f
 cookie__unpack	common.pb-c.c	/^       cookie__unpack$/;"	f
+curr_size	skipList.h	/^	unsigned int curr_size;$/;"	m	struct:__anon2
 data	common.h	/^    void *data;$/;"	m	struct:var_struct
 datadir	Makefile	/^datadir = ${datarootdir}$/;"	m
 datarootdir	Makefile	/^datarootdir = ${prefix}\/share$/;"	m
-default_version	libscifapiwrapper.c	37;"	d	file:
+delete_node_with_vertex_id	skipList.c	/^struct id_node *delete_node_with_vertex_id(pq_t *pq, unsigned int vertex_id)$/;"	f
+delete_pq	skipList.c	/^void delete_pq(pq_t *pq)$/;"	f
 depcomp	Makefile	/^depcomp = $(SHELL) $(top_srcdir)\/depcomp$/;"	m
 deserialise_message	protocol.c	/^int deserialise_message(void **result, void **payload, void *serialised_msg, uint32_t ser_msg_len)$/;"	f
 docdir	Makefile	/^docdir = ${datarootdir}\/doc\/${PACKAGE_TARNAME}$/;"	m
 dvidir	Makefile	/^dvidir = ${docdir}$/;"	m
 elements	common.h	/^    size_t elements;$/;"	m	struct:var_struct
+endp	client.h	/^	int endp;$/;"	m	struct:_unitofwork
 establish_connection	client.c	/^void establish_connection(unitofwork *uow) {$/;"	f
 exec_prefix	Makefile	/^exec_prefix = ${prefix}$/;"	m
+exec_scif_accept	process.c	/^int exec_scif_accept(scif_epd_t endp, struct scif_portID *peer, $/;"	f
+exec_scif_bind	process.c	/^int exec_scif_bind(scif_epd_t endp, uint16_t pn, int *portno)$/;"	f
+exec_scif_close	process.c	/^int exec_scif_close(scif_epd_t endp)$/;"	f
+exec_scif_connect	process.c	/^int exec_scif_connect(scif_epd_t endp, struct scif_portID *dst, int *portID)$/;"	f
+exec_scif_fence_mark	process.c	/^int exec_scif_fence_mark(scif_epd_t epd, int flags, int *mark)$/;"	f
+exec_scif_fence_signal	process.c	/^int exec_scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval, off_t roff, uint64_t rval,$/;"	f
+exec_scif_fence_wait	process.c	/^int exec_scif_fence_wait(scif_epd_t epd, int mark)$/;"	f
+exec_scif_get_driver_version	process.c	/^int exec_scif_get_driver_version(int *version)$/;"	f
+exec_scif_get_nodeIDs	process.c	/^int exec_scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self, int *online_nodes)$/;"	f
+exec_scif_listen	process.c	/^int exec_scif_listen(scif_epd_t endp, int backlog)$/;"	f
+exec_scif_mmap	process.c	/^int exec_scif_mmap(void *addr, size_t len, int prot_flags, int map_flags, scif_epd_t epd, $/;"	f
+exec_scif_munmap	process.c	/^int exec_scif_munmap(void *addr, size_t len)$/;"	f
+exec_scif_open	process.c	/^int exec_scif_open(scif_epd_t *endp)$/;"	f
+exec_scif_poll	process.c	/^int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, int *poll_res)$/;"	f
+exec_scif_readfrom	process.c	/^int exec_scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int rma_flags)$/;"	f
+exec_scif_recv	process.c	/^int exec_scif_recv(scif_epd_t endp, void *msg, int len, int flags, $/;"	f
+exec_scif_register	process.c	/^int exec_scif_register(scif_epd_t endp, void **addr, size_t len, $/;"	f
+exec_scif_send	process.c	/^int exec_scif_send(scif_epd_t endp, void *msg, int len, int flags, $/;"	f
+exec_scif_unregister	process.c	/^int exec_scif_unregister(scif_epd_t endp, off_t offset, size_t len)$/;"	f
+exec_scif_vreadfrom	process.c	/^int exec_scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int rma_flags)$/;"	f
+exec_scif_vwriteto	process.c	/^int exec_scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int rma_flags)$/;"	f
+exec_scif_writeto	process.c	/^int exec_scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int rma_flags)$/;"	f
 extra_args	common.pb-c.h	/^  ProtobufCBinaryData *extra_args;$/;"	m	struct:_PhiCmd
 free_deserialised_message	protocol.c	/^void free_deserialised_message(void *msg) {$/;"	f
-get_phi_cmd_result	client.c	/^int get_phi_cmd_result(void **result, int socket_fd)$/;"	f
-get_server_connection_config	common.c	/^int get_server_connection_config(char *server_ip, char *server_port)$/;"	f
-has_phi_error	common.pb-c.h	/^  protobuf_c_boolean has_phi_error;$/;"	m	struct:_Cookie
+get_phi_cmd_result	client.c	/^int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)$/;"	f
+get_rand_level	skipList.c	/^int get_rand_level(int levelmax)$/;"	f
+get_server_connection_config	common.c	/^void get_server_connection_config(char **server, char **server_port)$/;"	f
+has_phi_errorno	common.pb-c.h	/^  protobuf_c_boolean has_phi_errorno;$/;"	m	struct:_PhiCmd
+head	skipList.h	/^	struct pq_node *head, *tail;$/;"	m	struct:__anon2	typeref:struct:__anon2::pq_node
+height	skipList.h	/^	int height;$/;"	m	struct:pq_node
+hello_world_CFLAGS	Makefile	/^hello_world_CFLAGS = -fopenmp$/;"	m
+hello_world_LDADD	Makefile	/^hello_world_LDADD = $(LDADD)$/;"	m
+hello_world_LINK	Makefile	/^hello_world_LINK = $(CCLD) $(hello_world_CFLAGS) $(CFLAGS) \\$/;"	m
+hello_world_OBJECTS	Makefile	/^hello_world_OBJECTS = $(am_hello_world_OBJECTS)$/;"	m
+hello_world_SOURCES	Makefile	/^hello_world_SOURCES = hello_world.c$/;"	m
 host_alias	Makefile	/^host_alias = $/;"	m
 htmldir	Makefile	/^htmldir = ${docdir}$/;"	m
-id	client.h	/^	int id;$/;"	m	struct:_unitofwork
+id	process.h	/^	int id;$/;"	m	struct:client_node_s
+id_list	skipList.h	/^	struct id_node *id_list; \/\/FIXME This is the value , it can only be just an int, like (int value)$/;"	m	struct:pq_node	typeref:struct:pq_node::id_node
+id_node	skipList.h	/^struct id_node {$/;"	s
 includedir	Makefile	/^includedir = ${prefix}\/include$/;"	m
 infodir	Makefile	/^infodir = ${datarootdir}\/info$/;"	m
 init_client_connection	client.c	/^int init_client_connection(const char *s_ip, const char *s_port)$/;"	f
-init_params	client.c	/^void init_params(unitofwork *uow) {$/;"	f
 init_server_net	server.c	/^int init_server_net(const char *port, struct sockaddr_in *sa) $/;"	f
 insist_read	client_proto_example.c	/^ssize_t insist_read(int fd, void *buf, size_t cnt)$/;"	f
 insist_read	protocol.c	/^ssize_t insist_read(int fd, void *buf, size_t cnt)$/;"	f
 insist_write	client_proto_example.c	/^ssize_t insist_write(int fd, const void *buf, size_t cnt)$/;"	f
 insist_write	protocol.c	/^ssize_t insist_write(int fd, const void *buf, size_t cnt)$/;"	f
-install_sh	Makefile	/^install_sh = ${SHELL} \/home\/konstantinos\/repos\/remotephiexec\/install-sh$/;"	m
+install_sh	Makefile	/^install_sh = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/install-sh$/;"	m
 install_sh_DATA	Makefile	/^install_sh_DATA = $(install_sh) -c -m 644$/;"	m
 install_sh_PROGRAM	Makefile	/^install_sh_PROGRAM = $(install_sh) -c$/;"	m
 install_sh_SCRIPT	Makefile	/^install_sh_SCRIPT = $(install_sh) -c$/;"	m
-int_args	common.pb-c.h	/^  int64_t *int_args;$/;"	m	struct:_PhiCmd
-is_busy	common.pb-c.h	/^  protobuf_c_boolean is_busy;$/;"	m	struct:_PhiDevice
+int_args	common.pb-c.h	/^  int32_t *int_args;$/;"	m	struct:_PhiCmd
+key	skipList.h	/^	int key;$/;"	m	struct:pq_node
 length	common.h	/^    size_t length;$/;"	m	struct:var_struct
+levelmax	skipList.h	/^	unsigned int levelmax;$/;"	m	struct:__anon2
 libdir	Makefile	/^libdir = ${exec_prefix}\/lib$/;"	m
 libexecdir	Makefile	/^libexecdir = ${exec_prefix}\/libexec$/;"	m
 libscifapiwrapper_so_CFLAGS	Makefile	/^libscifapiwrapper_so_CFLAGS = -fPIC -shared $(DEBUG_CFLAGS)$/;"	m
 libscifapiwrapper_so_DEPENDENCIES	Makefile	/^libscifapiwrapper_so_DEPENDENCIES =$/;"	m
-libscifapiwrapper_so_LDADD	Makefile	/^libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif -ldl$/;"	m
+libscifapiwrapper_so_LDADD	Makefile	/^libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L\/home\/fertakis\/repos\/remotePhiExec\/src\/ -lscif -ldl$/;"	m
 libscifapiwrapper_so_LINK	Makefile	/^libscifapiwrapper_so_LINK = $(CCLD) $(libscifapiwrapper_so_CFLAGS) \\$/;"	m
 libscifapiwrapper_so_OBJECTS	Makefile	/^libscifapiwrapper_so_OBJECTS = $(am_libscifapiwrapper_so_OBJECTS)$/;"	m
 libscifapiwrapper_so_SOURCES	Makefile	/^libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h \\$/;"	m
 localedir	Makefile	/^localedir = ${datarootdir}\/locale$/;"	m
 localstatedir	Makefile	/^localstatedir = ${prefix}\/var$/;"	m
 main	client_proto_example.c	/^int main(int argc, char *argv[])$/;"	f
+main	count_threads.cpp	/^main (int argc, char **argv)$/;"	f
+main	hello_world.c	/^int main()$/;"	f
+main	linux_deamon_template.c	/^int main(void) {$/;"	f
 main	server.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	temp.c	/^int main(int argc, char *argv[])$/;"	f
 main	test-client.c	/^int main() {$/;"	f
 main	test-scif.c	/^int main(int argc, char **argv) {$/;"	f
+main	test_client.c	/^int main() {$/;"	f
 main	test_server.c	/^int main(int argc, char *argv[]) {$/;"	f
-malloc_safe	common.h	73;"	d
+malloc_safe	common.h	105;"	d
 malloc_safe_f	common.c	/^inline void *malloc_safe_f(size_t size, const char *file, const int line) {$/;"	f
 mandir	Makefile	/^mandir = ${datarootdir}\/man$/;"	m
 mkdir_p	Makefile	/^mkdir_p = $(MKDIR_P)$/;"	m
 mkinstalldirs	Makefile	/^mkinstalldirs = $(install_sh) -d$/;"	m
-n_arg_count	common.pb-c.h	/^  size_t n_arg_count;$/;"	m	struct:_PhiCmd
 n_extra_args	common.pb-c.h	/^  size_t n_extra_args;$/;"	m	struct:_PhiCmd
 n_int_args	common.pb-c.h	/^  size_t n_int_args;$/;"	m	struct:_PhiCmd
-n_str_args	common.pb-c.h	/^  size_t n_str_args;$/;"	m	struct:_PhiCmd
-n_type	common.pb-c.h	/^  size_t n_type;$/;"	m	struct:_PhiCmd
 n_uint_args	common.pb-c.h	/^  size_t n_uint_args;$/;"	m	struct:_PhiCmd
-name	common.pb-c.h	/^  char *name;$/;"	m	struct:_PhiDevice
+next	skipList.h	/^	struct id_node *next;$/;"	m	struct:id_node	typeref:struct:id_node::id_node
+next	skipList.h	/^	struct pq_node **next;$/;"	m	struct:pq_node	typeref:struct:pq_node::pq_node
+nvertices	skipList.h	/^	unsigned int nvertices;$/;"	m	struct:__anon2
 oldincludedir	Makefile	/^oldincludedir = \/usr\/include$/;"	m
-only_version	libscifapiwrapper.c	39;"	d	file:
 pack_phi_cmd	common.c	/^int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {$/;"	f
 pdfdir	Makefile	/^pdfdir = ${docdir}$/;"	m
 phi_cmd	common.pb-c.h	/^  PhiCmd *phi_cmd;$/;"	m	struct:_Cookie
 phi_cmd__descriptor	common.pb-c.c	/^const ProtobufCMessageDescriptor phi_cmd__descriptor =$/;"	v
-phi_cmd__field_descriptors	common.pb-c.c	/^static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[6] =$/;"	v	file:
+phi_cmd__field_descriptors	common.pb-c.c	/^static const ProtobufCFieldDescriptor phi_cmd__field_descriptors[7] =$/;"	v	file:
 phi_cmd__field_indices_by_name	common.pb-c.c	/^static const unsigned phi_cmd__field_indices_by_name[] = {$/;"	v	file:
 phi_cmd__free_unpacked	common.pb-c.c	/^void   phi_cmd__free_unpacked$/;"	f
 phi_cmd__get_packed_size	common.pb-c.c	/^size_t phi_cmd__get_packed_size$/;"	f
@@ -305,28 +362,33 @@ phi_cmd__number_ranges	common.pb-c.c	/^static const ProtobufCIntRange phi_cmd__n
 phi_cmd__pack	common.pb-c.c	/^size_t phi_cmd__pack$/;"	f
 phi_cmd__pack_to_buffer	common.pb-c.c	/^size_t phi_cmd__pack_to_buffer$/;"	f
 phi_cmd__unpack	common.pb-c.c	/^       phi_cmd__unpack$/;"	f
-phi_device__descriptor	common.pb-c.c	/^const ProtobufCMessageDescriptor phi_device__descriptor =$/;"	v
-phi_device__field_descriptors	common.pb-c.c	/^static const ProtobufCFieldDescriptor phi_device__field_descriptors[2] =$/;"	v	file:
-phi_device__field_indices_by_name	common.pb-c.c	/^static const unsigned phi_device__field_indices_by_name[] = {$/;"	v	file:
-phi_device__free_unpacked	common.pb-c.c	/^void   phi_device__free_unpacked$/;"	f
-phi_device__get_packed_size	common.pb-c.c	/^size_t phi_device__get_packed_size$/;"	f
-phi_device__init	common.pb-c.c	/^void   phi_device__init$/;"	f
-phi_device__is_busy__default_value	common.pb-c.c	/^static const protobuf_c_boolean phi_device__is_busy__default_value = 0;$/;"	v	file:
-phi_device__number_ranges	common.pb-c.c	/^static const ProtobufCIntRange phi_device__number_ranges[1 + 1] =$/;"	v	file:
-phi_device__pack	common.pb-c.c	/^size_t phi_device__pack$/;"	f
-phi_device__pack_to_buffer	common.pb-c.c	/^size_t phi_device__pack_to_buffer$/;"	f
-phi_device__unpack	common.pb-c.c	/^       phi_device__unpack$/;"	f
-phi_error	common.pb-c.h	/^  uint32_t phi_error;$/;"	m	struct:_Cookie
+phi_errorno	common.pb-c.h	/^  int32_t phi_errorno;$/;"	m	struct:_PhiCmd
 phi_result_code	common.h	/^enum phi_result_code{$/;"	g
+phi_result_code	common.pb-c.h	/^  int32_t phi_result_code;$/;"	m	struct:_PhiCmd
 pkgdatadir	Makefile	/^pkgdatadir = $(datadir)\/remotephiexec$/;"	m
 pkgincludedir	Makefile	/^pkgincludedir = $(includedir)\/remotephiexec$/;"	m
 pkglibdir	Makefile	/^pkglibdir = $(libdir)\/remotephiexec$/;"	m
 pkglibexecdir	Makefile	/^pkglibexecdir = $(libexecdir)\/remotephiexec$/;"	m
+pq_create	skipList.c	/^pq_t *pq_create(unsigned int nvertices)$/;"	f
+pq_decrease_key	skipList.c	/^void pq_decrease_key(pq_t *pq, unsigned int vertex_id, int new_key)$/;"	f
+pq_delete_min	skipList.c	/^int pq_delete_min(pq_t *pq)$/;"	f
+pq_insert	skipList.c	/^int pq_insert(pq_t *pq, int key, unsigned int vertex_id)$/;"	f
+pq_insert_id_node	skipList.c	/^int pq_insert_id_node(pq_t *pq, int key, struct id_node *node_id)$/;"	f
+pq_node	skipList.h	/^struct pq_node {$/;"	s
+pq_node_add_id	skipList.c	/^struct id_node *pq_node_add_id(struct pq_node *node, unsigned int vertex_id)$/;"	f
+pq_node_delete_vertex_id	skipList.c	/^struct id_node *pq_node_delete_vertex_id(pq_t *pq, struct pq_node *node, unsigned int vertex_id)$/;"	f
+pq_node_free	skipList.c	/^void pq_node_free(struct pq_node *node)$/;"	f
+pq_node_new	skipList.c	/^struct pq_node *pq_node_new(int key, unsigned int vertex_id, int toplevel)$/;"	f
+pq_read_min	skipList.c	/^int pq_read_min(pq_t *pq, int index)$/;"	f
+pq_t	skipList.h	/^} pq_t;$/;"	t	typeref:struct:__anon2
 prefix	Makefile	/^prefix = \/usr\/local$/;"	m
+prev	skipList.h	/^	struct id_node *prev;$/;"	m	struct:id_node	typeref:struct:id_node::id_node
+prev	skipList.h	/^	struct pq_node **prev; 	\/\/FIXME This is a double-linked list. You can remove it!$/;"	m	struct:pq_node	typeref:struct:pq_node::pq_node
 process_phi_cmd	process.c	/^int process_phi_cmd(void **result, void *cmd_ptr) {$/;"	f
 program_transform_name	Makefile	/^program_transform_name = s,x,x,$/;"	m
 psdir	Makefile	/^psdir = ${docdir}$/;"	m
 receive_message	protocol.c	/^uint32_t receive_message(void **serialised_msg, int socket_fd) {$/;"	f
+ref_count	client.h	/^	int ref_count;$/;"	m	struct:_unitofwork
 runstatedir	Makefile	/^runstatedir = ${localstatedir}\/run$/;"	m
 sbindir	Makefile	/^sbindir = ${exec_prefix}\/sbin$/;"	m
 scif_accept	libscifapiwrapper.c	/^scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int flags)$/;"	f
@@ -336,9 +398,9 @@ scif_connect	libscifapiwrapper.c	/^scif_connect(scif_epd_t epd, struct scif_port
 scif_fence_mark	libscifapiwrapper.c	/^scif_fence_mark(scif_epd_t epd, int flags, int *mark)$/;"	f
 scif_fence_signal	libscifapiwrapper.c	/^scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,$/;"	f
 scif_fence_wait	libscifapiwrapper.c	/^scif_fence_wait(scif_epd_t epd, int mark)$/;"	f
-scif_get_driver_version	libscifapiwrapper.c	/^scif_get_driver_version(void)$/;"	f
+scif_get_driver_version	libscifapiwrapper.c	/^scif_get_driver_version(void)$/;"	f	file:
+scif_get_driver_version	process.c	/^scif_get_driver_version(void)$/;"	f	file:
 scif_get_nodeIDs	libscifapiwrapper.c	/^scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)$/;"	f
-scif_lib_init	libscifapiwrapper.c	/^__attribute__ ((constructor)) static void scif_lib_init(void)$/;"	f	file:
 scif_listen	libscifapiwrapper.c	/^scif_listen(scif_epd_t epd, int backlog)$/;"	f
 scif_mmap	libscifapiwrapper.c	/^scif_mmap(void *addr, size_t len, int prot, int flags, scif_epd_t epd, off_t offset)$/;"	f
 scif_munmap	libscifapiwrapper.c	/^scif_munmap(void *addr, size_t len)$/;"	f
@@ -357,33 +419,44 @@ scif_writeto	libscifapiwrapper.c	/^scif_writeto(scif_epd_t epd, off_t loffset, s
 send_message	protocol.c	/^ssize_t send_message (int socket_fd, void *buffer, size_t len)$/;"	f
 send_phi_cmd	client.c	/^int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)$/;"	f
 serialise_message	protocol.c	/^size_t serialise_message(void **result, int msg_type, void *payload) {$/;"	f
+serve_client	server.c	/^void *serve_client(void *arg)$/;"	f
 server_DEPENDENCIES	Makefile	/^server_DEPENDENCIES =$/;"	m
-server_LDADD	Makefile	/^server_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -lscif$/;"	m
+server_LDADD	Makefile	/^server_LDADD = $(PROTOBUF_C_LIBS) -lpthread -L\/home\/fertakis\/repos\/remotePhiExec\/src\/ -lscif$/;"	m
 server_OBJECTS	Makefile	/^server_OBJECTS = $(am_server_OBJECTS)$/;"	m
 server_SOURCES	Makefile	/^server_SOURCES = server.c process.c process.h common.h common.c \\$/;"	m
 server_ip	common.c	/^char *server_ip;$/;"	v
 server_port	common.c	/^char *server_port;$/;"	v
 sharedstatedir	Makefile	/^sharedstatedir = ${prefix}\/com$/;"	m
 socket_fd	client.h	/^ 	int socket_fd;$/;"	m	struct:_unitofwork
+sockfd	common.h	/^	int sockfd;$/;"	m	struct:thread_management
 srcdir	Makefile	/^srcdir = .$/;"	m
-str_args	common.pb-c.h	/^  char **str_args;$/;"	m	struct:_PhiCmd
 subdir	Makefile	/^subdir = src$/;"	m
 sysconfdir	Makefile	/^sysconfdir = ${prefix}\/etc$/;"	m
+tail	skipList.h	/^	struct pq_node *head, *tail;$/;"	m	struct:__anon2	typeref:struct:__anon2::
 target_alias	Makefile	/^target_alias = $/;"	m
-test_server_LDADD	Makefile	/^test_server_LDADD = $(LDADD)$/;"	m
-test_server_OBJECTS	Makefile	/^test_server_OBJECTS = $(am_test_server_OBJECTS)$/;"	m
-test_server_SOURCES	Makefile	/^test_server_SOURCES = test_server.c common.c common.h common.pb-c.c \\$/;"	m
+testThreadCount	count_threads.cpp	/^testThreadCount()$/;"	f
+test_client_DEPENDENCIES	Makefile	/^test_client_DEPENDENCIES =$/;"	m
+test_client_LDADD	Makefile	/^test_client_LDADD = -lscif$/;"	m
+test_client_OBJECTS	Makefile	/^test_client_OBJECTS = $(am_test_client_OBJECTS)$/;"	m
+test_client_SOURCES	Makefile	/^test_client_SOURCES = test_client.c$/;"	m
+thr_mng	common.h	/^} thr_mng;$/;"	t	typeref:struct:thread_management
+thread_id	common.h	/^	pthread_t thread_id;$/;"	m	struct:thread_management
+thread_management	common.h	/^typedef struct thread_management {$/;"	s
 top_build_prefix	Makefile	/^top_build_prefix = ..\/$/;"	m
 top_builddir	Makefile	/^top_builddir = ..$/;"	m
 top_srcdir	Makefile	/^top_srcdir = ..$/;"	m
 transform	Makefile	/^transform = $(program_transform_name)$/;"	m
 type	common.h	/^    var_type type;$/;"	m	struct:var_struct
-type	common.pb-c.h	/^  int64_t *type;$/;"	m	struct:_PhiCmd
 type	common.pb-c.h	/^  uint32_t type;$/;"	m	struct:_Cookie
-uint_args	common.pb-c.h	/^  uint64_t *uint_args;$/;"	m	struct:_PhiCmd
+type	common.pb-c.h	/^  uint32_t type;$/;"	m	struct:_PhiCmd
+uint_args	common.pb-c.h	/^  uint32_t *uint_args;$/;"	m	struct:_PhiCmd
 unitofwork	client.h	/^} unitofwork ;$/;"	t	typeref:struct:_unitofwork
-uow	libscifapiwrapper.c	/^unitofwork uow;$/;"	v
+unpack_phi_cmd	common.c	/^int unpack_phi_cmd(var **args, PhiCmd *cmd ) $/;"	f
+uow	libscifapiwrapper.c	/^unitofwork uow = { .socket_fd = -1, .endp = -1, .ref_count = 0};$/;"	v
 var	common.h	/^} var;$/;"	t	typeref:struct:var_struct
 var_struct	common.h	/^typedef struct var_struct {$/;"	s
 var_type	common.h	/^} var_type;$/;"	t	typeref:enum:var_type_enum
 var_type_enum	common.h	/^typedef enum var_type_enum {$/;"	g
+vertex_id	skipList.h	/^	unsigned int vertex_id;$/;"	m	struct:id_node
+where_in_id_list	skipList.h	/^	struct id_node **where_in_id_list;$/;"	m	struct:__anon2	typeref:struct:__anon2::id_node
+where_in_pq	skipList.h	/^	struct pq_node **where_in_pq;$/;"	m	struct:__anon2	typeref:struct:__anon2::pq_node

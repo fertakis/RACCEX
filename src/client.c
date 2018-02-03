@@ -13,7 +13,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <netdb.h>
-
+#include <pthread.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -25,6 +25,48 @@
 #include "client.h"
 #include "common.pb-c.h"
 #include "protocol.h"
+
+void initiliase_thr_mng_list(struct thread_mng_list *list) {
+	list->num_threads = 1;
+	list->head = malloc_safe(sizeof(thr_mng));
+	list->head->thread_id = pthread_self();
+	list->head->sockfd = -1;
+	list->head->ref_count = 0;
+	list->head->next = NULL;
+}
+
+thr_mng * identify_thread(struct thread_mng_list *threads) 
+{
+	pthread_t curr = pthread_self();
+	thr_mng *ret = NULL;
+
+	thr_mng *it = threads->head;
+	while (it->next != NULL) {
+		if((pthread_equal(curr, it->thread_id) != 0 )) {
+			//found it
+			ret = it;
+			break;
+		}
+		it = it->next;
+	}
+	if(ret == NULL) {
+		//not found, check last entry
+		if((pthread_equal(curr, it->thread_id) != 0))
+			//found, was the last entry
+			ret = it;
+		else {
+			//not found, create new entry
+			ret = malloc_safe(sizeof(thr_mng));
+			ret->thread_id = curr;
+			ret->sockfd = -1;
+			ret->ref_count = 0;
+			ret->next = NULL;
+			it->next = ret;
+			threads->num_threads++;
+		}
+	}
+	return ret; 
+}
 
 int init_client_connection(const char *s_ip, const char *s_port)
 {
@@ -59,12 +101,12 @@ int init_client_connection(const char *s_ip, const char *s_port)
 	return sd;
 }
 
-void establish_connection(unitofwork *uow) {
+void establish_connection(thr_mng *uow) {
 	char *server, *server_port;
 
 	get_server_connection_config(&server, &server_port);
 
-	uow->socket_fd = init_client_connection(server, server_port);
+	uow->sockfd = init_client_connection(server, server_port);
 	printf("Connected to server %s on port %s...\n", server, server_port);
 }
 

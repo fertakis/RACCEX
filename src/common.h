@@ -94,8 +94,14 @@ enum scif_return_codes {
 typedef struct thread_management {
 	pthread_t thread_id;
 	int sockfd;
+	int ref_count;
+	struct thread_management *next;
 } thr_mng;
 
+struct thread_mng_list {
+	thr_mng *head;
+	int num_threads;
+};
 
 void get_server_connection_config(char **server, char **server_port);
 int pack_phi_cmd(void ** payload, var **args, size_t arg_count, int type);
