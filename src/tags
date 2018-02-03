@@ -20,11 +20,10 @@ AM_V_lt	Makefile	/^AM_V_lt = $(am__v_lt_$(V))$/;"	m
 AUTOCONF	Makefile	/^AUTOCONF = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing autoconf$/;"	m
 AUTOHEADER	Makefile	/^AUTOHEADER = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing autoheader$/;"	m
 AUTOMAKE	Makefile	/^AUTOMAKE = ${SHELL} \/home\/fertakis\/repos\/remotePhiExec\/missing automake-1.15$/;"	m
-AWK	Makefile	/^AWK = gawk$/;"	m
+AWK	Makefile	/^AWK = mawk$/;"	m
 BIND	common.h	/^	BIND,$/;"	e	enum:__anon1
 BUILT_SOURCES	Makefile	/^BUILT_SOURCES = .\/common.pb-c.c .\/common.pb-c.h$/;"	m
 BYTES	common.h	/^    BYTES,$/;"	e	enum:var_type_enum
-CACHE_LINE_SIZE	skipList.h	5;"	d
 CC	Makefile	/^CC = gcc$/;"	m
 CCDEPMODE	Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
 CCLD	Makefile	/^CCLD = $(CC)$/;"	m
@@ -163,7 +162,7 @@ SCIF_WRITE_TO_FAIL	common.h	/^	SCIF_WRITE_TO_FAIL,$/;"	e	enum:scif_return_codes
 SEND	common.h	/^	SEND,$/;"	e	enum:__anon1
 SET_MAKE	Makefile	/^SET_MAKE = $/;"	m
 SHELL	Makefile	/^SHELL = \/bin\/bash$/;"	m
-SKIPLIST_H	skipList.h	3;"	d
+SKIPLIST_H	skipList.h	2;"	d
 SOURCES	Makefile	/^SOURCES = $(hello_world_SOURCES) $(libscifapiwrapper_so_SOURCES) \\$/;"	m
 STRING	common.h	/^    STRING,$/;"	e	enum:var_type_enum
 STRIP	Makefile	/^STRIP = $/;"	m
@@ -259,7 +258,7 @@ docdir	Makefile	/^docdir = ${datarootdir}\/doc\/${PACKAGE_TARNAME}$/;"	m
 dvidir	Makefile	/^dvidir = ${docdir}$/;"	m
 elements	common.h	/^    size_t elements;$/;"	m	struct:var_struct
 endp	client.h	/^	int endp;$/;"	m	struct:_unitofwork
-establish_connection	client.c	/^void establish_connection(unitofwork *uow) {$/;"	f
+establish_connection	client.c	/^void establish_connection(thr_mng *uow) {$/;"	f
 exec_prefix	Makefile	/^exec_prefix = ${prefix}$/;"	m
 exec_scif_accept	process.c	/^int exec_scif_accept(scif_epd_t endp, struct scif_portID *peer, $/;"	f
 exec_scif_bind	process.c	/^int exec_scif_bind(scif_epd_t endp, uint16_t pn, int *portno)$/;"	f
@@ -289,6 +288,7 @@ get_phi_cmd_result	client.c	/^int get_phi_cmd_result(PhiCmd **result, void **des
 get_rand_level	skipList.c	/^int get_rand_level(int levelmax)$/;"	f
 get_server_connection_config	common.c	/^void get_server_connection_config(char **server, char **server_port)$/;"	f
 has_phi_errorno	common.pb-c.h	/^  protobuf_c_boolean has_phi_errorno;$/;"	m	struct:_PhiCmd
+head	common.h	/^	thr_mng *head;$/;"	m	struct:thread_mng_list
 head	skipList.h	/^	struct pq_node *head, *tail;$/;"	m	struct:__anon2	typeref:struct:__anon2::pq_node
 height	skipList.h	/^	int height;$/;"	m	struct:pq_node
 hello_world_CFLAGS	Makefile	/^hello_world_CFLAGS = -fopenmp$/;"	m
@@ -299,12 +299,12 @@ hello_world_SOURCES	Makefile	/^hello_world_SOURCES = hello_world.c$/;"	m
 host_alias	Makefile	/^host_alias = $/;"	m
 htmldir	Makefile	/^htmldir = ${docdir}$/;"	m
 id	process.h	/^	int id;$/;"	m	struct:client_node_s
-id_list	skipList.h	/^	struct id_node *id_list; \/\/FIXME This is the value , it can only be just an int, like (int value)$/;"	m	struct:pq_node	typeref:struct:pq_node::id_node
-id_node	skipList.h	/^struct id_node {$/;"	s
+identify_thread	client.c	/^thr_mng * identify_thread(struct thread_mng_list *threads) $/;"	f
 includedir	Makefile	/^includedir = ${prefix}\/include$/;"	m
 infodir	Makefile	/^infodir = ${datarootdir}\/info$/;"	m
 init_client_connection	client.c	/^int init_client_connection(const char *s_ip, const char *s_port)$/;"	f
 init_server_net	server.c	/^int init_server_net(const char *port, struct sockaddr_in *sa) $/;"	f
+initiliase_thr_mng_list	client.c	/^void initiliase_thr_mng_list(struct thread_mng_list *list) {$/;"	f
 insist_read	client_proto_example.c	/^ssize_t insist_read(int fd, void *buf, size_t cnt)$/;"	f
 insist_read	protocol.c	/^ssize_t insist_read(int fd, void *buf, size_t cnt)$/;"	f
 insist_write	client_proto_example.c	/^ssize_t insist_write(int fd, const void *buf, size_t cnt)$/;"	f
@@ -314,7 +314,7 @@ install_sh_DATA	Makefile	/^install_sh_DATA = $(install_sh) -c -m 644$/;"	m
 install_sh_PROGRAM	Makefile	/^install_sh_PROGRAM = $(install_sh) -c$/;"	m
 install_sh_SCRIPT	Makefile	/^install_sh_SCRIPT = $(install_sh) -c$/;"	m
 int_args	common.pb-c.h	/^  int32_t *int_args;$/;"	m	struct:_PhiCmd
-key	skipList.h	/^	int key;$/;"	m	struct:pq_node
+key	skipList.h	/^	long key;$/;"	m	struct:pq_node
 length	common.h	/^    size_t length;$/;"	m	struct:var_struct
 levelmax	skipList.h	/^	unsigned int levelmax;$/;"	m	struct:__anon2
 libdir	Makefile	/^libdir = ${exec_prefix}\/lib$/;"	m
@@ -337,7 +337,7 @@ main	test-client.c	/^int main() {$/;"	f
 main	test-scif.c	/^int main(int argc, char **argv) {$/;"	f
 main	test_client.c	/^int main() {$/;"	f
 main	test_server.c	/^int main(int argc, char *argv[]) {$/;"	f
-malloc_safe	common.h	105;"	d
+malloc_safe	common.h	111;"	d
 malloc_safe_f	common.c	/^inline void *malloc_safe_f(size_t size, const char *file, const int line) {$/;"	f
 mandir	Makefile	/^mandir = ${datarootdir}\/man$/;"	m
 mkdir_p	Makefile	/^mkdir_p = $(MKDIR_P)$/;"	m
@@ -345,8 +345,9 @@ mkinstalldirs	Makefile	/^mkinstalldirs = $(install_sh) -d$/;"	m
 n_extra_args	common.pb-c.h	/^  size_t n_extra_args;$/;"	m	struct:_PhiCmd
 n_int_args	common.pb-c.h	/^  size_t n_int_args;$/;"	m	struct:_PhiCmd
 n_uint_args	common.pb-c.h	/^  size_t n_uint_args;$/;"	m	struct:_PhiCmd
-next	skipList.h	/^	struct id_node *next;$/;"	m	struct:id_node	typeref:struct:id_node::id_node
-next	skipList.h	/^	struct pq_node **next;$/;"	m	struct:pq_node	typeref:struct:pq_node::pq_node
+next	common.h	/^	struct thread_management *next;$/;"	m	struct:thread_management	typeref:struct:thread_management::thread_management
+next	skipList.h	/^	thr_mng **next;$/;"	m	struct:pq_node
+num_threads	common.h	/^	int num_threads;$/;"	m	struct:thread_mng_list
 nvertices	skipList.h	/^	unsigned int nvertices;$/;"	m	struct:__anon2
 oldincludedir	Makefile	/^oldincludedir = \/usr\/include$/;"	m
 pack_phi_cmd	common.c	/^int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {$/;"	f
@@ -375,20 +376,18 @@ pq_delete_min	skipList.c	/^int pq_delete_min(pq_t *pq)$/;"	f
 pq_insert	skipList.c	/^int pq_insert(pq_t *pq, int key, unsigned int vertex_id)$/;"	f
 pq_insert_id_node	skipList.c	/^int pq_insert_id_node(pq_t *pq, int key, struct id_node *node_id)$/;"	f
 pq_node	skipList.h	/^struct pq_node {$/;"	s
-pq_node_add_id	skipList.c	/^struct id_node *pq_node_add_id(struct pq_node *node, unsigned int vertex_id)$/;"	f
-pq_node_delete_vertex_id	skipList.c	/^struct id_node *pq_node_delete_vertex_id(pq_t *pq, struct pq_node *node, unsigned int vertex_id)$/;"	f
 pq_node_free	skipList.c	/^void pq_node_free(struct pq_node *node)$/;"	f
-pq_node_new	skipList.c	/^struct pq_node *pq_node_new(int key, unsigned int vertex_id, int toplevel)$/;"	f
+pq_node_new	skipList.c	/^struct pq_node *pq_node_new(long key, int toplevel)$/;"	f
 pq_read_min	skipList.c	/^int pq_read_min(pq_t *pq, int index)$/;"	f
 pq_t	skipList.h	/^} pq_t;$/;"	t	typeref:struct:__anon2
 prefix	Makefile	/^prefix = \/usr\/local$/;"	m
-prev	skipList.h	/^	struct id_node *prev;$/;"	m	struct:id_node	typeref:struct:id_node::id_node
-prev	skipList.h	/^	struct pq_node **prev; 	\/\/FIXME This is a double-linked list. You can remove it!$/;"	m	struct:pq_node	typeref:struct:pq_node::pq_node
+prev	skipList.h	/^	thr_mng **prev; 	\/\/FIXME This is a double-linked list. You can remove it!$/;"	m	struct:pq_node
 process_phi_cmd	process.c	/^int process_phi_cmd(void **result, void *cmd_ptr) {$/;"	f
 program_transform_name	Makefile	/^program_transform_name = s,x,x,$/;"	m
 psdir	Makefile	/^psdir = ${docdir}$/;"	m
 receive_message	protocol.c	/^uint32_t receive_message(void **serialised_msg, int socket_fd) {$/;"	f
 ref_count	client.h	/^	int ref_count;$/;"	m	struct:_unitofwork
+ref_count	common.h	/^	int ref_count;$/;"	m	struct:thread_management
 runstatedir	Makefile	/^runstatedir = ${localstatedir}\/run$/;"	m
 sbindir	Makefile	/^sbindir = ${exec_prefix}\/sbin$/;"	m
 scif_accept	libscifapiwrapper.c	/^scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int flags)$/;"	f
@@ -401,6 +400,7 @@ scif_fence_wait	libscifapiwrapper.c	/^scif_fence_wait(scif_epd_t epd, int mark)$
 scif_get_driver_version	libscifapiwrapper.c	/^scif_get_driver_version(void)$/;"	f	file:
 scif_get_driver_version	process.c	/^scif_get_driver_version(void)$/;"	f	file:
 scif_get_nodeIDs	libscifapiwrapper.c	/^scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)$/;"	f
+scif_lib_init	libscifapiwrapper.c	/^__attribute__ ((constructor)) static void scif_lib_init(void)$/;"	f	file:
 scif_listen	libscifapiwrapper.c	/^scif_listen(scif_epd_t epd, int backlog)$/;"	f
 scif_mmap	libscifapiwrapper.c	/^scif_mmap(void *addr, size_t len, int prot, int flags, scif_epd_t epd, off_t offset)$/;"	f
 scif_munmap	libscifapiwrapper.c	/^scif_munmap(void *addr, size_t len)$/;"	f
@@ -440,8 +440,11 @@ test_client_LDADD	Makefile	/^test_client_LDADD = -lscif$/;"	m
 test_client_OBJECTS	Makefile	/^test_client_OBJECTS = $(am_test_client_OBJECTS)$/;"	m
 test_client_SOURCES	Makefile	/^test_client_SOURCES = test_client.c$/;"	m
 thr_mng	common.h	/^} thr_mng;$/;"	t	typeref:struct:thread_management
+thr_str	skipList.h	/^	thr_mng *thr_str; \/\/FIXME This is the value , it can only be just an int, like (int value)$/;"	m	struct:pq_node
 thread_id	common.h	/^	pthread_t thread_id;$/;"	m	struct:thread_management
 thread_management	common.h	/^typedef struct thread_management {$/;"	s
+thread_mng_list	common.h	/^struct thread_mng_list {$/;"	s
+threads	libscifapiwrapper.c	/^struct thread_mng_list threads;$/;"	v	typeref:struct:thread_mng_list
 top_build_prefix	Makefile	/^top_build_prefix = ..\/$/;"	m
 top_builddir	Makefile	/^top_builddir = ..$/;"	m
 top_srcdir	Makefile	/^top_srcdir = ..$/;"	m
@@ -452,11 +455,8 @@ type	common.pb-c.h	/^  uint32_t type;$/;"	m	struct:_PhiCmd
 uint_args	common.pb-c.h	/^  uint32_t *uint_args;$/;"	m	struct:_PhiCmd
 unitofwork	client.h	/^} unitofwork ;$/;"	t	typeref:struct:_unitofwork
 unpack_phi_cmd	common.c	/^int unpack_phi_cmd(var **args, PhiCmd *cmd ) $/;"	f
-uow	libscifapiwrapper.c	/^unitofwork uow = { .socket_fd = -1, .endp = -1, .ref_count = 0};$/;"	v
 var	common.h	/^} var;$/;"	t	typeref:struct:var_struct
 var_struct	common.h	/^typedef struct var_struct {$/;"	s
 var_type	common.h	/^} var_type;$/;"	t	typeref:enum:var_type_enum
 var_type_enum	common.h	/^typedef enum var_type_enum {$/;"	g
-vertex_id	skipList.h	/^	unsigned int vertex_id;$/;"	m	struct:id_node
-where_in_id_list	skipList.h	/^	struct id_node **where_in_id_list;$/;"	m	struct:__anon2	typeref:struct:__anon2::id_node
 where_in_pq	skipList.h	/^	struct pq_node **where_in_pq;$/;"	m	struct:__anon2	typeref:struct:__anon2::pq_node

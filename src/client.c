@@ -26,7 +26,7 @@
 #include "common.pb-c.h"
 #include "protocol.h"
 
-void initiliase_thr_mng_list(struct thread_mng_list *list) {
+void initialise_thr_mng_list(struct thread_mng_list *list) {
 	list->num_threads = 1;
 	list->head = malloc_safe(sizeof(thr_mng));
 	list->head->thread_id = pthread_self();
@@ -115,7 +115,7 @@ int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)
 	void *buf = NULL, *payload = NULL;
 	size_t len;
 
-	//printf("Preparing and sending Phi cmd..\n);"
+	printf("Preparing and sending Phi cmd %d by thread %d\n", cmd_type, (int)pthread_self());
 	pack_phi_cmd(&payload, args, arg_cnt, cmd_type);
 
 	len = serialise_message(&buf, PHI_CMD, payload);

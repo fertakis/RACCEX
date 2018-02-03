@@ -13,7 +13,6 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <pthread.h>
-
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
@@ -82,7 +81,7 @@ size_t serialise_message(void **result, int msg_type, void *payload) {
 	memcpy(buffer+sizeof(msg_len_n), msg_buffer, msg_length);
 
 	*result = buffer;
-
+	printf("serialisation completed\n");
 	return buf_size;
 }
 
@@ -152,7 +151,7 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 
 
 	msg_len = ntohl(*(uint32_t *)buf);
-	printf("Going to read a message of %u bytes..., pid %d \n", msg_len, getpid());
+	printf("Going to read a message of %u bytes..., pthreadid %d \n", msg_len, (int)pthread_self());
 
 	buf = realloc(buf, msg_len);
 

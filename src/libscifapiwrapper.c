@@ -370,6 +370,8 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	}
 
 	free_deserialised_message(des_msg);
+	
+	printf("scif_send has completed\n");
 
 	return ret; 
 }
@@ -427,6 +429,8 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
+	
+	printf("executing scif_register with epd %d, addr %d, len %d, offset %d, prot %d, flags %d\n", epd, addr, len, offset, prot, flags);
 
 	uow = identify_thread(&threads);
 
@@ -906,16 +910,19 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
+	printf("executing scif_poll( nfds=%d timeout=%ld)\n", nfds, timeout_msecs);
+
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
 	arg_uint.type = UINT;
-	arg_uint.length = sizeof(uint64_t)*arg_uint.elements;
-	uint64_t *uints  = malloc_safe(arg_uint.length);
+	arg_uint.length = sizeof(uint32_t)*arg_uint.elements;
+	uint32_t *uints  = malloc_safe(arg_uint.length);
 	uints[0] = nfds;
 	uints[1] = timeout_msecs;
+	arg_uint.data = uints;
 
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(struct scif_pollepd);

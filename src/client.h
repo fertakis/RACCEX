@@ -2,6 +2,7 @@
 #define CLIENT_H
 
 #include "common.pb-c.h"
+#include "common.h"
 
 typedef struct _unitofwork {
 	int endp;
