@@ -425,7 +425,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 {
 	int res_code;
 	off_t ret;
-	var arg_int = { .elements = 4 }, arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_bytes}; 
+	var arg_int = { .elements = 3 }, arg_uint = {.elements = 1} ,arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_uint, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
@@ -441,16 +441,21 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	arg_int.length = sizeof(int)*arg_int.elements;
 	int *data = malloc_safe(arg_int.length);
 	data[0] = epd;
-	data[1] = len;
-	data[2] = prot;
-	data[3] = flags;
+	data[1] = prot;
+	data[2] = flags;
 	arg_int.data = data;
 
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t);
-	arg_bytes.data = &offset;
+	arg_uint.type = UINT;
+	arg_uint.length = sizeof(uint32_t)*arg_uint.elements;
+	arg_uint.data = &len;
 
-	if(send_phi_cmd(uow->sockfd, args, 2, REGISTER) < 0)
+	arg_bytes.type = BYTES;
+	arg_bytes.length = sizeof(void *) + sizeof(off_t);
+	arg_bytes.data = malloc_safe(arg_bytes.length);
+	memcpy(arg_bytes.data, &addr, sizeof(void *));
+	memcpy(arg_bytes.data + sizeof(void *), &offset, sizeof(off_t));
+
+	if(send_phi_cmd(uow->sockfd, args, 3, REGISTER) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
@@ -458,8 +463,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
-		memcpy(addr,result->extra_args[0].data, sizeof(void *));
-		memcpy(&ret, result->extra_args[0].data + sizeof(void *), sizeof(off_t));
+		memcpy(&ret, result->extra_args[0].data, sizeof(off_t));
 	}
 	else {
 		ret = -1;

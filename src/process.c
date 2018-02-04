@@ -461,41 +461,42 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 			break;
 		case RECV: { 
-				   printf("Executing scif_recv() ... \n");
-				   //TODO: scif_recv call goes here...
+			printf("Executing scif_recv() ... \n");
+			//TODO: scif_recv call goes here...
 
-				   arg_count += 2;
-				   int_res = malloc_safe(sizeof(int));
-				   int_res_count = 1;
-
-				   extra_args = malloc_safe((size_t)cmd->int_args[1]);
-				   extra_args_size = (size_t)cmd->int_args[1];
-				   phi_result = exec_scif_recv((scif_epd_t)cmd->int_args[0], 
-						   extra_args, cmd->int_args[1], cmd->int_args[2],
-						   int_res, &arg_count);
+			arg_count += 2;
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+			   
+			extra_args = malloc_safe((size_t)cmd->int_args[1]);
+			extra_args_size = (size_t)cmd->int_args[1];
+			phi_result = exec_scif_recv((scif_epd_t)cmd->int_args[0], 
+					   extra_args, cmd->int_args[1], cmd->int_args[2],
+					   int_res, &arg_count);
 				   break;
-			   }
-		case REGISTER:
-			   {
-				   printf("Executing scif_register() ... \n");
-				   //TODO: scif_register call goes here...
-				   arg_count++;
+		}
+		case REGISTER: {
+			printf("Executing scif_register() ... \n");
+			//TODO: scif_register call goes here...
+			arg_count++;
 
-				   extra_args_size = sizeof(void *) + sizeof(off_t);
-				   extra_args = malloc_safe(extra_args_size);
+			extra_args_size = sizeof(off_t);
+			extra_args = malloc_safe(extra_args_size);
 
-				   void *addr;
-				   off_t resulted_offset;							
-
-				   phi_result = exec_scif_register((scif_epd_t)cmd->int_args[0],
-						   &addr, (size_t)cmd->int_args[1],
-						   (off_t)cmd->extra_args[0].data,
-						   cmd->int_args[2], cmd->int_args[3],
-						   &resulted_offset);	 								
-				   memcpy(extra_args, &addr, sizeof(void *));
-				   memcpy(extra_args + sizeof(void *), &resulted_offset, sizeof(off_t));
-				   break;
-			   }
+			off_t resulted_offset;							
+			void *addr;		
+				
+			addr = mmap((void *)cmd->extra_args[0].data
+				   
+			phi_result = exec_scif_register((scif_epd_t)cmd->int_args[0],
+					   &addr, (size_t)cmd->int_args[1],
+					   (off_t)cmd->extra_args[0].data,
+					   cmd->int_args[2], cmd->int_args[3],
+					   &resulted_offset);	 								
+			memcpy(extra_args, &addr, sizeof(void *));
+			memcpy(extra_args + sizeof(void *), &resulted_offset, sizeof(off_t));
+			break;
+		}
 		case UNREGISTER:
 			   printf("Executing scif_unregister() ... \n");
 			   //TODO: scif_unregister call goes here...
