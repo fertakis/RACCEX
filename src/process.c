@@ -63,13 +63,11 @@ int exec_scif_open(scif_epd_t *endp)
 	scif_epd_t t_endp;
 	int ret;
 
-	if((t_endp = scif_open()) < 0)
-	{
+	if((t_endp = scif_open()) < 0) {
 		perror("scif_open");
 		ret = SCIF_OPEN_FAIL; 
 	}
-	else 
-	{
+	else {
 		ret = SCIF_SUCCESS;
 		*endp = t_endp;
 		printf("current client initialised with endp = %d\n", *endp);
@@ -81,12 +79,10 @@ int exec_scif_close(scif_epd_t endp)
 {
 	int ret;
 
-	if(scif_close(endp)<0)
-	{
+	if(scif_close(endp)<0) {
 		perror("scif_close");
 		ret  = SCIF_CLOSE_FAIL;
-	} else 
-	{
+	} else {
 		ret = SCIF_SUCCESS;
 	}
 	return ret; 
@@ -96,8 +92,7 @@ int exec_scif_bind(scif_epd_t endp, uint16_t pn, int *portno)
 {
 	int ret;
 	printf("executing scif_bind(%d, %d)\n",endp, pn);
-	if((*portno = scif_bind(endp , pn)) < 0)
-	{
+	if((*portno = scif_bind(endp , pn)) < 0) {
 		perror("scif_bind");
 		ret = SCIF_BIND_FAIL;
 	}
@@ -110,8 +105,7 @@ int exec_scif_bind(scif_epd_t endp, uint16_t pn, int *portno)
 int exec_scif_listen(scif_epd_t endp, int backlog)
 {
 	int ret;
-	if(scif_listen(endp, backlog) < 0)
-	{
+	if(scif_listen(endp, backlog) < 0) {
 		perror("scif_listen");
 		ret = SCIF_LISTEN_FAIL;
 	}
@@ -124,8 +118,7 @@ int exec_scif_connect(scif_epd_t endp, struct scif_portID *dst, int *portID)
 {
 	int ret;
 	printf("scif_connect(endp = %d, remote_node=%d, remote_port=%d\n", endp, dst->node, dst->port);
-	if((*portID = scif_connect(endp, dst)) < 0)
-	{
+	if((*portID = scif_connect(endp, dst)) < 0) {
 		perror("scif_connect");
 		ret = SCIF_CONNECT_FAIL;
 	}
@@ -139,8 +132,7 @@ int exec_scif_accept(scif_epd_t endp, struct scif_portID *peer,
 		scif_epd_t *newepd, int flags)
 {
 	int ret;
-	if(scif_accept(endp, peer, newepd, flags) < 0)
-	{
+	if(scif_accept(endp, peer, newepd, flags) < 0) {
 		perror("scif_accept");
 		ret = SCIF_ACCEPT_FAIL;
 	}
@@ -154,8 +146,7 @@ int exec_scif_send(scif_epd_t endp, void *msg, int len, int flags,
 {
 	int ret;
 	printf("executing scif_send(endp = %d, len =%d, flags=%d\n", endp, len, flags);
-	if((*send_count = scif_send(endp, msg, len, flags)) < 0)
-	{
+	if((*send_count = scif_send(endp, msg, len, flags)) < 0) {
 		perror("scif_send");
 		ret = SCIF_SEND_FAIL;
 	}
@@ -170,8 +161,7 @@ int exec_scif_recv(scif_epd_t endp, void *msg, int len, int flags,
 {
 	int ret; 
 
-	if((*read_count = scif_recv(endp, msg, len, flags)) < 0)
-	{
+	if((*read_count = scif_recv(endp, msg, len, flags)) < 0) {
 		perror("scif_recv");
 		ret = SCIF_RECV_FAIL;
 	}
@@ -186,8 +176,7 @@ int exec_scif_register(scif_epd_t endp, void **addr, size_t len,
 {
 	int ret; 
 
-	if((*resulted_off_t = scif_register(endp, *addr, len, offset, prot_flags, map_flags)) < 0)
-	{
+	if((*resulted_off_t = scif_register(endp, *addr, len, offset, prot_flags, map_flags)) < 0) {
 		perror("scif_register");
 		ret = SCIF_REGISTER_FAIL;
 	}
@@ -196,12 +185,11 @@ int exec_scif_register(scif_epd_t endp, void **addr, size_t len,
 	return ret;
 }
 
-int exec_scif_unregister(scif_epd_t endp, off_t offset, size_t len)
+int exec_scif_unregister(scif_epd_t endp, off_t offset, size_t len, int *result)
 {
 	int ret; 
 
-	if(scif_unregister(endp, offset, len) < 0)
-	{
+	if((*result = scif_unregister(endp, offset, len)) < 0) {
 		perror("scif_unregister");
 		ret = SCIF_UNREGISTER_FAIL;
 	}
@@ -230,12 +218,11 @@ int exec_scif_munmap(void *addr, size_t len)
 	return ret;
 }
 
-int exec_scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int rma_flags)
+int exec_scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int rma_flags, int *result)
 {
 	int ret; 
 
-	if(scif_readfrom(epd, loffset, len, roffset, rma_flags) < 0)
-	{
+	if((*result = scif_readfrom(epd, loffset, len, roffset, rma_flags)) < 0) {
 		perror("scif_readfrom");
 		ret = SCIF_READ_FROM_FAIL;
 	}
@@ -245,12 +232,11 @@ int exec_scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset,
 	return ret;
 }
 
-int exec_scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int rma_flags)
+int exec_scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int rma_flags, int *result)
 {
 	int ret; 
 
-	if(scif_writeto(epd, loffset, len, roffset, rma_flags) < 0)
-	{
+	if((*result = scif_writeto(epd, loffset, len, roffset, rma_flags)) < 0) {
 		perror("scif_writeto");
 		ret = SCIF_WRITE_TO_FAIL;
 	}
@@ -264,8 +250,7 @@ int exec_scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, in
 {
 	int ret; 
 
-	if(scif_vreadfrom(epd, addr, len, offset, rma_flags) < 0)
-	{
+	if(scif_vreadfrom(epd, addr, len, offset, rma_flags) < 0) {
 		perror("scif_vreadfrom");
 		ret = SCIF_VREAD_FROM_FAIL;
 	}
@@ -279,8 +264,7 @@ int exec_scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int
 {
 	int ret; 
 
-	if(scif_vwriteto(epd, addr, len, offset, rma_flags) < 0)
-	{
+	if(scif_vwriteto(epd, addr, len, offset, rma_flags) < 0) {
 		perror("scif_vwriteto");
 		ret = SCIF_VWRITE_TO_FAIL;
 	}
@@ -294,8 +278,7 @@ int exec_scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 {
 	int ret; 
 
-	if(scif_fence_mark(epd, flags, mark) < 0)
-	{
+	if(scif_fence_mark(epd, flags, mark) < 0) {
 		perror("scif_fence_mark");
 		ret = SCIF_FENCE_MARK_FAIL;
 	}
@@ -309,8 +292,7 @@ int exec_scif_fence_wait(scif_epd_t epd, int mark)
 {
 	int ret; 
 
-	if(scif_fence_wait(epd, mark) < 0)
-	{
+	if(scif_fence_wait(epd, mark) < 0) {
 		perror("scif_fence_wait");
 		ret = SCIF_FENCE_WAIT_FAIL;
 	}
@@ -325,8 +307,7 @@ int exec_scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval, off_t roff
 {
 	int ret; 
 
-	if(scif_fence_signal(epd, loff, lval, roff, rval, flags) < 0)
-	{
+	if(scif_fence_signal(epd, loff, lval, roff, rval, flags) < 0) {
 		perror("scif_fence_signal");
 		ret = SCIF_FENCE_SIGNAL_FAIL;
 	}
@@ -340,8 +321,7 @@ int exec_scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self, int *online_
 {
 	int ret; 
 
-	if((*online_nodes = scif_get_nodeIDs(nodes, len, self)) < 0)
-	{
+	if((*online_nodes = scif_get_nodeIDs(nodes, len, self)) < 0) {
 		perror("scif_get_nodeIDs");
 		ret = SCIF_GET_NODE_IDS_FAIL;
 	}
@@ -354,8 +334,7 @@ int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, 
 {
 	int ret;
 
-	if((*poll_res = scif_poll(epds, nepds, timeout)) < 0 )
-	{
+	if((*poll_res = scif_poll(epds, nepds, timeout)) < 0 ) {
 		perror("scif_poll");
 		ret = SCIF_POLL_FAIL;
 	}
@@ -473,7 +452,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			phi_result = exec_scif_recv((scif_epd_t)cmd->int_args[0], 
 					   extra_args, cmd->int_args[1], cmd->int_args[2],
 					   int_res, &arg_count);
-				   break;
+			break;
 		}
 		case REGISTER: {
 			printf("Executing scif_register() ... \n");
@@ -481,67 +460,85 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			arg_count++;
 
 			extra_args_size = sizeof(off_t);
-			extra_args = malloc_safe(extra_args_size);
+			extra_args = malloc_safe(sizeof(off_t));
 
-			off_t resulted_offset;							
-			void *addr;		
-				
-			addr = mmap((void *)cmd->extra_args[0].data
+			off_t resulted_offset, client_offset;							
+			void *addr, *client_addr;		
+			
+			memcpy(&client_addr, cmd->extra_args[0].data, sizeof(void *));
+			memcpy(&client_offset, cmd->extra_args[0].data + sizeof(void *), sizeof(off_t));
+
+			addr = mmap(client_addr,(size_t)cmd->uint_args[0],  PROT_READ | PROT_WRITE,
+                                          MAP_ANON | MAP_SHARED, -1, 0);
 				   
 			phi_result = exec_scif_register((scif_epd_t)cmd->int_args[0],
-					   &addr, (size_t)cmd->int_args[1],
-					   (off_t)cmd->extra_args[0].data,
-					   cmd->int_args[2], cmd->int_args[3],
+					   addr, (size_t)cmd->uint_args[0],
+					   client_offset,
+					   cmd->int_args[1], cmd->int_args[2],
 					   &resulted_offset);	 								
-			memcpy(extra_args, &addr, sizeof(void *));
-			memcpy(extra_args + sizeof(void *), &resulted_offset, sizeof(off_t));
+			memcpy(extra_args, &resulted_offset, sizeof(off_t));
 			break;
 		}
-		case UNREGISTER:
-			   printf("Executing scif_unregister() ... \n");
-			   //TODO: scif_unregister call goes here...
-
-			   phi_result = exec_scif_unregister((scif_epd_t)cmd->int_args[0],
+		case UNREGISTER: {
+			printf("Executing scif_unregister() ... \n");
+			//TODO: scif_unregister call goes here...
+			
+			arg_count++;
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+			
+			phi_result = exec_scif_unregister((scif_epd_t)cmd->int_args[0],
 					   (off_t)cmd->extra_args[0].data,
-					   cmd->int_args[1]);		
-			   break;
+					   cmd->uint_args[0], int_res);		
+			break;
+		}
 		case MMAP:
-			   printf("Executing scif_mmap() ... \n");
-			   //TODO: scif_mmap call goes here...
-			   break;
+			printf("Executing scif_mmap() ... \n");
+			//TODO: scif_mmap call goes here...
+			break;
 		case MUNMAP:
-			   printf("Executing scif_munmap() ... \n");
-			   //TODO: scif_munmap call goes here...
-			   break;
-		case READ_FROM:
-			   printf("Executing scif_read_from() ... \n");
-			   //TODO: scif_read_from call goes here...
-			   phi_result = exec_scif_readfrom((scif_epd_t)cmd->int_args[0], 
-					   (off_t)cmd->extra_args[0].data, (size_t)cmd->int_args[1],
-					   (off_t)cmd->extra_args[1].data, cmd->int_args[2]);
-			   break;
-		case WRITE_TO:
-			   printf("Executing scif_write_to() ... \n");
-			   //TODO: scif_write_to call goes here...
-			   phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
-					   (off_t)cmd->extra_args[0].data, (size_t)cmd->int_args[1],
-					   (off_t)cmd->extra_args[1].data, cmd->int_args[2]);
-			   break;
-		case VREAD_FROM:
-			   {
-				   printf("Executing scif_vread_from() ... \n");
-				   //TODO: scif_vread_from call goes here...
-				   arg_count++;
-				   void *addr;
-				   size_t len = (size_t)cmd->int_args[1];
-				   addr = malloc_safe(len);
-				   phi_result = exec_scif_vreadfrom((scif_epd_t)cmd->int_args[0],
+			printf("Executing scif_munmap() ... \n");
+			//TODO: scif_munmap call goes here...
+			break;
+		case READ_FROM: { 
+			printf("Executing scif_read_from() ... \n");
+			//TODO: scif_read_from call goes here...
+			
+			arg_count++;
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+			phi_result = exec_scif_readfrom((scif_epd_t)cmd->int_args[0], 
+					   (off_t)cmd->extra_args[0].data, (size_t)cmd->uint_args[0],
+					   (off_t)cmd->extra_args[1].data, cmd->int_args[1], int_res);
+			break;
+		}
+		case WRITE_TO: {
+			printf("Executing scif_write_to() ... \n");
+			//TODO: scif_write_to call goes here...
+
+			arg_count++;
+			int_res = malloc_safe(sizeof(int));
+			int_res_count = 1;
+			phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
+					   (off_t)cmd->extra_args[0].data, (size_t)cmd->uint_args[0],
+					   (off_t)cmd->extra_args[1].data, cmd->int_args[1], int_res);
+			break;
+		}
+		case VREAD_FROM: {
+			printf("Executing scif_vread_from() ... \n");
+			//TODO: scif_vread_from call goes here...
+			
+			arg_count++;
+			void *addr;
+			size_t len = (size_t)cmd->int_args[1];
+			addr = malloc_safe(len);
+			phi_result = exec_scif_vreadfrom((scif_epd_t)cmd->int_args[0],
 						   addr, len, (off_t)cmd->extra_args[0].data,
 						   cmd->int_args[2]);
-				   extra_args = addr;
-				   extra_args_size = len;
-				   break;
-			   }
+			extra_args = addr;
+			extra_args_size = len;
+			break;
+		}
 		case VWRITE_TO:
 			   printf("Executing scif_vwrite_to) ... \n");
 			   //TODO: scif_vwrite_to call goes here...
