@@ -91,6 +91,15 @@ enum scif_return_codes {
 	SCIF_POLL_FAIL,
 	SCIF_LIB_INIT_FAIL
 };
+typedef struct address_mapping {
+	void *client_addr, *server_addr;
+	struct address_mapping *next;
+} addr_map;
+
+struct addr_map_list {
+	addr_map *head;
+	int num_maps;	
+};
 
 typedef struct thread_management {
 	pthread_t thread_id;

@@ -125,11 +125,12 @@ void *serve_client(void *arg)
 }
 
 int main(int argc, char *argv[]) {
+	addr_map *it = threads->head;
 	int server_sfd, client_sfd;
 	struct sockaddr_in sa;
 	char *server, *server_port, *local_port, addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
-	//pid_t client;
+	struct addr_map_list maps;
 	thr_mng *client;
 
 	if (argc > 2) {
@@ -144,6 +145,8 @@ int main(int argc, char *argv[]) {
 	} else {
 		local_port = argv[1];
 	}
+
+	initialise_addr_map_list(&maps);
 
 	server_sfd = init_server_net(local_port, &sa);
 	printf("\nServer listening on port %s for incoming connections...\n", local_port);

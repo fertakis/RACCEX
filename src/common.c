@@ -27,6 +27,53 @@
 char *server_ip;
 char *server_port;
 
+void initialise_addr_map_list(struct addr_map_list *list) {
+	list->num_maps = 0;
+	list->head = NULL;
+}
+
+addr_map * identify_map(struct addr_map_list *maps, void *clnt_addr, void *srv_addr) 
+{
+	addr_map *ret = NULL;
+
+	if(maps->head == NULL) {
+		//first mapping
+		maps->num_maps++;
+		maps->head = malloc_safe(sizeof(addr_map));
+		maps->head->next = NULL;
+		maps->head->client_addr = clnt_addr;
+		maps->head->server_addr = srv_addr;
+		ret = maps->head;
+	}
+	else {
+		addr_map *it = maps->head;
+		while (it->next != NULL) {
+			if( it->client_addr == clnt_addr ) {
+				//found it
+				ret = it;
+				break;
+			}
+			it = it->next;
+		}
+		if(ret == NULL) {
+			//not found, check last entry
+			if( it->client_addr == clnt_addr )
+				//found, was the last entry
+				ret = it;
+			else {
+				//not found, create new entry
+				ret = malloc_safe(sizeof(addr_map));
+				ret->client_addr = clnt_addr;
+				ret->server_addr = srv_addr;
+				ret->next = NULL;
+				it->next = ret;
+				maps->num_maps++;
+			}
+		}
+	}
+	return ret; 
+}
+
 inline void *malloc_safe_f(size_t size, const char *file, const int line) {
 	void *ptr = NULL;
 
@@ -42,7 +89,7 @@ inline void *malloc_safe_f(size_t size, const char *file, const int line) {
 void get_server_connection_config(char **server, char **server_port)
 {
 	*server = getenv("REMOTE_PHI_SERVER"),
-	*server_port = getenv("REMOTE_PHI_PORT");
+		*server_port = getenv("REMOTE_PHI_PORT");
 
 	printf("server config..\n");
 	if(*server == NULL)
@@ -109,8 +156,8 @@ int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {
 int unpack_phi_cmd(var **args, PhiCmd *cmd ) 
 {
 	int ret = 0 ;
-	
+
 	printf("Unpacking PHI cmd ...");
-	
+
 	return ret;
 }
