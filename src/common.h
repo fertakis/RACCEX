@@ -16,6 +16,7 @@
 typedef enum var_type_enum {
     INT,
     UINT,
+    U64INT,
     STRING,
     BYTES,
     PHI_RESULT_CODE, 

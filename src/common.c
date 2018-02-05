@@ -80,6 +80,9 @@ int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {
 				cmd->n_uint_args = args[i]->elements;
 				cmd->uint_args = args[i]->data;
 				break;
+			case U64INT:
+				cmd->n_u64int_args = args[i]->elements;
+				cmd->u64int_args = args[i]->data;
 			case BYTES:
 				//cmd->n_extra_args = args[i]->elements;
 				cmd->n_extra_args = 1;

@@ -425,7 +425,9 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 {
 	int res_code;
 	off_t ret;
-	var arg_int = { .elements = 3 }, arg_uint = {.elements = 1} ,arg_bytes = { .elements = 1 }, *args[] = { &arg_int, &arg_uint, &arg_bytes}; 
+	var arg_int = { .elements = 3 }, arg_uint = {.elements = 1},
+			arg_bytes = { .elements = 1 }, 
+			*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
@@ -499,8 +501,7 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 
 	arg_uint.type = UINT;
 	arg_uint.length = sizeof(uint32_t)*arg_uint.elements;
-	arg_uint.data = malloc_safe(arg_uint.length);
-	arg_uint.data[0] = len;
+	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(off_t);
@@ -670,10 +671,8 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(void *) + sizeof(off_t);
-	arg_bytes.data = malloc_safe(arg_bytes.length);
-	memcpy(arg_bytes.data, &addr, sizeof(void *));
-	memcpy(arg_bytes.data + sizeof(void *), &offset, sizeof(off_t));
+	arg_bytes.length = sizeof(off_t);
+	arg_bytes.data = &offset;
 
 	if(send_phi_cmd(uow->sockfd, args, 3, VREAD_FROM) < 0)
 	{
@@ -684,6 +683,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		ret = (int)result->int_args[0];
+		memcpy(addr, result->extra_args[0].data, result->extra_args[0].len);
 	}
 	else {
 		ret = -1;
@@ -699,7 +699,9 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 2 }, *args[] = { &arg_int, &arg_bytes}; 
+	var arg_int = { .elements = 2 }, arg_uint = { .elements = 1},
+		arg_bytes = { .elements = 1 }, 
+		*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
@@ -708,13 +710,17 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
+
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
 	int *data = malloc_safe(arg_int.length);
 	data[0] = epd;
-	data[1] = len;
-	data[2] = flags;
+	data[1] = flags;
 	arg_int.data = data;
+
+	arg_uint.type = UINT;
+	arg_uint.length = sizeof(size_t)*arg_uint.elements;
+	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(off_t) + len;
@@ -722,15 +728,15 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	memcpy(arg_bytes.data, addr, len);
 	memcpy(arg_bytes.data + len, &offset, sizeof(off_t));
 
-	if(send_phi_cmd(uow->sockfd, args, 2, VWRITE_TO) < 0)
+	if(send_phi_cmd(uow->sockfd, args, 3, VWRITE_TO) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
-	if(res_code == SCIF_SUCCESS)
-		ret = 0;
+	if(res_code == SCIF_SUCCESS)	
+		ret = (int)result->int_args[0];
 	else {
 		ret = -1;
 		errno = (int)result->phi_errorno;
@@ -745,7 +751,7 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, *args[] = { &arg_int}; 
+	var arg_int = { .elements = 2 }, *args[] = { &arg_int }; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
@@ -754,6 +760,7 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
+
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
 	int *data = malloc_safe(arg_int.length);
@@ -769,8 +776,8 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
-		memcpy(mark, &result->int_args[0], sizeof(int));
-		ret = 0;
+		memcpy(mark, &result->int_args[0], sizeof(int));	
+		ret = (int)result->int_args[1];
 	}
 	else {
 		ret = -1;
@@ -810,7 +817,7 @@ scif_fence_wait(scif_epd_t epd, int mark)
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
-		ret = 0;
+		ret = (int)result->int_args[0];
 	else {
 		ret = -1;
 		errno = (int)result->phi_errorno;
@@ -826,8 +833,9 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 		off_t roff, uint64_t rval, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, arg_uint = { .elements = 2}, arg_bytes = { .elements = 2},
-	    *args[] = { &arg_int, &arg_uint, &arg_bytes}; 
+	var arg_int = { .elements = 2 }, arg_u64int = { .elements = 2},
+			 arg_bytes = { .elements = 2},
+	    		*args[] = { &arg_int, &arg_u64int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
@@ -836,6 +844,7 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
+
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
 	int *data = malloc_safe(arg_int.length);
@@ -843,11 +852,12 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	data[1] = flags;
 	arg_int.data = data;
 
-	arg_uint.type = UINT;
-	arg_uint.length = sizeof(uint64_t)*arg_uint.elements;
-	uint64_t *uints  = malloc_safe(arg_uint.length);
-	uints[0] = lval;
-	uints[1] = rval;
+	arg_u64int.type = U64INT;
+	arg_u64int.length = sizeof(uint64_t)*arg_u64int.elements;
+	uint64_t *u64ints  = malloc_safe(arg_u64int.length);
+	u64ints[0] = lval;
+	u64ints[1] = rval;
+	arg_u64int.data = u64ints;
 
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(off_t)*2;
@@ -863,7 +873,7 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
-		ret = 0;
+		ret = (int)result->int_args[0];
 	else {
 		ret = -1;
 		errno = (int)result->phi_errorno;
