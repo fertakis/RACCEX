@@ -13,6 +13,8 @@
 #define TCP_PORT    35001
 #define TCP_BACKLOG 5
 
+extern struct addr_map_list maps; 
+
 typedef enum var_type_enum {
     INT,
     UINT,
@@ -92,7 +94,9 @@ enum scif_return_codes {
 	SCIF_LIB_INIT_FAIL
 };
 typedef struct address_mapping {
+	pid_t proc_id;
 	void *client_addr, *server_addr;
+	off_t offset;
 	struct address_mapping *next;
 } addr_map;
 
@@ -113,6 +117,9 @@ struct thread_mng_list {
 	int num_threads;
 };
 
+int remove_mapping(pid_t pid, off_t offset);
+addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr);
+void initialise_addr_map_list();
 void get_server_connection_config(char **server, char **server_port);
 int pack_phi_cmd(void ** payload, var **args, size_t arg_count, int type);
 int unpack_phi_cmd(var ** args, PhiCmd *cmd);

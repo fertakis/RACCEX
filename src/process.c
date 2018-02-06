@@ -171,13 +171,13 @@ int exec_scif_recv(scif_epd_t endp, void *msg, int len, int flags,
 	return ret;
 }
 
-int exec_scif_register(scif_epd_t endp, void **addr, size_t len, 
+int exec_scif_register(scif_epd_t endp, void *addr, size_t len, 
 		off_t offset, int prot_flags, int map_flags, 
 		off_t *resulted_off_t)
 {
 	int ret; 
 
-	if((*resulted_off_t = scif_register(endp, *addr, len, offset, prot_flags, map_flags)) < 0) {
+	if((*resulted_off_t = scif_register(endp, addr, len, offset, prot_flags, map_flags)) < 0) {
 		perror("scif_register");
 		ret = SCIF_REGISTER_FAIL;
 	}
@@ -466,33 +466,51 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			extra_args = malloc_safe(sizeof(off_t));
 
 			off_t resulted_offset, client_offset;							
-			void *addr, *client_addr;		
+			void *addr, *client_addr;
+			pid_t client_pid;
+			addr_map *map_slot = NULL;
 			
 			memcpy(&client_addr, cmd->extra_args[0].data, sizeof(void *));
 			memcpy(&client_offset, cmd->extra_args[0].data + sizeof(void *), sizeof(off_t));
+			memcpy(&client_pid, cmd->extra_args[0].data + sizeof(void *) + sizeof(off_t), sizeof(pid_t));
 
-			addr = mmap(client_addr,(size_t)cmd->uint_args[0],  PROT_READ | PROT_WRITE,
+			addr = mmap(NULL, (size_t)cmd->uint_args[0],  PROT_READ | PROT_WRITE,
                                           MAP_ANON | MAP_SHARED, -1, 0);
 				   
 			phi_result = exec_scif_register((scif_epd_t)cmd->int_args[0],
 					   addr, (size_t)cmd->uint_args[0],
 					   client_offset,
 					   cmd->int_args[1], cmd->int_args[2],
-					   &resulted_offset);	 								
+					   &resulted_offset);
+
 			memcpy(extra_args, &resulted_offset, sizeof(off_t));
+
+			
+			map_slot = identify_map(client_pid, client_addr, addr);
+			if(map_slot == NULL) {
+				printf("error creating map for scif_register()\n");
+			}
 			break;
 		}
 		case UNREGISTER: {
 			printf("Executing scif_unregister() ... \n");
 			//TODO: scif_unregister call goes here...
-			
+			pid_t pid;
+			off_t offset; 
+
 			arg_count++;
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
 			
+			memcpy(&offset, cmd->extra_args[0].data, sizeof(off_t));
+			memcpy(&pid, cmd->extra_args[0].data + sizeof(off_t), sizeof(pid_t));
+
 			phi_result = exec_scif_unregister((scif_epd_t)cmd->int_args[0],
-					   (off_t)cmd->extra_args[0].data,
+					   offset,
 					   cmd->uint_args[0], int_res);		
+			if(phi_result == SCIF_SUCCESS)
+				if(remove_mapping(pid, offset) < 0)
+					printf("error freeing mapping\n");
 			break;
 		}
 		case MMAP:
@@ -507,12 +525,24 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			printf("Executing scif_read_from() ... \n");
 			//TODO: scif_read_from call goes here...
 			
-			arg_count++;
+			arg_count += 2;;
+			
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
+
+			off_t loffset, roffset;
+			pid_t pid;
+			memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
+			memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
+			memcpy(&pid, cmd->extra_args[0] + 2*sizeof(off_t), sizeof(pid_t));
+
 			phi_result = exec_scif_readfrom((scif_epd_t)cmd->int_args[0], 
-					   (off_t)cmd->extra_args[0].data, (size_t)cmd->uint_args[0],
-					   (off_t)cmd->extra_args[1].data, cmd->int_args[1], int_res);
+					   loffset, (size_t)cmd->uint_args[0],
+					   roffset, cmd->int_args[1], int_res);
+			if(phi_result == SCIF_SUCCESS) {
+				addr_map *mp = identify_map(pid, NULL, NULL, loffset);
+			}
+
 			break;
 		}
 		case WRITE_TO: {

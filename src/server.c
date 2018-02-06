@@ -26,6 +26,8 @@
 #include "process.h"
 #include "common.pb-c.h"
 
+struct addr_map_list maps;
+
 int init_server_net(const char *port, struct sockaddr_in *sa) 
 {
 	int socket_fd;
@@ -125,14 +127,12 @@ void *serve_client(void *arg)
 }
 
 int main(int argc, char *argv[]) {
-	addr_map *it = threads->head;
 	int server_sfd, client_sfd;
 	struct sockaddr_in sa;
 	char *server, *server_port, *local_port, addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
-	struct addr_map_list maps;
 	thr_mng *client;
-
+		
 	if (argc > 2) {
 		printf("Usage: server <local_port>\n");
 		exit(EXIT_FAILURE);

@@ -431,6 +431,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
+	pid_t pid = getpid();
 	
 	printf("executing scif_register with epd %d, addr %d, len %d, offset %d, prot %d, flags %d\n", epd, addr, len, offset, prot, flags);
 
@@ -452,10 +453,11 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(void *) + sizeof(off_t);
+	arg_bytes.length = sizeof(void *) + sizeof(off_t) + sizeof(pid_t);
 	arg_bytes.data = malloc_safe(arg_bytes.length);
 	memcpy(arg_bytes.data, &addr, sizeof(void *));
 	memcpy(arg_bytes.data + sizeof(void *), &offset, sizeof(off_t));
+	memcpy(arg_bytes.data + sizeof(void *) + sizeof(off_t), &pid, sizeof(pid_t));
 
 	if(send_phi_cmd(uow->sockfd, args, 3, REGISTER) < 0)
 	{
@@ -487,6 +489,7 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
+	pid_t pid = getpid();
 
 	uow = identify_thread(&threads);
 
@@ -504,8 +507,10 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t);
-	arg_bytes.data = &offset;
+	arg_bytes.length = sizeof(off_t) + sizeof(pid_t);
+	arg_bytes.data = malloc_safe(arg_bytes.length);
+	memcpy(arg_bytas.data, &offset, sizeof(off_t));
+	memcpy(arg_bytes.data + sizeof(off_t), &pid, sizeof(pid_t));
 
 	if(send_phi_cmd(uow->sockfd, args, 3, UNREGISTER) < 0)
 	{
@@ -550,6 +555,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
+	pid_t pid = getpid();
 
 	uow = identify_thread(&threads);
 
@@ -564,14 +570,15 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	arg_int.data = data;
 	
 	arg_uint.type = UINT;
-	arg_uint.length = sizeof(uint32_t)*arg_uint.elements;
+	arg_uint.length = sizeof(size_t)*arg_uint.elements;
 	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t)*2;
+	arg_bytes.length = sizeof(off_t)*2 + sizeof(pid_t);
 	arg_bytes.data = (off_t *)malloc_safe(arg_bytes.length);
-	((off_t *)arg_bytes.data)[0] = loffset;
-	((off_t *)arg_bytes.data)[1] = roffset;
+	memcpy(arg_bytes.data, &loffset, sizeof(off_t));
+	memcpy(arg_bytes.data + sizeof(off_t), &roffset, sizeof(off_t));
+	memcpy(arg_bytes.data + 2*sizeof(off_t), &pid, sizeof(pid_t));
 
 	if(send_phi_cmd(uow->sockfd, args, 3, READ_FROM) < 0)
 	{
