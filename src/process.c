@@ -486,7 +486,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			memcpy(extra_args, &resulted_offset, sizeof(off_t));
 
 			
-			map_slot = identify_map(client_pid, client_addr, addr);
+			map_slot = identify_map(client_pid, client_addr, addr, resulted_offset);
 			if(map_slot == NULL) {
 				printf("error creating map for scif_register()\n");
 			}
@@ -525,7 +525,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			printf("Executing scif_read_from() ... \n");
 			//TODO: scif_read_from call goes here...
 			
-			arg_count += 2;;
+			arg_count++;
 			
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
@@ -534,13 +534,21 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			pid_t pid;
 			memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
 			memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
-			memcpy(&pid, cmd->extra_args[0] + 2*sizeof(off_t), sizeof(pid_t));
+			memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));
 
 			phi_result = exec_scif_readfrom((scif_epd_t)cmd->int_args[0], 
 					   loffset, (size_t)cmd->uint_args[0],
 					   roffset, cmd->int_args[1], int_res);
 			if(phi_result == SCIF_SUCCESS) {
-				addr_map *mp = identify_map(pid, NULL, NULL, loffset);
+				//addr_map *mp = identify_map(pid, NULL, NULL, loffset);
+				addr_map *mp = get_map(pid, loffset);
+				
+				arg_count++;
+
+				extra_args_size = (size_t)cmd->uint_args[0];
+				extra_args = malloc_safe(extra_args_size);
+
+				memcpy(extra_args, mp->server_addr, extra_args_size);
 			}
 
 			break;
@@ -552,9 +560,21 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			arg_count++;
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
+			
+			off_t loffset, roffset;
+			pid_t pid;
+			size_t len = (size_t)cmd->uint_args[0];
+			memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
+			memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
+			memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));			
+	
+			addr_map *mp = get_map(pid, loffset);
+			
+			//copy to server registered address space len bytes for dma
+			memcpy(mp->server_addr, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
 			phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
-					   (off_t)cmd->extra_args[0].data, (size_t)cmd->uint_args[0],
-					   (off_t)cmd->extra_args[1].data, cmd->int_args[1], int_res);
+					   loffset, len,
+					   roffset, cmd->int_args[1], int_res);
 			break;
 		}
 		case VREAD_FROM: {

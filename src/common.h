@@ -117,8 +117,9 @@ struct thread_mng_list {
 	int num_threads;
 };
 
+addr_map * get_map(pid_t pid, off_t lofft);
 int remove_mapping(pid_t pid, off_t offset);
-addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr);
+addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr, off_t offt);
 void initialise_addr_map_list();
 void get_server_connection_config(char **server, char **server_port);
 int pack_phi_cmd(void ** payload, var **args, size_t arg_count, int type);

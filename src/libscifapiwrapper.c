@@ -26,6 +26,7 @@
 
 //unitofwork uow = { .socket_fd = -1, .endp = -1, .ref_count = 0};
 struct thread_mng_list threads;
+struct addr_map_list maps;
 static uint8_t scif_version_mismatch;
 
 	static	int
@@ -468,6 +469,9 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(&ret, result->extra_args[0].data, sizeof(off_t));
+		addr_map *entry = identify_map(pid, addr, NULL, offset); 
+		if(entry == NULL)
+			printf("error entring data for registered address\n");
 	}
 	else {
 		ret = -1;
@@ -509,7 +513,7 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(off_t) + sizeof(pid_t);
 	arg_bytes.data = malloc_safe(arg_bytes.length);
-	memcpy(arg_bytas.data, &offset, sizeof(off_t));
+	memcpy(arg_bytes.data, &offset, sizeof(off_t));
 	memcpy(arg_bytes.data + sizeof(off_t), &pid, sizeof(pid_t));
 
 	if(send_phi_cmd(uow->sockfd, args, 3, UNREGISTER) < 0)
@@ -603,17 +607,20 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 {
 	int res_code, ret = -1;
 	var arg_int = { .elements = 2 }, arg_uint = { .elements = 1 }, 
-		arg_bytes = { .elements = 2 }, 
+		arg_bytes = { .elements = 1 }, 
 		*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
+	pid_t pid = getpid();
+	addr_map *mp = get_map(pid, loffset);
+	
 
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
-
+	
 	arg_int.type = INT;
 	arg_int.length = sizeof(int)*arg_int.elements;
 	int *data = malloc_safe(arg_int.length);
@@ -626,10 +633,12 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t)*2;
-	arg_bytes.data = (off_t *)malloc_safe(arg_bytes.length);
-	((off_t *)arg_bytes.data)[0] = loffset;
-	((off_t *)arg_bytes.data)[1] = roffset;
+	arg_bytes.length = sizeof(off_t)*2 + len + sizeof(pid_t);
+	arg_bytes.data = malloc_safe(arg_bytes.length);
+	memcpy(arg_bytes.data, &loffset, sizeof(off_t));
+	memcpy(arg_bytes.data + sizeof(off_t), &roffset, sizeof(off_t));
+	memcpy(arg_bytes.data + 2*sizeof(off_t), &pid, sizeof(pid_t));
+	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), mp->client_addr, len); 
 
 	if(send_phi_cmd(uow->sockfd, args, 3, WRITE_TO) < 0)
 	{
@@ -996,4 +1005,5 @@ __attribute__ ((constructor)) static void scif_lib_init(void)
 	  if ((scif_driver_ver > 0) && (scif_driver_ver != SCIF_VERSION))
 	  scif_version_mismatch = 1;*/
 	initialise_thr_mng_list(&threads);
+	initialise_addr_map_list();
 }
