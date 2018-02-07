@@ -385,6 +385,8 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
+	
+	printf("executing scif_recv()...\n");
 
 	uow = identify_thread(&threads);
 
@@ -434,7 +436,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	thr_mng *uow;
 	pid_t pid = getpid();
 	
-	printf("executing scif_register with epd %d, addr %d, len %d, offset %d, prot %d, flags %d\n", epd, addr, len, offset, prot, flags);
+	printf("executing scif_register with epd %d, addr %p, len %d, offset %d, prot %d, flags %d\n", epd, addr, len, offset, prot, flags);
 
 	uow = identify_thread(&threads);
 
@@ -469,7 +471,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(&ret, result->extra_args[0].data, sizeof(off_t));
-		addr_map *entry = identify_map(pid, addr, NULL, offset); 
+		addr_map *entry = identify_map(pid, addr, NULL, ret); 
 		if(entry == NULL)
 			printf("error entring data for registered address\n");
 	}
@@ -494,6 +496,8 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	void *des_msg = NULL;
 	thr_mng *uow;
 	pid_t pid = getpid();
+
+	printf("executing scif_unregister()...\n");
 
 	uow = identify_thread(&threads);
 
@@ -562,6 +566,8 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	pid_t pid = getpid();
 	addr_map *mp = get_map(pid, loffset);
 	
+	printf("executing scif_readfrom()...\n");
+
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -618,7 +624,9 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	pid_t pid = getpid();
 	addr_map *mp = get_map(pid, loffset);
 	
-
+	printf("executing scif_writeto()...\n");
+	printf("addr to read data = %p \n", mp->client_addr);
+	
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -643,6 +651,8 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	memcpy(arg_bytes.data + 2*sizeof(off_t), &pid, sizeof(pid_t));
 	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), mp->client_addr, len); 
 
+	printf("data was succesfully wrapped\n");
+	
 	if(send_phi_cmd(uow->sockfd, args, 3, WRITE_TO) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
@@ -673,6 +683,8 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
+	printf("executing scif_vreadfrom()...\n");
+
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -725,6 +737,8 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
+	printf("executing scif_vwriteto()...\n");
+
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -775,6 +789,8 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
+	printf("executing scif_fence_mark()...\n");
+	
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -817,6 +833,8 @@ scif_fence_wait(scif_epd_t epd, int mark)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
+	printf("executing scif_fence_wait()...\n");
+
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -853,11 +871,13 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 {
 	int res_code, ret = -1;
 	var arg_int = { .elements = 2 }, arg_u64int = { .elements = 2},
-			 arg_bytes = { .elements = 2},
+			 arg_bytes = { .elements = 1},
 	    		*args[] = { &arg_int, &arg_u64int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
+	
+	printf("executing scif_fence_signal(epd=%d, loff=%ld, lval=%d, roff=%ld, rval=%d, flags=%d)...\n", epd, loff, lval, roff, rval, flags);
 
 	uow = identify_thread(&threads);
 
@@ -880,9 +900,9 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(off_t)*2;
-	arg_bytes.data = (off_t *)malloc_safe(arg_bytes.length);
-	((off_t *)arg_bytes.data)[0] = loff;
-	((off_t *)arg_bytes.data)[1] = roff;
+	arg_bytes.data = malloc_safe(arg_bytes.length);
+	memcpy(arg_bytes.data, &loff, sizeof(off_t));
+	memcpy(arg_bytes.data + sizeof(off_t), &roff, sizeof(off_t));
 
 	if(send_phi_cmd(uow->sockfd, args, 3, FENCE_SIGNAL) < 0)
 	{
