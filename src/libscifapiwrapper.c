@@ -471,7 +471,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(&ret, result->extra_args[0].data, sizeof(off_t));
-		addr_map *entry = identify_map(pid, addr, NULL, ret); 
+		addr_map *entry = identify_map(pid, addr, NULL, len, ret); 
 		if(entry == NULL)
 			printf("error entring data for registered address\n");
 	}
@@ -527,8 +527,11 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	}
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
-	if(res_code == SCIF_SUCCESS)
+	if(res_code == SCIF_SUCCESS){
 		ret = (int)result->int_args[0];
+		if(remove_mapping(pid, offset) < 0)
+			printf("error unregistering address space\n"); 
+	}
 	else {
 		ret = -1;
 		errno = (int)result->phi_errorno;
@@ -600,7 +603,8 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		ret = (int)result->int_args[0];
-		memcpy(mp->client_addr, result->extra_args[0].data, len);
+		void *addr_to_write = mp->client_addr + (loffset - mp->offset);
+		memcpy(addr_to_write, result->extra_args[0].data, len);
 	}	
 	else {
 		ret = -1;
@@ -649,7 +653,9 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	memcpy(arg_bytes.data, &loffset, sizeof(off_t));
 	memcpy(arg_bytes.data + sizeof(off_t), &roffset, sizeof(off_t));
 	memcpy(arg_bytes.data + 2*sizeof(off_t), &pid, sizeof(pid_t));
-	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), mp->client_addr, len); 
+
+	void *addr_to_copy_from = mp->client_addr + (loffset - mp->offset);
+	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), addr_to_copy_from, len); 
 
 	printf("data was succesfully wrapped\n");
 	

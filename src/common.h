@@ -97,6 +97,7 @@ typedef struct address_mapping {
 	pid_t proc_id;
 	void *client_addr, *server_addr;
 	off_t offset;
+	size_t len;
 	struct address_mapping *next;
 } addr_map;
 
@@ -119,7 +120,7 @@ struct thread_mng_list {
 
 addr_map * get_map(pid_t pid, off_t lofft);
 int remove_mapping(pid_t pid, off_t offset);
-addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr, off_t offt);
+addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr, size_t len, off_t offt);
 void initialise_addr_map_list();
 void get_server_connection_config(char **server, char **server_port);
 int pack_phi_cmd(void ** payload, var **args, size_t arg_count, int type);

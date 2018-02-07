@@ -486,7 +486,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			memcpy(extra_args, &resulted_offset, sizeof(off_t));
 
 			
-			map_slot = identify_map(client_pid, client_addr, addr, resulted_offset);
+			map_slot = identify_map(client_pid, client_addr, addr, (size_t)cmd->uint_args[0], resulted_offset);
 			if(map_slot == NULL) {
 				printf("error creating map for scif_register()\n");
 			}
@@ -547,8 +547,10 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 				extra_args_size = (size_t)cmd->uint_args[0];
 				extra_args = malloc_safe(extra_args_size);
+				
+				void *copy_from = mp->server_addr + (loffset - mp->offset);				
 
-				memcpy(extra_args, mp->server_addr, extra_args_size);
+				memcpy(extra_args, copy_from, extra_args_size);
 			}
 
 			break;
@@ -569,7 +571,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));			
 	
 			addr_map *mp = get_map(pid, loffset);
-			
+			void * copy_to = mp->server_addr + (loffset - mp->offset);
 			//copy to server registered address space len bytes for dma
 			memcpy(mp->server_addr, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
 			phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],

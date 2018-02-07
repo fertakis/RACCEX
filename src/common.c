@@ -32,7 +32,8 @@ void initialise_addr_map_list() {
 	maps.head = NULL;
 }
 
-addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr, off_t offt) 
+addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr, 
+				size_t len, off_t offt) 
 {
 	addr_map *ret = NULL;
 
@@ -44,6 +45,7 @@ addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr, off_t offt)
 		maps.head->proc_id = pid;
 		maps.head->client_addr = clnt_addr;
 		maps.head->server_addr = srv_addr;
+		maps.head->len = len;
 		maps.head->offset = offt;
 		ret = maps.head;
 	}
@@ -70,6 +72,7 @@ addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr, off_t offt)
 				ret->proc_id = pid;
 				ret->client_addr = clnt_addr;
 				ret->server_addr = srv_addr;
+				ret->len = len;
 				ret->offset = offt;
 				ret->next = NULL;
 				it->next = ret;
@@ -90,8 +93,9 @@ addr_map * get_map( pid_t pid, off_t lofft)
 	else {
 		addr_map *it = maps.head;
 		while (it->next != NULL) {
-			if( it->offset == lofft &&
-					it->proc_id == pid) {
+			if( (lofft >= it->offset) &&
+					(lofft < (it->offset + it->len)) && 
+					(it->proc_id == pid)) {
 				//found it
 				ret = it;
 				break;
@@ -100,7 +104,8 @@ addr_map * get_map( pid_t pid, off_t lofft)
 		}
 		if(ret == NULL) {
 			//not found, check last entry
-			if(( it->offset == lofft) &&
+			if(( lofft >= it->offset) &&
+					(lofft < (it->offset + it->len)) &&
 					(it->proc_id == pid))
 				//found, was the last entry
 				ret = it;
