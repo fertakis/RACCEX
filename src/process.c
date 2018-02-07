@@ -646,7 +646,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			
 			off_t loff, roff;
 			memcpy(&loff, cmd->extra_args[0].data, sizeof(off_t));
-			memcpy(&roff, cmd->extra_args[0].data + sizeof(off_t));
+			memcpy(&roff, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
 
 			phi_result = exec_scif_fence_signal((scif_epd_t)cmd->int_args[0],
 					loff, cmd->u64int_args[0],
