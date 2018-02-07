@@ -554,13 +554,14 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 {
 	int res_code, ret = -1;
 	var arg_int = { .elements = 2 }, arg_uint = { .elements = 1}, 
-			arg_bytes = { .elements = 2 }, 
+			arg_bytes = { .elements = 1 }, 
 			*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	pid_t pid = getpid();
-
+	addr_map *mp = get_map(pid, loffset);
+	
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -591,8 +592,10 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	}
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
-	if(res_code == SCIF_SUCCESS)
+	if(res_code == SCIF_SUCCESS) {
 		ret = (int)result->int_args[0];
+		memcpy(mp->client_addr, result->extra_args[0].data, len);
+	}	
 	else {
 		ret = -1;
 		errno = (int)result->phi_errorno;
