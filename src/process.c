@@ -685,14 +685,20 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			printf("Executing scif_poll() ... \n");
 			//TODO: scif_poll call goes here...
 
-			arg_count++;
+			arg_count += 2;
 
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
+		
+			struct scif_pollepd *epds = (struct scif_pollepd *)cmd->extra_args[0].data;
 
-			phi_result = exec_scif_poll((struct scif_pollepd *)cmd->extra_args[0].data,
+			phi_result = exec_scif_poll( epds,
 					   cmd->uint_args[0], (long)cmd->uint_args[1],
 					   int_res);
+
+			extra_args_size = sizeof(struct scif_pollepd);
+			extra_args = epds;
+	
 			break;
 		}
 		case LIB_INIT:

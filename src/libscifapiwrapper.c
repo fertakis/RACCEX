@@ -1017,6 +1017,7 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		ret = result->int_args[0];
+		memcpy(ufds, result->extra_args[0].data, sizeof(struct scif_pollepd));
 	}
 	else {
 		ret = -1;
