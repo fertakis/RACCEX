@@ -696,9 +696,9 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					   cmd->uint_args[0], (long)cmd->uint_args[1],
 					   int_res);
 
-			extra_args_size = sizeof(struct scif_pollepd);
+			extra_args_size = sizeof(struct scif_pollepd) * cmd->uint_args[0];
 			extra_args = malloc_safe(extra_args_size);
-			memcpy(extra_args, epds, sizeof(struct scif_pollepd));
+			memcpy(extra_args, epds, extra_args_size);
 	
 			break;
 		}
