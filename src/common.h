@@ -129,4 +129,10 @@ int unpack_phi_cmd(var ** args, PhiCmd *cmd);
 void *malloc_safe_f(size_t size, const char *file, const int line);
 #define malloc_safe(size) malloc_safe_f(size, __FILE__, __LINE__)
 
+#ifdef RSCIF_DEBUG
+#define rdprintf printf
+#else
+#define rdprintf  
+#endif
+
 #endif /* CLIENT_H */

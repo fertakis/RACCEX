@@ -32,7 +32,7 @@ int init_server_net(const char *port, struct sockaddr_in *sa)
 {
 	int socket_fd;
 
-	printf("Initialising server...\n");
+	rdprintf("Initialising server...\n");
 	/* Create TCP/IP socket, used as main chat channel */
 	if ((socket_fd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
@@ -103,7 +103,7 @@ void *serve_client(void *arg)
 		}
 
 		if (resp_type != -1) {
-			printf("Packing and Sending result\n");
+			rdprintf("Packing and Sending result\n");
 			pack_phi_cmd(&payload, result, arg_cnt, PHI_CMD_RESULT);
 			msg_length = serialise_message(&msg, resp_type, payload);
 			send_message(client->sockfd, msg, msg_length);
@@ -114,7 +114,7 @@ void *serve_client(void *arg)
 				result = NULL;
 			}
 		}
-		printf(">>\nMessage processed, cleaning up...\n<<\n");
+		rdprintf(">>\nMessage processed, cleaning up...\n<<\n");
 		if (msg != NULL) {
 			free(msg);
 			msg = NULL;
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (argc == 1) {
-		printf("No port defined, trying env vars\n");
+		rdprintf("No port defined, trying env vars\n");
 		get_server_connection_config(&server, &server_port);
 		local_port = server_port;
 	} else {
@@ -183,16 +183,6 @@ int main(int argc, char *argv[]) {
 			continue;
 		}
 		
-		/*if((client = fork()) < 0)
-		{
-			perror("fork");
-			exit(1);
-		}
-		else if (client == 0)
-		{
-			//client
-			serve_client(client_sfd);
-		}*/		
 	}
 
 	//should never be here

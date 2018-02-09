@@ -313,7 +313,7 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
-		newepd = (scif_epd_t *)&result->int_args[0];
+		memcpy(newepd, &result->int_args[0], sizeof(scif_epd_t));
 		ret = 0;
 	}
 	else {
@@ -1017,15 +1017,20 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		ret = result->int_args[0];
+		if(ret > 0)
+			printf("scif_poll event fired\n");
+		else 
+			printf("scif_poll timed out\n");
 		memcpy(ufds, result->extra_args[0].data, sizeof(struct scif_pollepd)*nfds);
 	}
 	else {
+		printf("sci_poll error\n");
 		ret = -1;
 		errno = (int)result->phi_errorno;
 	}
 
 	free_deserialised_message(des_msg);
-
+	printf("scif_poll returning ret =%d\n",ret);
 	return ret;
 }
 

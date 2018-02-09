@@ -60,7 +60,7 @@ size_t serialise_message(void **result, int msg_type, void *payload) {
 	Cookie message = COOKIE__INIT;
 	void *buffer, *msg_buffer; 
 
-	printf("Serialising message data...\n");
+	rdprintf("Serialising message data...\n");
 	message.type = msg_type;
 
 	switch (msg_type) {
@@ -81,7 +81,7 @@ size_t serialise_message(void **result, int msg_type, void *payload) {
 	memcpy(buffer+sizeof(msg_len_n), msg_buffer, msg_length);
 
 	*result = buffer;
-	printf("serialisation completed\n");
+	rdprintf("serialisation completed\n");
 	return buf_size;
 }
 
@@ -89,7 +89,7 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 {
 	Cookie *msg;
 
-	printf("Deserialising message data...\n");
+	rdprintf("Deserialising message data...\n");
 	msg = cookie__unpack(NULL, ser_msg_len, (uint8_t *)serialised_msg);
 	if (msg == NULL) {
 		fprintf(stderr, "message unpacking failed\n");
@@ -98,11 +98,11 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 
 	switch (msg->type) {
 		case PHI_CMD:
-			printf("--------------\nIs PHI_CMD\n");
+			rdprintf("--------------\nIs PHI_CMD\n");
 			*payload = msg->phi_cmd;
 			break;
 		case PHI_CMD_RESULT:
-			printf("--------------\nIs PHI_CMD_RESULT\n");
+			rdprintf("--------------\nIs PHI_CMD_RESULT\n");
 			*payload = msg->phi_cmd;
 			break;
 	}
@@ -111,22 +111,19 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 	// message payload...
 	//cookie__free_unpacked(msg, NULL);
 	*result = msg; 
-	if(msg->phi_cmd->type == SEND)
-		printf("arg_cnt = %d, epd=%d, len=%d, flags=%d\n", msg->phi_cmd->arg_count, ((int*)msg->phi_cmd->int_args)[0],
-				((int*)msg->phi_cmd->int_args)[1], ((int*)msg->phi_cmd->int_args)[2]);
 	return msg->type;
 
 }
 
 void free_deserialised_message(void *msg) {
-	printf("Freeing allocated memory for message...\n");
+	rdprintf("Freeing allocated memory for message...\n");
 	cookie__free_unpacked((Cookie *)msg, NULL);
 }
 
 ssize_t send_message (int socket_fd, void *buffer, size_t len)
 { 
 	ssize_t ret = 0 ;
-	printf("Sending %zu bytes...\n",len);
+	rdprintf("Sending %zu bytes...\n",len);
 	
 	//pthread_mutex_lock(&lock);
 	ret =  insist_write(socket_fd, buffer, len);
@@ -151,7 +148,7 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 
 
 	msg_len = ntohl(*(uint32_t *)buf);
-	printf("Going to read a message of %u bytes..., pthreadid %d \n", msg_len, (int)pthread_self());
+	rdprintf("Going to read a message of %u bytes..., pthreadid %d \n", msg_len, (int)pthread_self());
 
 	buf = realloc(buf, msg_len);
 

@@ -115,7 +115,7 @@ int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)
 	void *buf = NULL, *payload = NULL;
 	size_t len;
 
-	printf("Preparing and sending Phi cmd %d by thread %d\n", cmd_type, (int)pthread_self());
+	rdprintf("Preparing and sending Phi cmd %d by thread %d\n", cmd_type, (int)pthread_self());
 	pack_phi_cmd(&payload, args, arg_cnt, cmd_type);
 
 	len = serialise_message(&buf, PHI_CMD, payload);
@@ -134,7 +134,7 @@ int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)
 	void *buf = NULL, *payload = NULL, *deserialised_message=NULL;
 	int res_code;
 
-	printf("Waiting result from PHI Server...\n");
+	rdprintf("Waiting result from PHI Server...\n");
 	len = receive_message(&buf, socket_fd);
 	if(len > 0)
 		deserialise_message(&deserialised_message, &payload, buf, len);
@@ -149,9 +149,9 @@ int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)
 	} else {
 		*result = (PhiCmd *)payload;
 		res_code = ((PhiCmd *)*result)->phi_result_code;
-		printf("Server responded: \n| result code: %d\n", res_code);
+		rdprintf("Server responded: \n| result code: %d\n", res_code);
 		if(res_code != 0)
-			printf("error detected ! errno=%d\n", ((PhiCmd *)payload)->phi_errorno);
+			rdprintf("error detected ! errno=%d\n", ((PhiCmd *)payload)->phi_errorno);
 
 		*des_msg = deserialised_message;
 	}
