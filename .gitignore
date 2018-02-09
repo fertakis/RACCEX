@@ -27,4 +27,4 @@ src/.deps/*
 
 # Unignore binaries #
 #####################
-!scif_tutorials/*
+scif_tutorials/*
