@@ -355,7 +355,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 	size_t extra_args_size = 0;
 	var **res = NULL;
 
-	printf("Processing PHI_CMD\n");
+	rdprintf("Processing PHI_CMD\n");
 	switch(cmd->type) {
 		case GET_VERSION:
 			printf("Executing get_driver_version...\n");
