@@ -1,0 +1,77 @@
+22535 open("/dev/mic/scif", O_RDWR)     = 3
+22535 ioctl(3, STL_BRESET, 0x7ffc0c25d698) = 1
+22535 close(3)                          = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 6
+22536 ioctl(6, 0xc008730e, 0x7f2059ad7cb0) = 0
+22536 close(6)                          = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 6
+22536 ioctl(6, 0xc0087301, 0x7f2059ad7cdc) = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 7
+22536 ioctl(7, 0xc0087301, 0x7f2059ad7cdc) = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 8
+22536 ioctl(8, 0xc008730e, 0x7f2059ad7cb0) = 0
+22536 close(8)                          = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 8
+22536 ioctl(8, 0xc0087303, 0x7f2059ad7cc0) = -1 ECONNREFUSED (Connection refused)
+22537 ioctl(7, 0x40047302, 0x1)         = 0
+22536 ioctl(8, 0xc0087303 <unfinished ...>
+22537 open("/dev/mic/scif", O_RDWR)     = 10
+22537 ioctl(7, 0xc0087304 <unfinished ...>
+22536 <... ioctl resumed> , 0x7f2059ad7cc0) = 0
+22537 <... ioctl resumed> , 0x7f20592d6ca0) = 0
+22537 ioctl(10, 0xc0087305, 0x7f20592d6ca8) = 0
+22536 close(7)                          = 0
+22536 ioctl(6, 0xc0087303, 0x7f2059ad7cc0) = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 7
+22536 ioctl(7, 0xc0087303, 0x7f2059ad7cc0) = 0
+22536 ioctl(7, 0xc0087306, 0x7f2059ad7cb0) = 0
+22536 poll([{fd=7, events=POLLIN}], 1, 5000) = 1 ([{fd=7, revents=POLLIN|POLLHUP}])
+22536 ioctl(7, 0xc0087307, 0x7f2059ad7ca0) = 0
+22536 close(7)                          = 0
+22536 ioctl(6, 0xc0087306, 0x7f2059ad7cb0) = 0
+22536 ioctl(6, 0xc0087307, 0x7f2059ad7ca0) = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 7
+22536 ioctl(7, 0xc0087301, 0x7f2059ad7cdc) = 0
+22536 ioctl(7, 0x40047302, 0x1)         = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 11
+22536 ioctl(11, 0xc0087301, 0x7f2059ad7cdc) = 0
+22536 ioctl(11, 0x40047302, 0x1)        = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 12
+22536 ioctl(12, 0xc008730e, 0x7f2059ad7cb0) = 0
+22536 close(12)                         = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 12
+22536 ioctl(12, 0xc0087301, 0x7f2059ad7cdc) = 0
+22536 ioctl(12, 0x40047302, 0x1)        = 0
+22536 open("/dev/mic/scif", O_RDWR)     = 13
+22536 ioctl(13, 0xc008730e, 0x7f2059ad7cb0) = 0
+22536 close(13)                         = 0
+22537 poll([{fd=12, events=POLLIN}], 1, 10000 <unfinished ...>
+22536 ioctl(6, 0xc0087308, 0x7f2059ad7c90) = 0
+22536 ioctl(6, 0xc0087306, 0x7f2059ad7cb0) = 0
+22536 ioctl(6, 0xc0087308, 0x7f2059ad7c90) = 0
+22536 ioctl(6, 0xc0087307, 0x7f2059ad7ca0) = 0
+22536 ioctl(6, 0xc0087306, 0x7f2059ad7cb0) = 0
+22536 ioctl(6, 0xc008730b, 0x7f2059ad7c90) = 0
+22536 ioctl(6, 0xc0087311, 0x7f2059ad7c90) = 0
+22536 ioctl(6, 0xc008730f, 0x7f2059ad7cc0) = 0
+22536 ioctl(6, 0xc0047310, 0x80)        = 0
+22536 ioctl(6, 0xc0087306, 0x7f2059ad7cb0) = 0
+22536 ioctl(6, 0xc0087307, 0x7f2059ad7ca0) = 0
+22536 ioctl(6, 0xc0087306, 0x7f2059ad7cb0) = 0
+22536 ioctl(6, 0xc0087306, 0x7f2059ad7cb0) = 0
+22536 ioctl(6, 0xc0087306, 0x7f2059ad7cb0) = 0
+22536 ioctl(6, 0xc0087307, 0x7f2059ad7ca0) = 0
+22536 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22536 ioctl(6, 0xc0087307, 0x7f2059ad7ca0) = 0
+22536 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22536 ioctl(6, 0xc0087307, 0x7f2059ad7ca0) = 0
+22536 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22536 ioctl(6, 0xc0087307, 0x7f2059ad7ca0) = 0
+22536 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22536 ioctl(6, 0xc0087307, 0x7f2059ad7ca0) = 0
+22536 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22536 ioctl(6, 0xc0087307, 0x7f2059ad7ca0) = 0
+22536 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22536 close(4)                          = 0
+22535 --- SIGINT (Interrupt) @ 0 (0) ---
+22537 +++ killed by SIGINT +++

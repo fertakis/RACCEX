@@ -1,0 +1,640 @@
+execve("/usr/bin/micnativeloadex", ["micnativeloadex", "bin/helloWorld"], [/* 28 vars */]) = 0
+brk(NULL)                               = 0x564ebec55000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=107798, ...}) = 0
+mmap(NULL, 107798, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7fb7144b8000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libdl.so.2", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\240\r\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=14608, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fb7144b7000
+mmap(NULL, 2109680, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fb7140aa000
+mprotect(0x7fb7140ad000, 2093056, PROT_NONE) = 0
+mmap(0x7fb7142ac000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x2000) = 0x7fb7142ac000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/librt.so.1", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0!\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=31712, ...}) = 0
+mmap(NULL, 2128832, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fb713ea2000
+mprotect(0x7fb713ea9000, 2093056, PROT_NONE) = 0
+mmap(0x7fb7140a8000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x6000) = 0x7fb7140a8000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/usr/lib64/libscif.so.0", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0P-\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0775, st_size=99600, ...}) = 0
+mmap(NULL, 2147240, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fb713c95000
+mprotect(0x7fb713ca1000, 2093056, PROT_NONE) = 0
+mmap(0x7fb713ea0000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0xb000) = 0x7fb713ea0000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/usr/lib64/libcoi_host.so.0", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\240\376\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0775, st_size=8812073, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fb7144b6000
+mmap(NULL, 3763128, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fb7138fe000
+mprotect(0x7fb713988000, 2093056, PROT_NONE) = 0
+mmap(0x7fb713b87000, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x89000) = 0x7fb713b87000
+mmap(0x7fb713b8c000, 1084344, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fb713b8c000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/usr/lib/x86_64-linux-gnu/libstdc++.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0 \235\10\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=1566440, ...}) = 0
+mmap(NULL, 3675136, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fb71357c000
+mprotect(0x7fb7136ee000, 2097152, PROT_NONE) = 0
+mmap(0x7fb7138ee000, 49152, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x172000) = 0x7fb7138ee000
+mmap(0x7fb7138fa000, 13312, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fb7138fa000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libm.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0V\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=1088952, ...}) = 0
+mmap(NULL, 3178744, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fb713273000
+mprotect(0x7fb71337b000, 2093056, PROT_NONE) = 0
+mmap(0x7fb71357a000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x107000) = 0x7fb71357a000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0p*\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=89696, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fb7144b5000
+mmap(NULL, 2185488, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fb71305d000
+mprotect(0x7fb713073000, 2093056, PROT_NONE) = 0
+mmap(0x7fb713272000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x15000) = 0x7fb713272000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libpthread.so.0", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\260`\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=138696, ...}) = 0
+mmap(NULL, 2212904, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fb712e40000
+mprotect(0x7fb712e58000, 2093056, PROT_NONE) = 0
+mmap(0x7fb713057000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x17000) = 0x7fb713057000
+mmap(0x7fb713059000, 13352, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fb713059000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0P\t\2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1868984, ...}) = 0
+mmap(NULL, 3971488, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fb712a76000
+mprotect(0x7fb712c36000, 2097152, PROT_NONE) = 0
+mmap(0x7fb712e36000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1c0000) = 0x7fb712e36000
+mmap(0x7fb712e3c000, 14752, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fb712e3c000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/usr/local/lib/libprotobuf-c.so.1", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\200\16\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=182800, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fb7144b4000
+mmap(NULL, 2130128, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fb71286d000
+mprotect(0x7fb712875000, 2093056, PROT_NONE) = 0
+mmap(0x7fb712a74000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x7000) = 0x7fb712a74000
+close(3)                                = 0
+writev(2, [{"micnativeloadex", 15}, {": ", 2}, {"/usr/lib64/libscif.so.0", 23}, {": ", 2}, {"no version information available"..., 74}, {"\n", 1}], 6) = 117
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fb7144b3000
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fb7144b2000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fb7144b0000
+arch_prctl(ARCH_SET_FS, 0x7fb7144b0780) = 0
+mprotect(0x7fb712e36000, 16384, PROT_READ) = 0
+mprotect(0x7fb712a74000, 4096, PROT_READ) = 0
+mprotect(0x7fb713057000, 4096, PROT_READ) = 0
+mprotect(0x7fb71357a000, 4096, PROT_READ) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fb7144af000
+mprotect(0x7fb7138ee000, 40960, PROT_READ) = 0
+mprotect(0x7fb7142ac000, 4096, PROT_READ) = 0
+mprotect(0x7fb7140a8000, 4096, PROT_READ) = 0
+mprotect(0x7fb713ea0000, 4096, PROT_READ) = 0
+mprotect(0x7fb713b87000, 16384, PROT_READ) = 0
+mprotect(0x564ebdb5e000, 4096, PROT_READ) = 0
+mprotect(0x7fb7144d3000, 4096, PROT_READ) = 0
+munmap(0x7fb7144b8000, 107798)          = 0
+set_tid_address(0x7fb7144b0a50)         = 4968
+set_robust_list(0x7fb7144b0a60, 24)     = 0
+rt_sigaction(SIGRTMIN, {0x7fb712e45b50, [], SA_RESTORER|SA_SIGINFO, 0x7fb712e51390}, NULL, 8) = 0
+rt_sigaction(SIGRT_1, {0x7fb712e45be0, [], SA_RESTORER|SA_RESTART|SA_SIGINFO, 0x7fb712e51390}, NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RTMIN RT_1], NULL, 8) = 0
+getrlimit(RLIMIT_STACK, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+brk(NULL)                               = 0x564ebec55000
+brk(0x564ebec87000)                     = 0x564ebec87000
+futex(0x7fb7138fb1ac, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+futex(0x7fb7138fb1b8, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+readlink("/proc/self/exe", "/usr/bin/micnativeloadex", 256) = 24
+open("/usr/bin/micnativeloadex.coilog", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+close(3)                                = 0
+fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 23), ...}) = 0
+write(1, "get_scif_nodes\n", 15)        = 15
+write(1, "by thread 340461440\n", 20)   = 20
+socket(PF_INET, SOCK_STREAM, IPPROTO_IP) = 3
+write(2, "Created TCP socket\n", 19)    = 19
+open("/etc/resolv.conf", O_RDONLY|O_CLOEXEC) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=172, ...}) = 0
+read(4, "# Dynamic resolv.conf(5) file fo"..., 4096) = 172
+read(4, "", 4096)                       = 0
+close(4)                                = 0
+uname({sysname="Linux", nodename="jupiter", ...}) = 0
+stat("/etc/resolv.conf", {st_mode=S_IFREG|0644, st_size=172, ...}) = 0
+open("/etc/resolv.conf", O_RDONLY|O_CLOEXEC) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=172, ...}) = 0
+read(4, "# Dynamic resolv.conf(5) file fo"..., 4096) = 172
+read(4, "", 4096)                       = 0
+close(4)                                = 0
+uname({sysname="Linux", nodename="jupiter", ...}) = 0
+socket(PF_LOCAL, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+connect(4, {sa_family=AF_LOCAL, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+close(4)                                = 0
+socket(PF_LOCAL, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+connect(4, {sa_family=AF_LOCAL, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+close(4)                                = 0
+open("/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=529, ...}) = 0
+read(4, "# /etc/nsswitch.conf\n#\n# Example"..., 4096) = 529
+read(4, "", 4096)                       = 0
+close(4)                                = 0
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=107798, ...}) = 0
+mmap(NULL, 107798, PROT_READ, MAP_PRIVATE, 4, 0) = 0x7fb7144b8000
+close(4)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libnss_files.so.2", O_RDONLY|O_CLOEXEC) = 4
+read(4, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\260!\0\0\0\0\0\0"..., 832) = 832
+fstat(4, {st_mode=S_IFREG|0644, st_size=47600, ...}) = 0
+mmap(NULL, 2168600, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 4, 0) = 0x7fb71265b000
+mprotect(0x7fb712666000, 2093056, PROT_NONE) = 0
+mmap(0x7fb712865000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 4, 0xa000) = 0x7fb712865000
+mmap(0x7fb712867000, 22296, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fb712867000
+close(4)                                = 0
+mprotect(0x7fb712865000, 4096, PROT_READ) = 0
+munmap(0x7fb7144b8000, 107798)          = 0
+open("/etc/host.conf", O_RDONLY|O_CLOEXEC) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=92, ...}) = 0
+read(4, "# The \"order\" line is only used "..., 4096) = 92
+read(4, "", 4096)                       = 0
+close(4)                                = 0
+futex(0x7fb712e3ea64, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+open("/etc/hosts", O_RDONLY|O_CLOEXEC)  = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=244, ...}) = 0
+read(4, "127.0.0.1\tlocalhost\n127.0.1.1\tju"..., 4096) = 244
+read(4, "", 4096)                       = 0
+close(4)                                = 0
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=107798, ...}) = 0
+mmap(NULL, 107798, PROT_READ, MAP_PRIVATE, 4, 0) = 0x7fb7144b8000
+close(4)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2", O_RDONLY|O_CLOEXEC) = 4
+read(4, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\320\v\0\0\0\0\0\0"..., 832) = 832
+fstat(4, {st_mode=S_IFREG|0644, st_size=10480, ...}) = 0
+mmap(NULL, 2105544, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 4, 0) = 0x7fb712458000
+mprotect(0x7fb71245a000, 2093056, PROT_NONE) = 0
+mmap(0x7fb712659000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 4, 0x1000) = 0x7fb712659000
+close(4)                                = 0
+mprotect(0x7fb712659000, 4096, PROT_READ) = 0
+munmap(0x7fb7144b8000, 107798)          = 0
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 4
+fstat(4, {st_mode=S_IFREG|0644, st_size=107798, ...}) = 0
+mmap(NULL, 107798, PROT_READ, MAP_PRIVATE, 4, 0) = 0x7fb7144b8000
+close(4)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libnss_dns.so.2", O_RDONLY|O_CLOEXEC) = 4
+read(4, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\220\17\0\0\0\0\0\0"..., 832) = 832
+fstat(4, {st_mode=S_IFREG|0644, st_size=27000, ...}) = 0
+mmap(NULL, 2121944, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 4, 0) = 0x7fb712251000
+mprotect(0x7fb712256000, 2097152, PROT_NONE) = 0
+mmap(0x7fb712456000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 4, 0x5000) = 0x7fb712456000
+close(4)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libresolv.so.2", O_RDONLY|O_CLOEXEC) = 4
+read(4, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0P9\0\0\0\0\0\0"..., 832) = 832
+fstat(4, {st_mode=S_IFREG|0644, st_size=101200, ...}) = 0
+mmap(NULL, 2206280, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 4, 0) = 0x7fb712036000
+mprotect(0x7fb71204d000, 2097152, PROT_NONE) = 0
+mmap(0x7fb71224d000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 4, 0x17000) = 0x7fb71224d000
+mmap(0x7fb71224f000, 6728, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fb71224f000
+close(4)                                = 0
+mprotect(0x7fb71224d000, 4096, PROT_READ) = 0
+mprotect(0x7fb712456000, 4096, PROT_READ) = 0
+munmap(0x7fb7144b8000, 107798)          = 0
+stat("/etc/resolv.conf", {st_mode=S_IFREG|0644, st_size=172, ...}) = 0
+socket(PF_INET, SOCK_DGRAM|SOCK_NONBLOCK, IPPROTO_IP) = 4
+connect(4, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.1.1")}, 16) = 0
+poll([{fd=4, events=POLLOUT}], 1, 0)    = 1 ([{fd=4, revents=POLLOUT}])
+sendto(4, "\304\376\1\0\0\1\0\0\0\0\0\0\7dungani\5cslab\3ece\4n"..., 43, MSG_NOSIGNAL, NULL, 0) = 43
+poll([{fd=4, events=POLLIN}], 1, 5000)  = 1 ([{fd=4, revents=POLLIN}])
+ioctl(4, FIONREAD, [59])                = 0
+recvfrom(4, "\304\376\201\200\0\1\0\1\0\0\0\0\7dungani\5cslab\3ece\4n"..., 1024, 0, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.1.1")}, [16]) = 59
+close(4)                                = 0
+write(2, "Connecting to remote host...\n", 29) = 29
+connect(3, {sa_family=AF_INET, sin_port=htons(8888), sin_addr=inet_addr("147.102.3.246")}, 16) = 0
+write(2, "Connected.\n", 11)            = 11
+write(1, "Connected to server dungani.csla"..., 62) = 62
+write(3, "\0\0\0\r\10\0\32\t\10\30\20\1\30\0(\200\1", 17) = 17
+read(3, "\0\0\0\24", 4)                 = 4
+read(3, "\10\1\32\20\10\1\20\3\30\0(\2B\6\0\0\1\0\0\0", 20) = 20
+write(1, "scif_get_nodeIDs() completed suc"..., 83) = 83
+write(1, "scif_get_nodeIDS ret=2\n", 23) = 23
+open("/phi_sys/class/mic/mic0/family", O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0600, st_size=5, ...}) = 0
+read(4, "x100\n", 4096)                 = 5
+read(4, "", 4096)                       = 0
+close(4)                                = 0
+write(1, "scif_open... by thread=340461440"..., 33) = 33
+write(1, "ref_count=1\n", 12)           = 12
+write(3, "\0\0\0\n\10\0\32\6\10\5\20\0\30\0", 14) = 14
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\7", 12) = 12
+write(1, "scif_open returned end = 7\n", 27) = 27
+write(1, "scif_bind(epd=7, pn 0)\n", 23) = 23
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\22\10\0\32\16\10\7\20\2\30\0(\0070\200\200\230\366\v", 22) = 22
+read(3, "\0\0\0\r", 4)                  = 4
+read(3, "\10\1\32\t\10\1\20\2\30\0(\306\10", 13) = 13
+write(1, "scif_bind ret=1094\n", 19)    = 19
+write(1, "scif_open... by thread=340461440"..., 33) = 33
+write(1, "ref_count=2\n", 12)           = 12
+write(3, "\0\0\0\n\10\0\32\6\10\5\20\0\30\0", 14) = 14
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\17", 12) = 12
+write(1, "scif_open returned end = 15\n", 28) = 28
+write(1, "scif_bind(epd=15, pn 0)\n", 24) = 24
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\22\10\0\32\16\10\7\20\2\30\0(\0170\200\200\230\366\v", 22) = 22
+read(3, "\0\0\0\r", 4)                  = 4
+read(3, "\10\1\32\t\10\1\20\2\30\0(\307\10", 13) = 13
+write(1, "scif_bind ret=1095\n", 19)    = 19
+write(1, "get_scif_nodes\n", 15)        = 15
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\f\10\0\32\10\10\30\20\1\30\0( ", 16) = 16
+read(3, "\0\0\0\24", 4)                 = 4
+read(3, "\10\1\32\20\10\1\20\3\30\0(\2B\6\0\0\1\0\0\0", 20) = 20
+write(1, "scif_get_nodeIDs() completed suc"..., 83) = 83
+write(1, "scif_get_nodeIDS ret=2\n", 23) = 23
+mmap(NULL, 8392704, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7fb711835000
+mprotect(0x7fb711835000, 4096, PROT_NONE) = 0
+clone(child_stack=0x7fb712034f70, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x7fb7120359d0, tls=0x7fb712035700, child_tidptr=0x7fb7120359d0) = 4969
+futex(0x7fb712e3c780, FUTEX_WAIT_PRIVATE, 2, NULL) = -1 EAGAIN (Resource temporarily unavailable)
+write(1, "scif_open... by thread=340461440"..., 33) = 33
+futex(0x7fb712e3c780, FUTEX_WAKE_PRIVATE, 1) = 0
+write(1, "ref_count=3\n", 12)           = 12
+write(3, "\0\0\0\n\10\0\32\6\10\5\20\0\30\0", 14) = 14
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\20", 12) = 12
+write(1, "scif_open returned end = 16\n", 28) = 28
+write(1, "executing scif_connect(epd=16,ds"..., 58) = 58
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\22\10\0\32\16\10\t\20\2\30\0(\20B\4\0\0G\4", 22) = 22
+read(3, "\0\0\0\27", 4)                 = 4
+read(3, "\10\1\32\23\10\1\20\3\30\5 o(\377\377\377\377\377\377\377\377\377\1", 23) = 23
+write(1, "Error detected : Connection refu"..., 36) = 36
+write(1, "scif_connect ret =-1\n", 21)  = 21
+write(1, "executing scif_connect(epd=16,ds"..., 58) = 58
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\22\10\0\32\16\10\t\20\2\30\0(\20B\4\0\0G\4", 22) = 22
+read(3, "\0\0\0\r", 4)                  = 4
+read(3, "\10\1\32\t\10\1\20\2\30\0(\310\10", 13) = 13
+write(1, "scif_connect ret =1096\n", 23) = 23
+write(1, "scif_close(epd=15)\n", 19)    = 19
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\f\10\0\32\10\10\6\20\1\30\0(\17", 16) = 16
+read(3, "\0\0\0\n", 4)                  = 4
+read(3, "\10\1\32\6\10\1\20\1\30\0", 10) = 10
+write(1, "scif_close ret=0\n", 17)      = 17
+write(1, "executing scif_connect(epd=7,dst"..., 55) = 55
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\22\10\0\32\16\10\t\20\2\30\0(\7B\4\1\0(\0", 22) = 22
+read(3, "\0\0\0\r", 4)                  = 4
+read(3, "\10\1\32\t\10\1\20\2\30\0(\306\10", 13) = 13
+write(1, "scif_connect ret =1094\n", 23) = 23
+getuid()                                = 0
+socket(PF_LOCAL, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 5
+connect(5, {sa_family=AF_LOCAL, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+close(5)                                = 0
+socket(PF_LOCAL, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 5
+connect(5, {sa_family=AF_LOCAL, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+close(5)                                = 0
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 5
+fstat(5, {st_mode=S_IFREG|0644, st_size=107798, ...}) = 0
+mmap(NULL, 107798, PROT_READ, MAP_PRIVATE, 5, 0) = 0x7fb7144b8000
+close(5)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libnss_compat.so.2", O_RDONLY|O_CLOEXEC) = 5
+read(5, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\320\22\0\0\0\0\0\0"..., 832) = 832
+fstat(5, {st_mode=S_IFREG|0644, st_size=35688, ...}) = 0
+mmap(NULL, 2131040, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 5, 0) = 0x7fb71162c000
+mprotect(0x7fb711634000, 2093056, PROT_NONE) = 0
+mmap(0x7fb711833000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 5, 0x7000) = 0x7fb711833000
+close(5)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libnsl.so.1", O_RDONLY|O_CLOEXEC) = 5
+read(5, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\360?\0\0\0\0\0\0"..., 832) = 832
+fstat(5, {st_mode=S_IFREG|0644, st_size=93128, ...}) = 0
+mmap(NULL, 2198104, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 5, 0) = 0x7fb711413000
+mprotect(0x7fb711429000, 2093056, PROT_NONE) = 0
+mmap(0x7fb711628000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 5, 0x15000) = 0x7fb711628000
+mmap(0x7fb71162a000, 6744, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fb71162a000
+close(5)                                = 0
+mprotect(0x7fb711628000, 4096, PROT_READ) = 0
+mprotect(0x7fb711833000, 4096, PROT_READ) = 0
+munmap(0x7fb7144b8000, 107798)          = 0
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 5
+fstat(5, {st_mode=S_IFREG|0644, st_size=107798, ...}) = 0
+mmap(NULL, 107798, PROT_READ, MAP_PRIVATE, 5, 0) = 0x7fb7144b8000
+close(5)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libnss_nis.so.2", O_RDONLY|O_CLOEXEC) = 5
+read(5, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\260 \0\0\0\0\0\0"..., 832) = 832
+fstat(5, {st_mode=S_IFREG|0644, st_size=47648, ...}) = 0
+mmap(NULL, 2143624, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 5, 0) = 0x7fb711207000
+mprotect(0x7fb711212000, 2093056, PROT_NONE) = 0
+mmap(0x7fb711411000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 5, 0xa000) = 0x7fb711411000
+close(5)                                = 0
+mprotect(0x7fb711411000, 4096, PROT_READ) = 0
+munmap(0x7fb7144b8000, 107798)          = 0
+open("/etc/passwd", O_RDONLY|O_CLOEXEC) = 5
+lseek(5, 0, SEEK_CUR)                   = 0
+fstat(5, {st_mode=S_IFREG|0644, st_size=2320, ...}) = 0
+mmap(NULL, 2320, PROT_READ, MAP_SHARED, 5, 0) = 0x7fb7144d2000
+lseek(5, 2320, SEEK_SET)                = 2320
+munmap(0x7fb7144d2000, 2320)            = 0
+close(5)                                = 0
+write(1, "scif_open... by thread=340461440"..., 33) = 33
+write(1, "ref_count=4\n", 12)           = 12
+write(3, "\0\0\0\n\10\0\32\6\10\5\20\0\30\0", 14) = 14
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\17", 12) = 12
+write(1, "scif_open returned end = 15\n", 28) = 28
+write(1, "executing scif_connect(epd=15,ds"..., 57) = 57
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\22\10\0\32\16\10\t\20\2\30\0(\17B\4\0\0\242\0", 22) = 22
+read(3, "\0\0\0\r", 4)                  = 4
+read(3, "\10\1\32\t\10\1\20\2\30\0(\307\10", 13) = 13
+write(1, "scif_connect ret =1095\n", 23) = 23
+getuid()                                = 0
+write(1, "executing scif_send(endp=15, len"..., 44) = 44
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\26\10\0\32\22\10\v\20\2\30\0(\17(\4(\1B\4\0\0\0\0", 26) = 26
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\4", 12) = 12
+write(1, "scif_send ret =4\n", 17)      = 17
+write(1, "executing scif_poll( nfds=1 time"..., 42) = 42
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\31\10\0\32\25\10\31\20\2\30\0000\0010\210'B\10\17\0\0\0\1\0\0\0", 29) = 29
+read(3, "\0\0\0\26", 4)                 = 4
+read(3, "\10\1\32\22\10\1\20\3\30\0(\1B\10\17\0\0\0\1\0\21\0", 22) = 22
+write(1, "scif_poll event fired\n", 22) = 22
+write(1, "scif_poll returning ret =1 by th"..., 47) = 47
+write(1, "executing scif_recv() epd=15, le"..., 45) = 45
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\20\10\0\32\f\10\f\20\1\30\0(\17(\4(\0", 20) = 20
+read(3, "\0\0\0\22", 4)                 = 4
+read(3, "\10\1\32\16\10\1\20\3\30\0(\4B\4\0\0\0\0", 18) = 18
+write(1, "scif_recv ret =4\n", 17)      = 17
+write(1, "scif_close(epd=15)\n", 19)    = 19
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\f\10\0\32\10\10\6\20\1\30\0(\17", 16) = 16
+read(3, "\0\0\0\n", 4)                  = 4
+read(3, "\10\1\32\6\10\1\20\1\30\0", 10) = 10
+write(1, "scif_close ret=0\n", 17)      = 17
+open("/root/.mpsscookie", O_RDONLY)     = -1 ENOENT (No such file or directory)
+write(1, "executing scif_send(endp=7, len="..., 45) = 45
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\305\10\0\32\300\1\10\v\20\2\30\0(\7(\260\1(\1B\260\1\250\0\0\0\0\0\0"..., 201) = 201
+read(3, "\0\0\0\r", 4)                  = 4
+read(3, "\10\1\32\t\10\1\20\2\30\0(\260\1", 13) = 13
+write(1, "scif_send ret =176\n", 19)    = 19
+open("/proc/cpuinfo", O_RDONLY)         = 5
+fstat(5, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+read(5, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+lseek(5, 0, SEEK_SET)                   = 0
+read(5, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+open("/phi_sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq", O_RDONLY) = -1 ENOENT (No such file or directory)
+read(5, "odel\t\t: 42\nmodel name\t: Intel(R)"..., 1024) = 1024
+open("/phi_sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq", O_RDONLY) = -1 ENOENT (No such file or directory)
+read(5, " 3.40GHz\nstepping\t: 7\nmicrocode\t"..., 1024) = 1024
+open("/phi_sys/devices/system/cpu/cpu2/cpufreq/cpuinfo_max_freq", O_RDONLY) = -1 ENOENT (No such file or directory)
+read(5, "218\ncache size\t: 8192 KB\nphysica"..., 1024) = 1024
+open("/phi_sys/devices/system/cpu/cpu3/cpufreq/cpuinfo_max_freq", O_RDONLY) = -1 ENOENT (No such file or directory)
+read(5, "ore id\t\t: 0\ncpu cores\t: 4\napicid"..., 1024) = 1024
+open("/phi_sys/devices/system/cpu/cpu4/cpufreq/cpuinfo_max_freq", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/phi_sys/devices/system/cpu/cpu5/cpufreq/cpuinfo_max_freq", O_RDONLY) = -1 ENOENT (No such file or directory)
+read(5, "3\nfpu\t\t: yes\nfpu_exception\t: yes"..., 1024) = 1024
+open("/phi_sys/devices/system/cpu/cpu6/cpufreq/cpuinfo_max_freq", O_RDONLY) = -1 ENOENT (No such file or directory)
+read(5, " yes\nflags\t\t: fpu vme de pse tsc"..., 1024) = 1024
+open("/phi_sys/devices/system/cpu/cpu7/cpufreq/cpuinfo_max_freq", O_RDONLY) = -1 ENOENT (No such file or directory)
+read(5, "ep mtrr pge mca cmov pat pse36 c"..., 1024) = 584
+read(5, "", 1024)                       = 0
+close(5)                                = 0
+write(1, "executing scif_recv() epd=7, len"..., 45) = 45
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\20\10\0\32\f\10\f\20\1\30\0(\7(@(\0", 20) = 20
+read(3, "\0\0\0N", 4)                   = 4
+read(3, "\10\1\32J\10\1\20\3\30\0(@B@\34\0\0\0\0\0\0\0\6\0\0\0\0\0\0\0\0\0"..., 78) = 78
+write(1, "scif_recv ret =64\n", 18)     = 18
+stat("bin/helloWorld", {st_mode=S_IFREG|0775, st_size=10404, ...}) = 0
+open("bin/helloWorld", O_RDONLY)        = 5
+lseek(5, 0, SEEK_END)                   = 10404
+mmap(NULL, 10404, PROT_READ, MAP_PRIVATE, 5, 0) = 0x7fb7144d0000
+write(1, "scif_open... by thread=340461440"..., 33) = 33
+write(1, "ref_count=5\n", 12)           = 12
+write(3, "\0\0\0\n\10\0\32\6\10\5\20\0\30\0", 14) = 14
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\17", 12) = 12
+write(1, "scif_open returned end = 15\n", 28) = 28
+write(1, "scif_bind(epd=15, pn 0)\n", 24) = 24
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\22\10\0\32\16\10\7\20\2\30\0(\0170\200\200\234\366\v", 22) = 22
+read(3, "\0\0\0\r", 4)                  = 4
+read(3, "\10\1\32\t\10\1\20\2\30\0(\307\10", 13) = 13
+write(1, "scif_bind ret=1095\n", 19)    = 19
+write(1, "scif_listen(epd=15, backlog= 1)\n", 32) = 32
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\16\10\0\32\n\10\10\20\1\30\0(\17(\1", 18) = 18
+read(3, "\0\0\0\n", 4)                  = 4
+read(3, "\10\1\32\6\10\1\20\1\30\0", 10) = 10
+write(1, "scif_listen ret = 0\n", 20)   = 20
+write(1, "scif_open... by thread=340461440"..., 33) = 33
+write(1, "ref_count=6\n", 12)           = 12
+write(3, "\0\0\0\n\10\0\32\6\10\5\20\0\30\0", 14) = 14
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\23", 12) = 12
+write(1, "scif_open returned end = 19\n", 28) = 28
+write(1, "scif_bind(epd=19, pn 0)\n", 24) = 24
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\22\10\0\32\16\10\7\20\2\30\0(\0230\200\200\234\366\v", 22) = 22
+read(3, "\0\0\0\r", 4)                  = 4
+read(3, "\10\1\32\t\10\1\20\2\30\0(\311\10", 13) = 13
+write(1, "scif_bind ret=1097\n", 19)    = 19
+write(1, "scif_listen(epd=19, backlog= 1)\n", 32) = 32
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\16\10\0\32\n\10\10\20\1\30\0(\23(\1", 18) = 18
+read(3, "\0\0\0\n", 4)                  = 4
+read(3, "\10\1\32\6\10\1\20\1\30\0", 10) = 10
+write(1, "scif_listen ret = 0\n", 20)   = 20
+stat("bin/helloWorld", {st_mode=S_IFREG|0775, st_size=10404, ...}) = 0
+getcwd("/home/konstantinos/repos/remotephiexec", 4096) = 39
+lstat("/home/konstantinos/repos/remotephiexec/bin", {st_mode=S_IFDIR|0775, st_size=4096, ...}) = 0
+lstat("/home/konstantinos/repos/remotephiexec/bin/helloWorld", {st_mode=S_IFREG|0775, st_size=10404, ...}) = 0
+getrlimit(RLIMIT_STACK, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+write(1, "get_scif_nodes\n", 15)        = 15
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\r\10\0\32\t\10\30\20\1\30\0(\200\1", 17) = 17
+read(3, "\0\0\0\24", 4)                 = 4
+read(3, "\10\1\32\20\10\1\20\3\30\0(\2B\6\0\0\1\0\0\0", 20) = 20
+write(1, "scif_get_nodeIDs() completed suc"..., 83) = 83
+write(1, "scif_get_nodeIDS ret=2\n", 23) = 23
+write(1, "scif_open... by thread=340461440"..., 33) = 33
+write(1, "ref_count=7\n", 12)           = 12
+write(3, "\0\0\0\n\10\0\32\6\10\5\20\0\30\0", 14) = 14
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\24", 12) = 12
+write(1, "scif_open returned end = 20\n", 28) = 28
+write(1, "scif_bind(epd=20, pn 0)\n", 24) = 24
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\22\10\0\32\16\10\7\20\2\30\0(\0240\200\200\240\366\v", 22) = 22
+read(3, "\0\0\0\r", 4)                  = 4
+read(3, "\10\1\32\t\10\1\20\2\30\0(\312\10", 13) = 13
+write(1, "scif_bind ret=1098\n", 19)    = 19
+write(1, "scif_listen(epd=20, backlog= 1)\n", 32) = 32
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\16\10\0\32\n\10\10\20\1\30\0(\24(\1", 18) = 18
+read(3, "\0\0\0\n", 4)                  = 4
+read(3, "\10\1\32\6\10\1\20\1\30\0", 10) = 10
+write(1, "scif_listen ret = 0\n", 20)   = 20
+write(1, "get_scif_nodes\n", 15)        = 15
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\r\10\0\32\t\10\30\20\1\30\0(\200\1", 17) = 17
+read(3, "\0\0\0\24", 4)                 = 4
+read(3, "\10\1\32\20\10\1\20\3\30\0(\2B\6\0\0\1\0\0\0", 20) = 20
+write(1, "scif_get_nodeIDs() completed suc"..., 83) = 83
+write(1, "scif_get_nodeIDS ret=2\n", 23) = 23
+clone(child_stack=0x7fb712034f70, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x7fb7120359d0, tls=0x7fb712035700, child_tidptr=0x7fb7120359d0) = 4970
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0) = 0x7fb7144cf000
+write(1, "executing scif_register with epd"..., 93) = 93
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0)\10\0\32%\10\r\20\3\30\0(\7(\3(\0000\200 B\24\0\360L\24\267\177\0"..., 45) = 45
+read(3, "\0\0\0\24", 4)                 = 4
+read(3, "\10\1\32\20\10\1\20\2\30\0B\10\0\0\0\0\0\0\0@", 20) = 20
+write(1, "scif_register ret = 0\n", 22) = 22
+write(1, "executing scif_send(endp=7, len="..., 44) = 44
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0R\10\0\32N\10\v\20\2\30\0(\7(@(\1B@\344\\\0\0\0\0\0\0\0\0"..., 86) = 86
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(@", 12) = 12
+write(1, "scif_send ret =64\n", 18)     = 18
+mmap(NULL, 36864, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0) = 0x7fb7144c6000
+write(1, "executing scif_register with epd"..., 94) = 94
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0*\10\0\32&\10\r\20\3\30\0(\7(\3(\0000\200\240\2B\24\0`L\24\267\177"..., 46) = 46
+read(3, "\0\0\0\24", 4)                 = 4
+read(3, "\10\1\32\20\10\1\20\2\30\0B\10\0\20\0\0\0\0\0@", 20) = 20
+write(1, "scif_register ret = 4096\n", 25) = 25
+write(1, "executing scif_recv() epd=7, len"..., 44) = 44
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\20\10\0\32\f\10\f\20\1\30\0(\7(\10(\0", 20) = 20
+read(3, "\0\0\0\26", 4)                 = 4
+read(3, "\10\1\32\22\10\1\20\3\30\0(\10B\10\0\0\0\0\0\0\0@", 22) = 22
+write(1, "scif_recv ret =8\n", 17)      = 17
+write(1, "executing scif_send(endp=7, len="..., 43) = 43
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\32\10\0\32\26\10\v\20\2\30\0(\7(\10(\1B\10\0\20\0\0\0\0\0@", 30) = 30
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\10", 12) = 12
+write(1, "scif_send ret =8\n", 17)      = 17
+write(1, "executing scif_writeto()... epd="..., 80) = 80
+write(1, "addr to read data = 0x7fb7144c60"..., 36) = 36
+write(1, "by thread 340461440\n", 20)   = 20
+brk(0x564ebecab000)                     = 0x564ebecab000
+write(1, "data was succesfully wrapped\n", 29) = 29
+write(3, "\0\0],\10\0\32\246\272\1\10\22\20\3\30\0(\7(\0000\200\272\1B\224\272\1\0\20\0\0"..., 23856) = 23856
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\0", 12) = 12
+write(1, "scif_writeto ret= 0\n", 20)   = 20
+write(1, "executing scif_fence_signal(epd="..., 98) = 98
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0$\10\0\32 \10\27\20\3\30\0(\7(\0218\0008\0B\20\0\0\0\0\0\0\0@"..., 40) = 40
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\0", 12) = 12
+write(1, "scif_fence_signal ret =0\n", 25) = 25
+write(1, "executing scif_fence_mark()..., "..., 55) = 55
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\16\10\0\32\n\10\25\20\1\30\0(\7(\1", 18) = 18
+read(3, "\0\0\0\16", 4)                 = 4
+read(3, "\10\1\32\n\10\1\20\2\30\0(y(\0", 14) = 14
+write(1, "scif_fence_mark ret =0 and mark="..., 36) = 36
+write(1, "executing scif_fence_wait()... e"..., 46) = 46
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\16\10\0\32\n\10\26\20\1\30\0(\7(y", 18) = 18
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(\0", 12) = 12
+write(1, "scif_fence_wait ret = 0\n", 24) = 24
+write(1, "executing scif_send(endp=7, len="..., 44) = 44
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0R\10\0\32N\10\v\20\2\30\0(\7(@(\1B@\344\\\0\0\0\0\0\0\0\0"..., 86) = 86
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(@", 12) = 12
+write(1, "scif_send ret =64\n", 18)     = 18
+write(1, "executing scif_recv() epd=7, len"..., 44) = 44
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\20\10\0\32\f\10\f\20\1\30\0(\7(\4(\0", 20) = 20
+read(3, "\0\0\0\22", 4)                 = 4
+read(3, "\10\1\32\16\10\1\20\3\30\0(\4B\4\0\0\0\0", 18) = 18
+write(1, "scif_recv ret =4\n", 17)      = 17
+write(1, "executing scif_send(endp=7, len="..., 44) = 44
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0R\10\0\32N\10\v\20\2\30\0(\7(@(\1B@\1\0\0\0\0\0\0\0\0\0"..., 86) = 86
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(@", 12) = 12
+write(1, "scif_send ret =64\n", 18)     = 18
+write(1, "executing scif_send(endp=7, len="..., 44) = 44
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0R\10\0\32N\10\v\20\2\30\0(\7(@(\1B@\1\0\0\0\0\0\0\0\0\0"..., 86) = 86
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(@", 12) = 12
+write(1, "scif_send ret =64\n", 18)     = 18
+write(1, "executing scif_send(endp=7, len="..., 44) = 44
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0R\10\0\32N\10\v\20\2\30\0(\7(@(\1B@\1\0\0\0\0\0\0\0\0\0"..., 86) = 86
+read(3, "\0\0\0\f", 4)                  = 4
+read(3, "\10\1\32\10\10\1\20\2\30\0(@", 12) = 12
+write(1, "scif_send ret =64\n", 18)     = 18
+write(1, "executing scif_recv() epd=7, len"..., 45) = 45
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\20\10\0\32\f\10\f\20\1\30\0(\7(@(\0", 20) = 20
+read(3, "\0\0\0N", 4)                   = 4
+read(3, "\10\1\32J\10\1\20\3\30\0(\0B@\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 78) = 78
+write(1, "scif_recv ret =0\n", 17)      = 17
+write(1, "executing scif_poll( nfds=2 time"..., 41) = 41
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0!\10\0\32\35\10\31\20\2\30\0000\0020\364\3B\20\22\0\0\0\1\0\0\0\7\0\0"..., 37) = 37
+read(3, "\0\0\0\36", 4)                 = 4
+read(3, "\10\1\32\32\10\1\20\3\30\0(\0B\20\22\0\0\0\1\0\0\0\7\0\0\0\1\0\0\0", 30) = 30
+write(1, "scif_poll timed out\n", 20)   = 20
+write(1, "scif_poll returning ret =0 by th"..., 47) = 47
+write(1, "executing scif_recv() epd=7, len"..., 45) = 45
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\20\10\0\32\f\10\f\20\1\30\0(\7(@(\0", 20) = 20
+read(3, "\0\0\0N", 4)                   = 4
+read(3, "\10\1\32J\10\1\20\3\30\0(\0B@\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 78) = 78
+write(1, "scif_recv ret =0\n", 17)      = 17
+write(1, "executing scif_poll( nfds=2 time"..., 41) = 41
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0!\10\0\32\35\10\31\20\2\30\0000\0020\364\3B\20\22\0\0\0\1\0\0\0\7\0\0"..., 37) = 37
+read(3, "\0\0\0\36", 4)                 = 4
+read(3, "\10\1\32\32\10\1\20\3\30\0(\0B\20\22\0\0\0\1\0\0\0\7\0\0\0\1\0\0\0", 30) = 30
+write(1, "scif_poll timed out\n", 20)   = 20
+write(1, "scif_poll returning ret =0 by th"..., 47) = 47
+write(1, "executing scif_recv() epd=7, len"..., 45) = 45
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0\20\10\0\32\f\10\f\20\1\30\0(\7(@(\0", 20) = 20
+read(3, "\0\0\0N", 4)                   = 4
+read(3, "\10\1\32J\10\1\20\3\30\0(\0B@\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 78) = 78
+write(1, "scif_recv ret =0\n", 17)      = 17
+write(1, "executing scif_poll( nfds=2 time"..., 41) = 41
+write(1, "by thread 340461440\n", 20)   = 20
+write(3, "\0\0\0!\10\0\32\35\10\31\20\2\30\0000\0020\364\3B\20\22\0\0\0\1\0\0\0\7\0\0"..., 37) = 37
+read(3, 0x564ebec90f10, 4)              = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
+--- SIGINT {si_signo=SIGINT, si_code=SI_KERNEL} ---
++++ killed by SIGINT +++
