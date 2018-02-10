@@ -33,14 +33,18 @@ static uint8_t scif_version_mismatch;
 scif_get_driver_version(void)
 {
 	//TODO:Needs revision to support multithreading
-	/*int res_code, version = -1;
+	int res_code, version = -1;
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	
 	//initialise socket & establish connection
-	establish_connection(&uow);
+	printf("scif_open... by thread=%d\n", pthread_self());
+	
+	uow = identify_thread(&threads);
 
-	printf("send cookie\n");
+	if(uow->sockfd < 0)
+		establish_connection(uow);
+
 	//prepare & send cmd	
 	if(send_phi_cmd(<uow->sockfd>, NULL, 0, GET_VERSION) == -1) 
 	{
@@ -59,7 +63,7 @@ scif_get_driver_version(void)
 	free_deserialised_message(des_msg);
 
 	//close connection
-	close(uow->sockfd);*/
+	close(uow->sockfd);
 
 	return -1;
 }
@@ -73,8 +77,8 @@ scif_open(void)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	printf("scif_open...\n");
-
+	printf("scif_open... by thread=%d\n", pthread_self());
+	
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -112,7 +116,8 @@ scif_close(scif_epd_t epd)
 	thr_mng *uow;
 
 	printf("scif_close(epd=%d)\n",epd);
-
+	printf("by thread %d\n", pthread_self());
+	
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -137,11 +142,11 @@ scif_close(scif_epd_t epd)
 
 	free_deserialised_message(des_msg);
 
-	uow->ref_count--;
+	/*uow->ref_count--;
 	if(uow->ref_count == 0) {
 		close(uow->sockfd);
 		uow->sockfd = -1;
-	}
+	}*/
 
 	printf("scif_close ret=%d\n", ret);
 	return ret;
@@ -158,6 +163,7 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 
 	printf("scif_bind(epd=%d, pn %d)\n", epd, pn);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -205,6 +211,7 @@ scif_listen(scif_epd_t epd, int backlog)
 
 	printf("scif_listen(epd=%d, backlog= %d)\n", epd, backlog);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -248,6 +255,7 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 
 	printf("executing scif_connect(epd=%d,dst->node=%d, dst->port=%d\n",epd, dst->node, dst->port);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -294,6 +302,7 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 
 	printf("scif_accept(epd=%d...\n", epd);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -344,6 +353,7 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 
 	printf("executing scif_send(endp=%d, len=%d, flags=%d\n", epd, len, flags);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -394,6 +404,7 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 	
 	printf("executing scif_recv() epd=%d, len=%d, flags=%d\n", epd, len, flags);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -446,6 +457,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	
 	printf("executing scif_register with epd %d, addr %p, len %d, offset %d, prot %d, flags %d\n", epd, addr, len, offset, prot, flags);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -509,6 +521,7 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 
 	printf("executing scif_unregister() epd=%d, offset=%d, len =%d\n", epd, offset, len);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -583,6 +596,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	
 	printf("executing scif_readfrom()... epd = %d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -645,6 +659,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	printf("executing scif_writeto()... epd=%d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
 	printf("addr to read data = %p \n", mp->client_addr);
 	
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -707,6 +722,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	
 	printf("executing scif_vreadfrom()... epd=%d, len=%d, offset=%d, flags=%d\n");
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -763,6 +779,7 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	
 	printf("executing scif_vwriteto()... epd=%d, len=%d, offset=%d, flags=%d\n", epd, len, offset, flags);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -817,6 +834,7 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 
 	printf("executing scif_fence_mark()..., epd=%d, flags=%d\n");
 	
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -863,6 +881,7 @@ scif_fence_wait(scif_epd_t epd, int mark)
 
 	printf("executing scif_fence_wait()... epd=%d, mark%d\n", epd, mark);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -909,6 +928,7 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	
 	printf("executing scif_fence_signal(epd=%d, loff=%ld, lval=%d, roff=%ld, rval=%d, flags=%d)...\n", epd, loff, lval, roff, rval, flags);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -964,7 +984,9 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	printf("get_scif_nodes\n");	
+	printf("get_scif_nodes\n");
+
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -1020,6 +1042,7 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	
 	printf("executing scif_poll( nfds=%d timeout=%ld)\n", nfds, timeout_msecs);
 
+	printf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -1058,7 +1081,7 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	}
 
 	free_deserialised_message(des_msg);
-	printf("scif_poll returning ret =%d\n",ret);
+	printf("scif_poll returning ret =%d by thread=%d\n",ret, pthread_self());
 	return ret;
 }
 

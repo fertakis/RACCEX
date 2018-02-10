@@ -1,0 +1,81 @@
+22339 open("/dev/mic/scif", O_RDWR)     = 3
+22339 ioctl(3, STL_BRESET, 0x7ffcca23d128) = 1
+22339 close(3)                          = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 6
+22340 ioctl(6, 0xc008730e, 0x7efef3399cb0) = 0
+22340 close(6)                          = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 6
+22340 ioctl(6, 0xc0087301, 0x7efef3399cdc) = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 7
+22340 ioctl(7, 0xc0087301, 0x7efef3399cdc) = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 8
+22340 ioctl(8, 0xc008730e, 0x7efef3399cb0) = 0
+22340 close(8)                          = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 8
+22340 ioctl(8, 0xc0087303, 0x7efef3399cc0) = -1 ECONNREFUSED (Connection refused)
+22341 ioctl(7, 0x40047302, 0x1)         = 0
+22340 ioctl(8, 0xc0087303 <unfinished ...>
+22341 open("/dev/mic/scif", O_RDWR)     = 10
+22341 ioctl(7, 0xc0087304 <unfinished ...>
+22340 <... ioctl resumed> , 0x7efef3399cc0) = 0
+22341 <... ioctl resumed> , 0x7efef2b98ca0) = 0
+22341 ioctl(10, 0xc0087305, 0x7efef2b98ca8) = 0
+22340 close(7)                          = 0
+22340 ioctl(6, 0xc0087303, 0x7efef3399cc0) = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 7
+22340 ioctl(7, 0xc0087303, 0x7efef3399cc0) = 0
+22340 ioctl(7, 0xc0087306, 0x7efef3399cb0) = 0
+22340 poll([{fd=7, events=POLLIN}], 1, 5000) = 1 ([{fd=7, revents=POLLIN|POLLHUP}])
+22340 ioctl(7, 0xc0087307, 0x7efef3399ca0) = 0
+22340 close(7)                          = 0
+22340 ioctl(6, 0xc0087306, 0x7efef3399cb0) = 0
+22340 ioctl(6, 0xc0087307, 0x7efef3399ca0) = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 7
+22340 ioctl(7, 0xc0087301, 0x7efef3399cdc) = 0
+22340 ioctl(7, 0x40047302, 0x1)         = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 11
+22340 ioctl(11, 0xc0087301, 0x7efef3399cdc) = 0
+22340 ioctl(11, 0x40047302, 0x1)        = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 12
+22340 ioctl(12, 0xc008730e, 0x7efef3399cb0) = 0
+22340 close(12)                         = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 12
+22340 ioctl(12, 0xc0087301, 0x7efef3399cdc) = 0
+22340 ioctl(12, 0x40047302, 0x1)        = 0
+22340 open("/dev/mic/scif", O_RDWR)     = 13
+22340 ioctl(13, 0xc008730e, 0x7efef3399cb0) = 0
+22340 close(13)                         = 0
+22341 poll([{fd=12, events=POLLIN}], 1, 10000 <unfinished ...>
+22340 ioctl(6, 0xc0087308, 0x7efef3399c90) = 0
+22340 ioctl(6, 0xc0087306, 0x7efef3399cb0) = 0
+22340 ioctl(6, 0xc0087308, 0x7efef3399c90) = 0
+22340 ioctl(6, 0xc0087307, 0x7efef3399ca0) = 0
+22340 ioctl(6, 0xc0087306, 0x7efef3399cb0) = 0
+22340 ioctl(6, 0xc008730b, 0x7efef3399c90) = 0
+22340 ioctl(6, 0xc0087311, 0x7efef3399c90) = 0
+22340 ioctl(6, 0xc008730f, 0x7efef3399cc0) = 0
+22340 ioctl(6, 0xc0047310, 0x10cf)      = 0
+22340 ioctl(6, 0xc0087306, 0x7efef3399cb0) = 0
+22340 ioctl(6, 0xc0087307, 0x7efef3399ca0) = 0
+22340 ioctl(6, 0xc0087306, 0x7efef3399cb0) = 0
+22340 ioctl(6, 0xc0087306, 0x7efef3399cb0) = 0
+22340 ioctl(6, 0xc0087306, 0x7efef3399cb0) = 0
+22340 ioctl(6, 0xc0087307, 0x7efef3399ca0) = 0
+22340 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22340 ioctl(6, 0xc0087307, 0x7efef3399ca0) = 0
+22340 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22340 ioctl(6, 0xc0087307, 0x7efef3399ca0) = 0
+22340 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22340 ioctl(6, 0xc0087307, 0x7efef3399ca0) = 0
+22340 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22340 ioctl(6, 0xc0087307, 0x7efef3399ca0) = 0
+22340 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22340 ioctl(6, 0xc0087307, 0x7efef3399ca0) = 0
+22340 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22340 ioctl(6, 0xc0087307, 0x7efef3399ca0) = 0
+22340 poll([{fd=10, events=POLLIN}, {fd=6, events=POLLIN}], 2, 500) = 0 (Timeout)
+22340 close(4)                          = 0
+22341 <... poll resumed> )              = 0 (Timeout)
+22341 close(5)                          = 0
+22339 --- SIGINT (Interrupt) @ 0 (0) ---
+22339 +++ killed by SIGINT +++
