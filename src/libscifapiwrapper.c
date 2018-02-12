@@ -33,7 +33,7 @@ static uint8_t scif_version_mismatch;
 scif_get_driver_version(void)
 {
 	//TODO:Needs revision to support multithreading
-	int res_code, version = -1;
+/*	int res_code, version = -1;
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	
@@ -63,7 +63,7 @@ scif_get_driver_version(void)
 	free_deserialised_message(des_msg);
 
 	//close connection
-	close(uow->sockfd);
+	close(uow->sockfd);*/
 
 	return -1;
 }
