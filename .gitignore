@@ -10,6 +10,11 @@
 ####################
 !*/
 
+# Unignore all Makefiles
+#######################
+!Makefile
+!Makefile_mic
+
 # Dependencies Files #
 ######################
 src/.deps/*

@@ -1,0 +1,16 @@
+CC=/various/common_tools/intel-icc-and-tools/bin/icc
+CFLAGS=-mmic -Wall -I.
+LDFLAGS=-lscif
+
+.PHONY: all
+all: scif_write scif_read
+
+scif_write_mic: scif_write.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
+
+scif_read_mic: scif_read.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
+
+
+clean:
+	rm -v *.o
