@@ -3,7 +3,7 @@
 
 int main()
 {
-	#pragma offload target (mic)	
+	#pragma offload target (mic:0)	
 	{
 		printf("Hello world\n");
 	}

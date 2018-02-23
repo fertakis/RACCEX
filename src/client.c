@@ -107,7 +107,7 @@ void establish_connection(thr_mng *uow) {
 	get_server_connection_config(&server, &server_port);
 
 	uow->sockfd = init_client_connection(server, server_port);
-	printf("Connected to server %s on port %s...\n", server, server_port);
+	rdprintf("Connected to server %s on port %s...\n", server, server_port);
 }
 
 int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)

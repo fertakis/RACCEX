@@ -24,6 +24,11 @@ src/.deps/*
 ##################
 !tags
 !helloWorld
+!configure
+!install-sh
+!compile
+!depcomp
+!missing
 
 # Unignore binaries #
 #####################
