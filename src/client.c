@@ -79,7 +79,7 @@ int init_client_connection(const char *s_ip, const char *s_port)
 		perror("socket");
 		exit(1);
 	}
-	fprintf(stderr, "Created TCP socket\n");
+	rcdprintf("Created TCP socket\n");
 
 	/* Look up remote hostname on DNS */
 	if ( !(hp = gethostbyname(s_ip))) {
@@ -91,12 +91,13 @@ int init_client_connection(const char *s_ip, const char *s_port)
 	sa.sin_family = AF_INET;
 	sa.sin_port = htons(atoi(s_port));
 	memcpy(&sa.sin_addr.s_addr, hp->h_addr, sizeof(struct in_addr));
-	fprintf(stderr, "Connecting to remote host...\n"); fflush(stderr);
+	rcdprintf("Connecting to remote host...\n"); 
+	fflush(stderr);
 	if (connect(sd, (struct sockaddr *) &sa, sizeof(sa)) < 0) {
 		perror("connect");
 		exit(1);
 	}
-	fprintf(stderr, "Connected.\n");
+	rcdprintf("Connected.\n");
 
 	return sd;
 }
@@ -107,7 +108,7 @@ void establish_connection(thr_mng *uow) {
 	get_server_connection_config(&server, &server_port);
 
 	uow->sockfd = init_client_connection(server, server_port);
-	rdprintf("Connected to server %s on port %s...\n", server, server_port);
+	rcdprintf("Connected to server %s on port %s...\n", server, server_port);
 }
 
 int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)

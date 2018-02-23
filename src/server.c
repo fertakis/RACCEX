@@ -79,7 +79,7 @@ void *serve_client(void *arg)
 		}
 
 
-		printf("Processing message\n");
+		rdprintf("Processing message\n");
 		switch (msg_type) {
 			case PHI_CMD:
 				arg_cnt = process_phi_cmd(&result, payload);
