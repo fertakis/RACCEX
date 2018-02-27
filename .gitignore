@@ -38,3 +38,6 @@ src/.deps/*
 # Unignore binaries #
 #####################
 scif_tutorials/*
+
+src/common.pb-c.c
+src/common.pb-c.h
