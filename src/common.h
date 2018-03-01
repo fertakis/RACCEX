@@ -141,5 +141,10 @@ void *malloc_safe_f(size_t size, const char *file, const int line);
 #define rcdprintf  
 #endif
 
+#ifdef MEMDEBUG
+#define ddprintf printf
+#else 
+#define ddprintf
+#endif
 
 #endif /* CLIENT_H */

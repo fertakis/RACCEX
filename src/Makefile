@@ -200,7 +200,7 @@ CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -g
 CYGPATH_W = echo
 DEBUG_CFLAGS = 
-DEFS = -DPACKAGE_NAME=\"remotephiexec\" -DPACKAGE_TARNAME=\"remotephiexec\" -DPACKAGE_VERSION=\"0.1.0\" -DPACKAGE_STRING=\"remotephiexec\ 0.1.0\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DPACKAGE=\"remotephiexec\" -DVERSION=\"0.1.0\" -DHAVE_LIBPROTOBUF_C=1
+DEFS = -DPACKAGE_NAME=\"remotephiexec\" -DPACKAGE_TARNAME=\"remotephiexec\" -DPACKAGE_VERSION=\"0.1.0\" -DPACKAGE_STRING=\"remotephiexec\ 0.1.0\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DPACKAGE=\"remotephiexec\" -DVERSION=\"0.1.0\" -DHAVE_LIBPROTOBUF_C=1 -DRSCIF_DEBUG
 DEPDIR = .deps
 ECHO_C = 
 ECHO_N = -n

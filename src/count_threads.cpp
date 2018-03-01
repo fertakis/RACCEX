@@ -30,7 +30,7 @@ testThreadCount()
 	int
 main (int argc, char **argv)
 {
-	#pragma offload target(mic), if (argc > 1)
+	#pragma offload target(mic)
 	testThreadCount();
 }
 
