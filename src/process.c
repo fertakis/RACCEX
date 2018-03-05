@@ -593,7 +593,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			extra_args_size = len;
 
 			phi_result = exec_scif_vreadfrom((scif_epd_t)cmd->int_args[0],
-						   extra_args, len, (off_t)cmd->extra_args[0].data,
+						   extra_args, len, *(off_t *)cmd->extra_args[0].data,
 						   cmd->int_args[1], int_res);
 			break;
 		}
