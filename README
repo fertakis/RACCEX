@@ -1,2 +1,14 @@
-This is a demonstration package for GNU Automake.
-Type 'info Automake' to read the Automake manual.
+COI DEBUGGIN INSTRUCTIONS
+-------------------------
+
+1)recompile libcoi_host.so with enabled debug
+2) set the following env vars
+COI_ENABLE_LOGGING=1
+COI_LOG_LEVEL=3
+
+TROUBLESHOOTING
+---------------
+
+**If recompile of rphi has linking error with "-lscif", check /usr/lib64/ soft links are 
+pointing to the correct library and they are not broken
+
