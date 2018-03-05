@@ -126,6 +126,7 @@ void get_server_connection_config(char **server, char **server_port);
 int pack_phi_cmd(void ** payload, var **args, size_t arg_count, int type);
 int unpack_phi_cmd(var ** args, PhiCmd *cmd);
 
+void print_bytes(const void *object, size_t size);
 void *malloc_safe_f(size_t size, const char *file, const int line);
 #define malloc_safe(size) malloc_safe_f(size, __FILE__, __LINE__)
 

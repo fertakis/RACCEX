@@ -354,7 +354,8 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	ddprintf("executing scif_send(endp=%d, len=%d, flags=%d\n", epd, len, flags);	
 	ddprintf("by thread %d\n", pthread_self());
 #ifdef MEMDEBUG
-	fwrite(msg, sizeof(char), len, stdout); 
+	printf("about to print msg\n");
+	print_bytes(msg, len);
 #endif 
 	uow = identify_thread(&threads);
 
@@ -431,7 +432,7 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 		memcpy(msg, result->extra_args[0].data, result->extra_args[0].len);
 		ret = (int)result->int_args[0];
 #ifdef MEMDEBUG
-		fwrite(msg, sizeof(char), len, stdout); 
+	print_bytes(msg, len);
 #endif 
 	}
 	else {
@@ -637,7 +638,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 		void *addr_to_write = mp->client_addr + (loffset - mp->offset);
 		memcpy(addr_to_write, result->extra_args[0].data, len);
 #ifdef MEMDEBUG
-		fwrite(addr_to_write, sizeof(char), len, stdout); 
+	print_bytes(addr_to_write, len);
 #endif 
 	}	
 	else {
@@ -696,7 +697,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	ddprintf("data was succesfully wrapped\n");
 #ifdef MEMDEBUG
-	fwrite(addr_to_copy_from, sizeof(char), len, stdout); 
+	print_bytes(addr_to_copy_from, len);
 #endif 
 	
 	if(send_phi_cmd(uow->sockfd, args, 3, WRITE_TO) < 0)
@@ -765,7 +766,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 		ret = (int)result->int_args[0];
 		memcpy(addr, result->extra_args[0].data, result->extra_args[0].len);
 #ifdef MEMDEBUG
-		fwrite(addr, sizeof(char), len, stdout); 
+	print_bytes(addr, len);
 #endif 
 	}
 	else {
@@ -816,7 +817,7 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	memcpy(arg_bytes.data, addr, len);
 	memcpy(arg_bytes.data + len, &offset, sizeof(off_t));
 #ifdef MEMDEBUG
-	fwrite(addr, sizeof(char), len, stdout); 
+	print_bytes(addr, len);
 #endif 
 	if(send_phi_cmd(uow->sockfd, args, 3, VWRITE_TO) < 0)
 	{
@@ -873,7 +874,7 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 	if(res_code == SCIF_SUCCESS){
 		memcpy(mark, &result->int_args[0], sizeof(int));	
 		ret = (int)result->int_args[1];
-		printf("scif_fence_mark mark_ret=%d\n", mark);
+		ddprintf("scif_fence_mark mark_ret=%d\n", mark);
 	}
 	else {
 		ret = -1;

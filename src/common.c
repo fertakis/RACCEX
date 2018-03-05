@@ -233,3 +233,18 @@ int unpack_phi_cmd(var **args, PhiCmd *cmd )
 
 	return ret;
 }
+
+void print_bytes(const void *object, size_t size)
+{
+	  // This is for C++; in C just drop the static_cast<>() and assign.
+	  const unsigned char * const bytes = (const unsigned char *)object;
+	  size_t i;
+	  
+	  printf("[ ");
+	  for(i = 0; i < size; i++)
+	  {
+	  	printf("%02x ", bytes[i]);
+	  }
+	  printf("]\n");
+}
+
