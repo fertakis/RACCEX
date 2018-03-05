@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 
 	if((endp = scif_open()) < 0)
 	{
+		printf("scif_open failed\n");
 		perror("scif_open");
 		exit(1);
 	}

@@ -1,6 +1,6 @@
 bin_PROGRAMS = server libscifapiwrapper.so  test_client hello_world 
 
-AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google -L/home/fertakis/repos/remotePhiExec/src/ $(DEBUG_CFLAGS)
+AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google -L/home/fertakis/repos/remotePhiExec/src/ #-DRSCIF_DEBUG -DRSCIF_COMM_DEBUG
 
 BUILT_SOURCES = @srcdir@/common.pb-c.c @srcdir@/common.pb-c.h
 

@@ -41,3 +41,16 @@ scif_tutorials/*
 
 src/common.pb-c.c
 src/common.pb-c.h
+
+aclocal.m4
+Makefile.in
+Makefile
+autom4te.cache/*
+compile
+config.log
+config.status
+depcomp
+missing
+src/Makefile
+src/Makefile.in
+configure
