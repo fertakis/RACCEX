@@ -476,6 +476,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 			addr = mmap(NULL, (size_t)cmd->uint_args[0],  PROT_READ | PROT_WRITE,
                                           MAP_ANON | MAP_SHARED, -1, 0);
+			//posix_memalign(&addr, 0x1000, (size_t)cmd->uint_args[0]); 
 				   
 			phi_result = exec_scif_register((scif_epd_t)cmd->int_args[0],
 					   addr, (size_t)cmd->uint_args[0],
@@ -571,9 +572,10 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));			
 	
 			addr_map *mp = get_map(pid, loffset);
-			void * copy_to = mp->server_addr + (loffset - mp->offset);
+			void *copy_to = mp->server_addr + (loffset - mp->offset);
+			
 			//copy to server registered address space len bytes for dma
-			memcpy(mp->server_addr, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
+			memcpy(copy_to, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
 			phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
 					   loffset, len,
 					   roffset, cmd->int_args[1], int_res);
