@@ -600,7 +600,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	pid_t pid = getpid();
 	addr_map *mp = get_map(pid, loffset);
 	
-	ddprintf("executing scif_readfrom()... epd = %d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
+	printf("executing scif_readfrom()... epd = %d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
 
 	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
@@ -621,7 +621,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 
 	arg_bytes.type = BYTES;
 	arg_bytes.length = sizeof(off_t)*2 + sizeof(pid_t);
-	arg_bytes.data = (off_t *)malloc_safe(arg_bytes.length);
+	arg_bytes.data = malloc_safe(arg_bytes.length);
 	memcpy(arg_bytes.data, &loffset, sizeof(off_t));
 	memcpy(arg_bytes.data + sizeof(off_t), &roffset, sizeof(off_t));
 	memcpy(arg_bytes.data + 2*sizeof(off_t), &pid, sizeof(pid_t));
@@ -637,9 +637,9 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 		ret = (int)result->int_args[0];
 		void *addr_to_write = mp->client_addr + (loffset - mp->offset);
 		memcpy(addr_to_write, result->extra_args[0].data, len);
-#ifdef MEMDEBUG
-	print_bytes(addr_to_write, len);
-#endif 
+//#ifdef MEMDEBUG
+//	print_bytes(addr_to_write, len);
+//#endif 
 	}	
 	else {
 		ret = -1;
@@ -648,7 +648,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 
 	free_deserialised_message(des_msg);
 
-	ddprintf("scif_readfrom ret= %d\n",ret);
+	printf("scif_readfrom ret= %d\n",ret);
 
 	return ret;
 }
@@ -665,7 +665,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	pid_t pid = getpid();
 	addr_map *mp = get_map(pid, loffset);
 	
-	ddprintf("executing scif_writeto()... epd=%d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
+	printf("executing scif_writeto()... epd=%d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
 	ddprintf("addr to read data = %p \n", mp->client_addr);
 	
 	rdprintf("by thread %d\n", pthread_self());
@@ -695,10 +695,10 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	void *addr_to_copy_from = mp->client_addr + (loffset - mp->offset);
 	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), addr_to_copy_from, len); 
 
-	ddprintf("data was succesfully wrapped\n");
-#ifdef MEMDEBUG
-	print_bytes(addr_to_copy_from, len);
-#endif 
+	printf("data was succesfully wrapped\n");
+//#ifdef MEMDEBUG
+	//print_bytes(addr_to_copy_from, len);
+//#endif 
 	
 	if(send_phi_cmd(uow->sockfd, args, 3, WRITE_TO) < 0)
 	{
@@ -716,7 +716,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	free_deserialised_message(des_msg);
 
-	ddprintf("scif_writeto ret= %d\n",ret);
+	printf("scif_writeto ret= %d\n",ret);
 
 	return ret;
 }
@@ -765,9 +765,9 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	if(res_code == SCIF_SUCCESS){
 		ret = (int)result->int_args[0];
 		memcpy(addr, result->extra_args[0].data, result->extra_args[0].len);
-#ifdef MEMDEBUG
-	print_bytes(addr, len);
-#endif 
+//#ifdef MEMDEBUG
+//	print_bytes(addr, len);
+//#endif 
 	}
 	else {
 		ret = -1;
@@ -816,9 +816,9 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	arg_bytes.data = malloc_safe(arg_bytes.length);
 	memcpy(arg_bytes.data, addr, len);
 	memcpy(arg_bytes.data + len, &offset, sizeof(off_t));
-#ifdef MEMDEBUG
-	print_bytes(addr, len);
-#endif 
+//#ifdef MEMDEBUG
+//	print_bytes(addr, len);
+//#endif 
 	if(send_phi_cmd(uow->sockfd, args, 3, VWRITE_TO) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
