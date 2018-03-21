@@ -460,10 +460,11 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	void *des_msg = NULL;
 	thr_mng *uow;
 	pid_t pid = getpid();
-	
+	pthread_t tid = pthread_self();
+
 	ddprintf("executing scif_register with epd %d, addr %p, len %d, offset %d, prot %d, flags %d\n", epd, addr, len, offset, prot, flags);
 
-	ddprintf("by thread %d\n", pthread_self());
+	ddprintf("by thread %d\n", tid);
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -482,11 +483,12 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(void *) + sizeof(off_t) + sizeof(pid_t);
+	arg_bytes.length = sizeof(void *) + sizeof(off_t) + sizeof(pid_t) + sizeof(pthread_t);
 	arg_bytes.data = malloc_safe(arg_bytes.length);
 	memcpy(arg_bytes.data, &addr, sizeof(void *));
 	memcpy(arg_bytes.data + sizeof(void *), &offset, sizeof(off_t));
 	memcpy(arg_bytes.data + sizeof(void *) + sizeof(off_t), &pid, sizeof(pid_t));
+	memcpy(arg_bytes.data + sizeof(void *) + sizeof(off_t) + sizeof(pid_t), &tid, sizeof(pthread_t));
 
 	if(send_phi_cmd(uow->sockfd, args, 3, REGISTER) < 0)
 	{
@@ -497,7 +499,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(&ret, result->extra_args[0].data, sizeof(off_t));
-		addr_map *entry = identify_map(pid, addr, NULL, len, ret); 
+		addr_map *entry = identify_map(pid, tid, addr, NULL, len, ret); 
 		if(entry == NULL)
 			rdprintf("error entring data for registered address\n");
 	}
@@ -524,6 +526,7 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	void *des_msg = NULL;
 	thr_mng *uow;
 	pid_t pid = getpid();
+	pthread_t tid = pthread_self();
 
 	ddprintf("executing scif_unregister() epd=%d, offset=%d, len =%d\n", epd, offset, len);
 
@@ -544,10 +547,11 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t) + sizeof(pid_t);
+	arg_bytes.length = sizeof(off_t) + sizeof(pid_t) + sizeof(pthread_t);
 	arg_bytes.data = malloc_safe(arg_bytes.length);
 	memcpy(arg_bytes.data, &offset, sizeof(off_t));
 	memcpy(arg_bytes.data + sizeof(off_t), &pid, sizeof(pid_t));
+	memcpy(arg_bytes.data + sizeof(off_t) + sizeof(pid_t), &tid, sizeof(pthread_t));
 
 	if(send_phi_cmd(uow->sockfd, args, 3, UNREGISTER) < 0)
 	{
@@ -558,7 +562,7 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		ret = (int)result->int_args[0];
-		if(remove_mapping(pid, offset) < 0)
+		if(remove_mapping(pid, tid, offset) < 0)
 			ddprintf("error unregistering address space\n"); 
 	}
 	else {
@@ -598,7 +602,9 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	void *des_msg = NULL;
 	thr_mng *uow;
 	pid_t pid = getpid();
-	addr_map *mp = get_map(pid, loffset);
+	pthread_t tid = pthread_self();
+
+	addr_map *mp = get_map(pid, tid, loffset);
 	
 	printf("executing scif_readfrom()... epd = %d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
 
@@ -620,11 +626,12 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t)*2 + sizeof(pid_t);
+	arg_bytes.length = sizeof(off_t)*2 + sizeof(pid_t) + sizeof(pthread_t);
 	arg_bytes.data = malloc_safe(arg_bytes.length);
 	memcpy(arg_bytes.data, &loffset, sizeof(off_t));
 	memcpy(arg_bytes.data + sizeof(off_t), &roffset, sizeof(off_t));
 	memcpy(arg_bytes.data + 2*sizeof(off_t), &pid, sizeof(pid_t));
+	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), &tid, sizeof(pthread_t));
 
 	if(send_phi_cmd(uow->sockfd, args, 3, READ_FROM) < 0)
 	{
@@ -663,7 +670,9 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	void *des_msg = NULL;
 	thr_mng *uow;
 	pid_t pid = getpid();
-	addr_map *mp = get_map(pid, loffset);
+	pthread_t tid = pthread_self();
+
+	addr_map *mp = get_map(pid, tid, loffset);
 	
 	printf("executing scif_writeto()... epd=%d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
 	ddprintf("addr to read data = %p \n", mp->client_addr);
@@ -686,14 +695,15 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	arg_uint.data = &len;
 
 	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t)*2 + len + sizeof(pid_t);
+	arg_bytes.length = sizeof(off_t)*2 + len + sizeof(pid_t) + sizeof(pthread_t);
 	arg_bytes.data = malloc_safe(arg_bytes.length);
 	memcpy(arg_bytes.data, &loffset, sizeof(off_t));
 	memcpy(arg_bytes.data + sizeof(off_t), &roffset, sizeof(off_t));
 	memcpy(arg_bytes.data + 2*sizeof(off_t), &pid, sizeof(pid_t));
+	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), &tid, sizeof(pthread_t));
 
 	void *addr_to_copy_from = mp->client_addr + (loffset - mp->offset);
-	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), addr_to_copy_from, len); 
+	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t) + sizeof(pthread_t), addr_to_copy_from, len); 
 
 	printf("data was succesfully wrapped\n");
 //#ifdef MEMDEBUG
