@@ -32,7 +32,7 @@ void initialise_addr_map_list() {
 	maps.head = NULL;
 }
 
-addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr, 
+addr_map * identify_map( pid_t pid, pthread_t tid, void *clnt_addr, void *srv_addr, 
 				size_t len, off_t offt) 
 {
 	addr_map *ret = NULL;
@@ -43,6 +43,7 @@ addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr,
 		maps.head = malloc_safe(sizeof(addr_map));
 		maps.head->next = NULL;
 		maps.head->proc_id = pid;
+		maps.head->tid = tid;
 		maps.head->client_addr = clnt_addr;
 		maps.head->server_addr = srv_addr;
 		maps.head->len = len;
@@ -53,7 +54,8 @@ addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr,
 		addr_map *it = maps.head;
 		while (it->next != NULL) {
 			if( it->client_addr == clnt_addr &&
-					it->proc_id == pid) {
+					it->proc_id == pid
+					&& it->tid == tid) {
 				//found it
 				ret = it;
 				break;
@@ -63,13 +65,15 @@ addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr,
 		if(ret == NULL) {
 			//not found, check last entry
 			if( it->client_addr == clnt_addr &&
-					it->proc_id == pid)
+					it->proc_id == pid
+					&& it->tid == tid)
 				//found, was the last entry
 				ret = it;
 			else {
 				//not found, create new entry
 				ret = malloc_safe(sizeof(addr_map));
 				ret->proc_id = pid;
+				ret->tid = tid;
 				ret->client_addr = clnt_addr;
 				ret->server_addr = srv_addr;
 				ret->len = len;
@@ -83,7 +87,7 @@ addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr,
 	return ret; 
 }
 
-addr_map * get_map( pid_t pid, off_t lofft) 
+addr_map * get_map(pid_t pid, pthread_t tid, off_t lofft) 
 {
 	addr_map *ret = NULL;
 
@@ -95,7 +99,8 @@ addr_map * get_map( pid_t pid, off_t lofft)
 		while (it->next != NULL) {
 			if( (lofft >= it->offset) &&
 					(lofft < (it->offset + it->len)) && 
-					(it->proc_id == pid)) {
+					(it->proc_id == pid) && 
+					(it->tid == tid)) {
 				//found it
 				ret = it;
 				break;
@@ -106,7 +111,8 @@ addr_map * get_map( pid_t pid, off_t lofft)
 			//not found, check last entry
 			if(( lofft >= it->offset) &&
 					(lofft < (it->offset + it->len)) &&
-					(it->proc_id == pid))
+					(it->proc_id == pid) &&
+					(it->tid == tid))
 				//found, was the last entry
 				ret = it;
 			}
@@ -114,7 +120,7 @@ addr_map * get_map( pid_t pid, off_t lofft)
 	return ret; 
 }
 
-int remove_mapping(pid_t pid, off_t offset) {
+int remove_mapping(pid_t pid, pthread_t tid, off_t offset) {
 	int ret = -1; 
 
 	addr_map *curr, *prev;
@@ -122,7 +128,7 @@ int remove_mapping(pid_t pid, off_t offset) {
 	curr = maps.head;
 	prev = maps.head;
 
-	if((maps.head->offset == offset) && (maps.head->proc_id == pid)) {
+	if((maps.head->offset == offset) && (maps.head->proc_id == pid) && (maps.head->tid == tid)) {
 		void *temp = maps.head;
 		maps.head = maps.head->next; 
 		maps.num_maps--;
@@ -131,7 +137,7 @@ int remove_mapping(pid_t pid, off_t offset) {
 	}
 	else {
 		while(curr != NULL) {
-			if(curr->offset == offset && curr->proc_id == pid) {
+			if(curr->offset == offset && curr->proc_id == pid && curr->tid == tid) {
 				//found it 
 				prev->next = curr->next;
 				maps.num_maps--;
