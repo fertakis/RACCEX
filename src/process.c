@@ -468,13 +468,11 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			off_t resulted_offset, client_offset;							
 			void *addr, *client_addr;
 			pid_t client_pid;
-			pthread_t client_tid;
 			addr_map *map_slot = NULL;
 			
 			memcpy(&client_addr, cmd->extra_args[0].data, sizeof(void *));
 			memcpy(&client_offset, cmd->extra_args[0].data + sizeof(void *), sizeof(off_t));
 			memcpy(&client_pid, cmd->extra_args[0].data + sizeof(void *) + sizeof(off_t), sizeof(pid_t));
-			memcpy(&client_tid, cmd->extra_args[0].data + sizeof(void *) + sizeof(off_t) + sizeof(pid_t), sizeof(pthread_t));
 
 			addr = mmap(NULL, (size_t)cmd->uint_args[0],  PROT_READ | PROT_WRITE,
                                           MAP_ANON | MAP_SHARED, -1, 0);
@@ -489,7 +487,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			memcpy(extra_args, &resulted_offset, sizeof(off_t));
 
 			
-			map_slot = identify_map(client_pid, client_tid,client_addr, addr, (size_t)cmd->uint_args[0], resulted_offset);
+			map_slot = identify_map(client_pid, client_addr, addr, (size_t)cmd->uint_args[0], resulted_offset);
 			if(map_slot == NULL) {
 				printf("error creating map for scif_register()\n");
 			}
@@ -499,7 +497,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			rdprintf("Executing scif_unregister() ... \n");
 			//TODO: scif_unregister call goes here...
 			pid_t pid;
-			pthread_t tid;
 			off_t offset; 
 
 			arg_count++;
@@ -508,13 +505,12 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			
 			memcpy(&offset, cmd->extra_args[0].data, sizeof(off_t));
 			memcpy(&pid, cmd->extra_args[0].data + sizeof(off_t), sizeof(pid_t));
-			memcpy(&tid, cmd->extra_args[0].data + sizeof(off_t) + sizeof(pid_t), sizeof(pthread_t));
 
 			phi_result = exec_scif_unregister((scif_epd_t)cmd->int_args[0],
 					   offset,
 					   cmd->uint_args[0], int_res);		
 			if(phi_result == SCIF_SUCCESS)
-				if(remove_mapping(pid, tid, offset) < 0)
+				if(remove_mapping(pid, offset) < 0)
 					printf("error freeing mapping\n");
 			break;
 		}
@@ -542,14 +538,13 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
 			memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
 			memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));
-			memcpy(&tid, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), sizeof(pthread_t));
 
 			phi_result = exec_scif_readfrom((scif_epd_t)cmd->int_args[0], 
 					   loffset, (size_t)cmd->uint_args[0],
 					   roffset, cmd->int_args[1], int_res);
 			if(phi_result == SCIF_SUCCESS) {
 				//addr_map *mp = identify_map(pid, NULL, NULL, loffset);
-				addr_map *mp = get_map(pid, tid, loffset);
+				addr_map *mp = get_map(pid, loffset);
 				
 				arg_count++;
 
@@ -579,16 +574,15 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
 			memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
 			memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));			
-			memcpy(&tid, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), sizeof(pthread_t));
 
-			addr_map *mp = get_map(pid, tid, loffset);
+			addr_map *mp = get_map(pid, loffset);
 			if(mp == NULL) {
 				printf("scif_writeto: error while trying to obtain mapped srvr_addr\n");
 			}
 			void *copy_to = mp->server_addr + (loffset - mp->offset);
 			
 			//copy to server registered address space len bytes for dma
-			memcpy(copy_to, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t) + sizeof(pthread_t), len);
+			memcpy(copy_to, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
 			phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
 					   loffset, len,
 					   roffset, cmd->int_args[1], int_res);
