@@ -474,9 +474,13 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 			memcpy(&client_offset, cmd->extra_args[0].data + sizeof(void *), sizeof(off_t));
 			memcpy(&client_pid, cmd->extra_args[0].data + sizeof(void *) + sizeof(off_t), sizeof(pid_t));
 
-			addr = mmap(NULL, (size_t)cmd->uint_args[0],  PROT_READ | PROT_WRITE,
-                                          MAP_ANON | MAP_SHARED, -1, 0);
-			//posix_memalign(&addr, 0x1000, (size_t)cmd->uint_args[0]); 
+			//addr = mmap(NULL, (size_t)cmd->uint_args[0],  PROT_READ | PROT_WRITE,
+                                          //MAP_ANON | MAP_SHARED, -1, 0);
+			if(posix_memalign(&addr, 0x1000, (size_t)cmd->uint_args[0]) != 0 ){
+				perror("posix_memalign");
+				phi_result = -1;
+				break;
+			}	
 				   
 			phi_result = exec_scif_register((scif_epd_t)cmd->int_args[0],
 					   addr, (size_t)cmd->uint_args[0],
@@ -485,7 +489,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					   &resulted_offset);
 
 			memcpy(extra_args, &resulted_offset, sizeof(off_t));
-
+			
 			
 			map_slot = identify_map(client_pid, client_addr, addr, (size_t)cmd->uint_args[0], resulted_offset);
 			if(map_slot == NULL) {

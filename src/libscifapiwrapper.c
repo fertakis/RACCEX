@@ -602,6 +602,12 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	pid_t pid = getpid();
 	addr_map *mp = get_map(pid, loffset);
 	
+	if(mp == NULL) {
+		printf("scif_writeto: error while acquiring map\n. Exiting.\n");
+		ret = -1;
+		goto end;
+	}	
+
 	printf("executing scif_readfrom()... epd = %d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
 
 	ddprintf("by thread %d\n", pthread_self());
@@ -648,7 +654,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	free_deserialised_message(des_msg);
 
 	printf("scif_readfrom ret= %d\n",ret);
-
+end:
 	return ret;
 }
 	int
@@ -663,7 +669,13 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	thr_mng *uow;
 	pid_t pid = getpid();
 	addr_map *mp = get_map(pid, loffset);
-	
+
+	if(mp == NULL) {
+		printf("scif_writeto: error while acquiring map\n. Exiting.\n");
+		ret = -1;
+		goto end;
+	}
+
 	printf("executing scif_writeto()... epd=%d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
 	ddprintf("addr to read data = %p \n", mp->client_addr);
 	
@@ -713,7 +725,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	free_deserialised_message(des_msg);
 
 	printf("scif_writeto ret= %d\n",ret);
-
+end:
 	return ret;
 }
 
