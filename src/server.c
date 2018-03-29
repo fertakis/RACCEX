@@ -38,7 +38,7 @@ int init_server_net(const char *port, struct sockaddr_in *sa)
 		perror("socket");
 		exit(1);
 	}
-	fprintf(stderr, "Created TCP socket\n");
+	ddprintf("Created TCP socket\n");
 
 	/* Bind to a well-known port */
 	memset(sa, 0, sizeof(sa));
@@ -50,7 +50,7 @@ int init_server_net(const char *port, struct sockaddr_in *sa)
 		perror("bind");
 		exit(1);
 	}
-	fprintf(stderr, "Bound TCP socket to port %s\n", port);
+	ddprintf("Bound TCP socket to port %s\n", port);
 
 
 	/* Listen for incoming connections */

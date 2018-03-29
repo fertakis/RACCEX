@@ -163,25 +163,25 @@ void get_server_connection_config(char **server, char **server_port)
 	*server = getenv("REMOTE_PHI_SERVER"),
 		*server_port = getenv("REMOTE_PHI_PORT");
 
-	rdprintf("server config..\n");
+	ddprintf("server config..\n");
 	if(*server == NULL)
 	{
 		*server = DEFAULT_SERVER_IP;
-		rdprintf("Enviromental Variable 'REMOTE_PHI_SERVER' not defined, using default server ip: %s\n", *server);
+		ddprintf("Enviromental Variable 'REMOTE_PHI_SERVER' not defined, using default server ip: %s\n", *server);
 	}
 	if(*server_port == NULL)
 	{
 		*server_port = DEFAULT_SERVER_PORT;
-		rdprintf("Enviromental Variable 'REMOTE_PHI_PORT' not defined, using default server port: %s\n", *server_port);
+		ddprintf("Enviromental Variable 'REMOTE_PHI_PORT' not defined, using default server port: %s\n", *server_port);
 	}
-	rdprintf("end server config\n");	
+	ddprintf("end server config\n");	
 }
 
 int pack_phi_cmd(void **payload, var **args, size_t arg_count, int type) {
 	PhiCmd *cmd;
 	int i;
 
-	rdprintf("Packing PHI cmd...\n");
+	ddprintf("Packing PHI cmd...\n");
 
 	cmd = malloc_safe(sizeof(PhiCmd));
 	phi_cmd__init(cmd);
@@ -229,7 +229,7 @@ int unpack_phi_cmd(var **args, PhiCmd *cmd )
 {
 	int ret = 0 ;
 
-	rdprintf("Unpacking PHI cmd ...");
+	ddprintf("Unpacking PHI cmd ...");
 
 	return ret;
 }

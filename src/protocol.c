@@ -60,7 +60,7 @@ size_t serialise_message(void **result, int msg_type, void *payload) {
 	Cookie message = COOKIE__INIT;
 	void *buffer, *msg_buffer; 
 
-	rdprintf("Serialising message data...\n");
+	ddprintf("Serialising message data...\n");
 	message.type = msg_type;
 
 	switch (msg_type) {
@@ -81,7 +81,7 @@ size_t serialise_message(void **result, int msg_type, void *payload) {
 	memcpy(buffer+sizeof(msg_len_n), msg_buffer, msg_length);
 
 	*result = buffer;
-	rdprintf("serialisation completed\n");
+	ddprintf("serialisation completed\n");
 	return buf_size;
 }
 
@@ -89,7 +89,7 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 {
 	Cookie *msg;
 
-	rdprintf("Deserialising message data...\n");
+	ddprintf("Deserialising message data...\n");
 	msg = cookie__unpack(NULL, ser_msg_len, (uint8_t *)serialised_msg);
 	if (msg == NULL) {
 		fprintf(stderr, "message unpacking failed\n");
@@ -98,11 +98,11 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 
 	switch (msg->type) {
 		case PHI_CMD:
-			rdprintf("--------------\nIs PHI_CMD\n");
+			ddprintf("--------------\nIs PHI_CMD\n");
 			*payload = msg->phi_cmd;
 			break;
 		case PHI_CMD_RESULT:
-			rdprintf("--------------\nIs PHI_CMD_RESULT\n");
+			ddprintf("--------------\nIs PHI_CMD_RESULT\n");
 			*payload = msg->phi_cmd;
 			break;
 	}
@@ -116,14 +116,14 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 }
 
 void free_deserialised_message(void *msg) {
-	rdprintf("Freeing allocated memory for message...\n");
+	ddprintf("Freeing allocated memory for message...\n");
 	cookie__free_unpacked((Cookie *)msg, NULL);
 }
 
 ssize_t send_message (int socket_fd, void *buffer, size_t len)
 { 
 	ssize_t ret = 0 ;
-	rdprintf("Sending %zu bytes...\n",len);
+	ddprintf("Sending %zu bytes...\n",len);
 	
 	//pthread_mutex_lock(&lock);
 	ret =  insist_write(socket_fd, buffer, len);
@@ -148,7 +148,7 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 
 
 	msg_len = ntohl(*(uint32_t *)buf);
-	rdprintf("Going to read a message of %u bytes..., pthreadid %d \n", msg_len, (int)pthread_self());
+	ddprintf("Going to read a message of %u bytes..., pthreadid %d \n", msg_len, (int)pthread_self());
 
 	buf = realloc(buf, msg_len);
 
