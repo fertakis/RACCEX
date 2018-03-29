@@ -79,7 +79,7 @@ void *serve_client(void *arg)
 		}
 
 
-		rdprintf("Processing message\n");
+		ddprintf("Processing message\n");
 		switch (msg_type) {
 			case PHI_CMD:
 				arg_cnt = process_phi_cmd(&result, payload);
@@ -103,7 +103,7 @@ void *serve_client(void *arg)
 		}
 
 		if (resp_type != -1) {
-			rdprintf("Packing and Sending result\n");
+			ddprintf("Packing and Sending result\n");
 			pack_phi_cmd(&payload, result, arg_cnt, PHI_CMD_RESULT);
 			msg_length = serialise_message(&msg, resp_type, payload);
 			send_message(client->sockfd, msg, msg_length);
@@ -114,7 +114,7 @@ void *serve_client(void *arg)
 				result = NULL;
 			}
 		}
-		rdprintf(">>\nMessage processed, cleaning up...\n<<\n");
+		ddprintf(">>\nMessage processed, cleaning up...\n<<\n");
 		if (msg != NULL) {
 			free(msg);
 			msg = NULL;

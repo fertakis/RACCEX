@@ -346,7 +346,7 @@ int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, 
 
 int process_phi_cmd(void **result, void *cmd_ptr) {
 	int phi_result = 0, int_res_count = 0, uint_res_count = 0 , 
-	u64int_res_count = 0, arg_count = 1;
+	    u64int_res_count = 0, arg_count = 1;
 	int *int_res = NULL, *errorno = NULL;
 	PhiCmd *cmd = cmd_ptr;
 	uint32_t *uint_res = NULL; 
@@ -413,7 +413,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 			phi_result = exec_scif_connect((scif_epd_t)cmd->int_args[0], 
 					(struct scif_portID *)cmd->extra_args[0].data, int_res);
-			rdprintf("scif_connect executed\n");
 			break;
 		case ACCEPT:
 			rdprintf("Executing scif_accept() ... \n");
@@ -443,282 +442,295 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 			break;
 		case RECV: { 
-			rdprintf("Executing scif_recv() ... \n");
-			//TODO: scif_recv call goes here...
+				   rdprintf("Executing scif_recv() ... \n");
+				   //TODO: scif_recv call goes here...
 
-			arg_count += 2;
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
-			   
-			extra_args = malloc_safe((size_t)cmd->int_args[1]);
-			extra_args_size = (size_t)cmd->int_args[1];
-			phi_result = exec_scif_recv((scif_epd_t)cmd->int_args[0], 
-					   extra_args, cmd->int_args[1], cmd->int_args[2],
-					   int_res, &arg_count);
-			break;
-		}
+				   arg_count += 2;
+				   int_res = malloc_safe(sizeof(int));
+				   int_res_count = 1;
+
+				   extra_args = malloc_safe((size_t)cmd->int_args[1]);
+				   extra_args_size = (size_t)cmd->int_args[1];
+				   phi_result = exec_scif_recv((scif_epd_t)cmd->int_args[0], 
+						   extra_args, cmd->int_args[1], cmd->int_args[2],
+						   int_res, &arg_count);
+				   break;
+			   }
 		case REGISTER: {
-			rdprintf("Executing scif_register() ... \n");
-			//TODO: scif_register call goes here...
-			arg_count++;
+				       rdprintf("Executing scif_register() ... \n");
+				       //TODO: scif_register call goes here...
+				       arg_count++;
 
-			extra_args_size = sizeof(off_t);
-			extra_args = malloc_safe(sizeof(off_t));
+				       extra_args_size = sizeof(off_t);
+				       extra_args = malloc_safe(sizeof(off_t));
 
-			off_t resulted_offset, client_offset;							
-			void *addr, *client_addr;
-			pid_t client_pid;
-			addr_map *map_slot = NULL;
-			
-			memcpy(&client_addr, cmd->extra_args[0].data, sizeof(void *));
-			memcpy(&client_offset, cmd->extra_args[0].data + sizeof(void *), sizeof(off_t));
-			memcpy(&client_pid, cmd->extra_args[0].data + sizeof(void *) + sizeof(off_t), sizeof(pid_t));
+				       off_t resulted_offset, client_offset;							
+				       void *addr, *client_addr;
+				       pid_t client_pid;
+				       addr_map *map_slot = NULL;
 
-			//addr = mmap(NULL, (size_t)cmd->uint_args[0],  PROT_READ | PROT_WRITE,
-                                          //MAP_ANON | MAP_SHARED, -1, 0);
-			if(posix_memalign(&addr, 0x1000, (size_t)cmd->uint_args[0]) != 0 ){
-				perror("posix_memalign");
-				phi_result = -1;
-				break;
-			}	
-				   
-			phi_result = exec_scif_register((scif_epd_t)cmd->int_args[0],
-					   addr, (size_t)cmd->uint_args[0],
-					   client_offset,
-					   cmd->int_args[1], cmd->int_args[2],
-					   &resulted_offset);
+				       memcpy(&client_addr, cmd->extra_args[0].data, sizeof(void *));
+				       memcpy(&client_offset, cmd->extra_args[0].data + sizeof(void *), sizeof(off_t));
+				       memcpy(&client_pid, cmd->extra_args[0].data + sizeof(void *) + sizeof(off_t), sizeof(pid_t));
 
-			memcpy(extra_args, &resulted_offset, sizeof(off_t));
-			
-			
-			map_slot = identify_map(client_pid, client_addr, addr, (size_t)cmd->uint_args[0], resulted_offset);
-			if(map_slot == NULL) {
-				printf("error creating map for scif_register()\n");
-			}
-			break;
-		}
+				       //addr = mmap(NULL, (size_t)cmd->uint_args[0],  PROT_READ | PROT_WRITE,
+				       //MAP_ANON | MAP_SHARED, -1, 0);
+				       if(posix_memalign(&addr, 0x1000, (size_t)cmd->uint_args[0]) != 0 ){
+					       perror("posix_memalign");
+					       phi_result = -1;
+					       break;
+				       }	
+
+				       phi_result = exec_scif_register((scif_epd_t)cmd->int_args[0],
+						       addr, (size_t)cmd->uint_args[0],
+						       client_offset,
+						       cmd->int_args[1], cmd->int_args[2],
+						       &resulted_offset);
+
+				       memcpy(extra_args, &resulted_offset, sizeof(off_t));
+
+
+				       map_slot = identify_map(client_pid, client_addr, addr, (size_t)cmd->uint_args[0], resulted_offset);
+				       if(map_slot == NULL) {
+					       printf("error creating map for scif_register()\n");
+				       }
+				       break;
+			       }
 		case UNREGISTER: {
-			rdprintf("Executing scif_unregister() ... \n");
-			//TODO: scif_unregister call goes here...
-			pid_t pid;
-			off_t offset; 
+					 rdprintf("Executing scif_unregister() ... \n");
+					 //TODO: scif_unregister call goes here...
+					 pid_t pid;
+					 off_t offset; 
 
-			arg_count++;
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
-			
-			memcpy(&offset, cmd->extra_args[0].data, sizeof(off_t));
-			memcpy(&pid, cmd->extra_args[0].data + sizeof(off_t), sizeof(pid_t));
+					 arg_count++;
+					 int_res = malloc_safe(sizeof(int));
+					 int_res_count = 1;
 
-			phi_result = exec_scif_unregister((scif_epd_t)cmd->int_args[0],
-					   offset,
-					   cmd->uint_args[0], int_res);		
-			if(phi_result == SCIF_SUCCESS)
-				if(remove_mapping(pid, offset) < 0)
-					printf("error freeing mapping\n");
-			break;
-		}
+					 memcpy(&offset, cmd->extra_args[0].data, sizeof(off_t));
+					 memcpy(&pid, cmd->extra_args[0].data + sizeof(off_t), sizeof(pid_t));
+
+					 phi_result = exec_scif_unregister((scif_epd_t)cmd->int_args[0],
+							 offset,
+							 cmd->uint_args[0], int_res);		
+					 if(phi_result == SCIF_SUCCESS)
+						 if(remove_mapping(pid, offset) < 0)
+							 printf("error freeing mapping\n");
+					 break;
+				 }
 		case MMAP:
-			rdprintf("Executing scif_mmap() ... \n");
-			//TODO: scif_mmap call goes here...
-			break;
+				 rdprintf("Executing scif_mmap() ... \n");
+				 //TODO: scif_mmap call goes here...
+				 break;
 		case MUNMAP:
-			rdprintf("Executing scif_munmap() ... \n");
-			//TODO: scif_munmap call goes here...
-			break;
+				 rdprintf("Executing scif_munmap() ... \n");
+				 //TODO: scif_munmap call goes here...
+				 break;
 		case READ_FROM: { 
-			rdprintf("Executing scif_read_from() ... \n");
-			//TODO: scif_read_from call goes here...
-			
-			arg_count++;
-			
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
+					rdprintf("Executing scif_read_from() ... \n");
+					//TODO: scif_read_from call goes here...
 
-			off_t loffset, roffset;
-			pid_t pid;
-			pthread_t tid;
+					arg_count++;
 
-			memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
-			memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
-			memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));
+					int_res = malloc_safe(sizeof(int));
+					int_res_count = 1;
 
-			phi_result = exec_scif_readfrom((scif_epd_t)cmd->int_args[0], 
-					   loffset, (size_t)cmd->uint_args[0],
-					   roffset, cmd->int_args[1], int_res);
-			if(phi_result == SCIF_SUCCESS) {
-				//addr_map *mp = identify_map(pid, NULL, NULL, loffset);
-				addr_map *mp = get_map(pid, loffset);
-				
-				arg_count++;
+					off_t loffset, roffset;
+					pid_t pid;
+					pthread_t tid;
 
-				extra_args_size = (size_t)cmd->uint_args[0];
-				extra_args = malloc_safe(extra_args_size);
-				
-				void *copy_from = mp->server_addr + (loffset - mp->offset);				
+					memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
+					memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
+					memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));
 
-				memcpy(extra_args, copy_from, extra_args_size);
-			}
+					phi_result = exec_scif_readfrom((scif_epd_t)cmd->int_args[0], 
+							loffset, (size_t)cmd->uint_args[0],
+							roffset, cmd->int_args[1], int_res);
+					if(phi_result == SCIF_SUCCESS) {
+						//addr_map *mp = identify_map(pid, NULL, NULL, loffset);
+						addr_map *mp = get_map(pid, loffset);
 
-			break;
-		}
+						arg_count++;
+
+						extra_args_size = (size_t)cmd->uint_args[0];
+						extra_args = malloc_safe(extra_args_size);
+
+						void *copy_from = mp->server_addr + (loffset - mp->offset);				
+
+						memcpy(extra_args, copy_from, extra_args_size);
+
+#ifdef RSCIF_DEBUG
+						print_bytes(extra_args, extra_args_size);
+#endif	       
+					}
+
+					break;
+				}
 		case WRITE_TO: {
-			rdprintf("Executing scif_write_to() ... \n");
-			//TODO: scif_write_to call goes here...
+				       rdprintf("Executing scif_write_to() ... \n");
+				       //TODO: scif_write_to call goes here...
 
-			arg_count++;
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
-			
-			off_t loffset, roffset;
-			pid_t pid;
-			pthread_t tid;
-			size_t len = (size_t)cmd->uint_args[0];
-			
-			memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
-			memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
-			memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));			
+				       arg_count++;
+				       int_res = malloc_safe(sizeof(int));
+				       int_res_count = 1;
 
-			addr_map *mp = get_map(pid, loffset);
-			if(mp == NULL) {
-				printf("scif_writeto: error while trying to obtain mapped srvr_addr\n");
-			}
-			void *copy_to = mp->server_addr + (loffset - mp->offset);
-			
-			//copy to server registered address space len bytes for dma
-			memcpy(copy_to, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
-			phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
-					   loffset, len,
-					   roffset, cmd->int_args[1], int_res);
-			break;
-		}
+				       off_t loffset, roffset;
+				       pid_t pid;
+				       pthread_t tid;
+				       size_t len = (size_t)cmd->uint_args[0];
+
+				       memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
+				       memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
+				       memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));			
+
+				       addr_map *mp = get_map(pid, loffset);
+				       if(mp == NULL) {
+					       printf("scif_writeto: error while trying to obtain mapped srvr_addr\n");
+				       }
+#ifdef RSCIF_DEBUG
+				       print_bytes(cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
+#endif			
+				       void *copy_to = mp->server_addr + (loffset - mp->offset);
+
+				       //copy to server registered address space len bytes for dma
+				       memcpy(copy_to, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
+				       phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
+						       loffset, len,
+						       roffset, cmd->int_args[1], int_res);
+				       break;
+			       }
 		case VREAD_FROM: {
-			rdprintf("Executing scif_vread_from() ... \n");
-			//TODO: scif_vread_from call goes here...
-			
-			arg_count += 2;
-			size_t len = (size_t)cmd->uint_args[0];
-			
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
-			   
-			extra_args = malloc_safe(len);
-			extra_args_size = len;
+					 rdprintf("Executing scif_vread_from() ... \n");
+					 //TODO: scif_vread_from call goes here...
 
-			phi_result = exec_scif_vreadfrom((scif_epd_t)cmd->int_args[0],
-						   extra_args, len, *(off_t *)cmd->extra_args[0].data,
-						   cmd->int_args[1], int_res);
-			break;
-		}
+					 arg_count += 2;
+					 size_t len = (size_t)cmd->uint_args[0];
+
+					 int_res = malloc_safe(sizeof(int));
+					 int_res_count = 1;
+
+					 extra_args = malloc_safe(len);
+					 extra_args_size = len;
+
+					 phi_result = exec_scif_vreadfrom((scif_epd_t)cmd->int_args[0],
+							 extra_args, len, *(off_t *)cmd->extra_args[0].data, 
+							 cmd->int_args[1], int_res);
+#ifdef RSCIF_DEBUG
+					 print_bytes(extra_args, extra_args_size);
+#endif	
+					 break;
+				 }
 		case VWRITE_TO: {
-			rdprintf("Executing scif_vwrite_to) ... \n");
-			//TODO: scif_vwrite_to call goes here...
+					rdprintf("Executing scif_vwrite_to) ... \n");
+					//TODO: scif_vwrite_to call goes here...
 
-			arg_count++;
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
-		
-			off_t offset;
-			memcpy(&offset, cmd->extra_args[0].data + (size_t)cmd->uint_args[0], sizeof(off_t));
-			
-			phi_result = exec_scif_vwriteto((scif_epd_t)cmd->int_args[0],
-					   (void *)cmd->extra_args[0].data, (size_t)cmd->uint_args[0], 
-					   offset, cmd->int_args[1], int_res);
-			break;
-		}
+					arg_count++;
+					int_res = malloc_safe(sizeof(int));
+					int_res_count = 1;
+
+					off_t offset;
+					memcpy(&offset, cmd->extra_args[0].data + (size_t)cmd->uint_args[0], sizeof(off_t));
+#ifdef RSCIF_DEBUG
+					 print_bytes(cmd->extra_args[0].data, (size_t)cmd->uint_args[0]);
+#endif	
+
+					phi_result = exec_scif_vwriteto((scif_epd_t)cmd->int_args[0],
+							(void *)cmd->extra_args[0].data, (size_t)cmd->uint_args[0], 
+							offset, cmd->int_args[1], int_res);
+					break;
+				}
 		case FENCE_MARK: {
-			rdprintf("Executing scif_fence_mark() ... \n");
-			//TODO: scif_fence_mark call goes here...
-			arg_count++;
+					 rdprintf("Executing scif_fence_mark() ... \n");
+					 //TODO: scif_fence_mark call goes here...
+					 arg_count++;
 
-			int_res = malloc_safe(sizeof(int) * 2);
-			int_res_count = 2;
-	
-			phi_result = exec_scif_fence_mark((scif_epd_t)cmd->int_args[0],
-						   cmd->int_args[1], &int_res[0], &int_res[1]);
-			break;
-		}
+					 int_res = malloc_safe(sizeof(int) * 2);
+					 int_res_count = 2;
+
+					 phi_result = exec_scif_fence_mark((scif_epd_t)cmd->int_args[0],
+							 cmd->int_args[1], &int_res[0], &int_res[1]);
+					 break;
+				 }
 		case FENCE_WAIT: {
-			rdprintf("Executing scif_fence_wait() ... \n");
-			//TODO: scif_fence_wait call goes here...
-				
-			arg_count++;
+					 rdprintf("Executing scif_fence_wait() ... \n");
+					 //TODO: scif_fence_wait call goes here...
 
-			int_res = malloc_safe(sizeof(int) * 1);
-			int_res_count = 1;
-	
-			phi_result = exec_scif_fence_wait((scif_epd_t)cmd->int_args[0],
-					   cmd->int_args[1], int_res);
-			break;
-		}
+					 arg_count++;
+
+					 int_res = malloc_safe(sizeof(int) * 1);
+					 int_res_count = 1;
+
+					 phi_result = exec_scif_fence_wait((scif_epd_t)cmd->int_args[0],
+							 cmd->int_args[1], int_res);
+					 break;
+				 }
 		case FENCE_SIGNAL: {
-			rdprintf("Executing scif_fence_signal) ... \n");
-			//TODO: scif_fence_signal call goes here...
-			arg_count++;
+					   rdprintf("Executing scif_fence_signal) ... \n");
+					   //TODO: scif_fence_signal call goes here...
+					   arg_count++;
 
-			int_res = malloc_safe(sizeof(int) * 1);
-			int_res_count = 1;
-			
-			off_t loff, roff;
-			memcpy(&loff, cmd->extra_args[0].data, sizeof(off_t));
-			memcpy(&roff, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
+					   int_res = malloc_safe(sizeof(int) * 1);
+					   int_res_count = 1;
 
-			phi_result = exec_scif_fence_signal((scif_epd_t)cmd->int_args[0],
-					loff, cmd->u64int_args[0],
-					roff, cmd->u64int_args[1],
-				   	cmd->int_args[1], int_res);
-			break;
-		}
+					   off_t loff, roff;
+					   memcpy(&loff, cmd->extra_args[0].data, sizeof(off_t));
+					   memcpy(&roff, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
+
+					   phi_result = exec_scif_fence_signal((scif_epd_t)cmd->int_args[0],
+							   loff, cmd->u64int_args[0],
+							   roff, cmd->u64int_args[1],
+							   cmd->int_args[1], int_res);
+					   break;
+				   }
 		case GET_NODE_IDS: {
-			rdprintf("Executing scif_get_node_ids) ... \n");
-			//TODO: scif_get_node_ids call goes here...
-			arg_count += 2 ;
+					   rdprintf("Executing scif_get_node_ids) ... \n");
+					   //TODO: scif_get_node_ids call goes here...
+					   arg_count += 2 ;
 
-			int len = cmd->int_args[0];
-			uint16_t *nodes, *self;
+					   int len = cmd->int_args[0];
+					   uint16_t *nodes, *self;
 
-			nodes = malloc_safe(sizeof(uint16_t) * len);
-			self = malloc_safe(sizeof(uint16_t));
+					   nodes = malloc_safe(sizeof(uint16_t) * len);
+					   self = malloc_safe(sizeof(uint16_t));
 
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
+					   int_res = malloc_safe(sizeof(int));
+					   int_res_count = 1;
 
-			phi_result = exec_scif_get_nodeIDs(nodes, len, self, int_res);
+					   phi_result = exec_scif_get_nodeIDs(nodes, len, self, int_res);
 
-			extra_args_size = sizeof(uint16_t)*((*int_res)+1);
-			extra_args = malloc_safe(extra_args_size);
+					   extra_args_size = sizeof(uint16_t)*((*int_res)+1);
+					   extra_args = malloc_safe(extra_args_size);
 
-			memcpy(extra_args, nodes, sizeof(uint16_t)*(*int_res));
-			memcpy(extra_args+sizeof(uint16_t)*(*int_res), self, sizeof(uint16_t));
+					   memcpy(extra_args, nodes, sizeof(uint16_t)*(*int_res));
+					   memcpy(extra_args+sizeof(uint16_t)*(*int_res), self, sizeof(uint16_t));
 
-			break;
-		}
+					   break;
+				   }
 		case POLL:{
-			
-			rdprintf("Executing scif_poll() ... \n");
-			//TODO: scif_poll call goes here...
 
-			arg_count += 2;
+				  rdprintf("Executing scif_poll() ... \n");
+				  //TODO: scif_poll call goes here...
 
-			int_res = malloc_safe(sizeof(int));
-			int_res_count = 1;
-		
-			struct scif_pollepd *epds = (struct scif_pollepd *)cmd->extra_args[0].data;
+				  arg_count += 2;
 
-			phi_result = exec_scif_poll( epds,
-					   cmd->uint_args[0], (long)cmd->uint_args[1],
-					   int_res);
+				  int_res = malloc_safe(sizeof(int));
+				  int_res_count = 1;
 
-			extra_args_size = sizeof(struct scif_pollepd) * cmd->uint_args[0];
-			extra_args = malloc_safe(extra_args_size);
-			memcpy(extra_args, epds, extra_args_size);
-	
-			break;
-		}
+				  struct scif_pollepd *epds = (struct scif_pollepd *)cmd->extra_args[0].data;
+
+				  phi_result = exec_scif_poll( epds,
+						  cmd->uint_args[0], (long)cmd->uint_args[1],
+						  int_res);
+
+				  extra_args_size = sizeof(struct scif_pollepd) * cmd->uint_args[0];
+				  extra_args = malloc_safe(extra_args_size);
+				  memcpy(extra_args, epds, extra_args_size);
+
+				  break;
+			  }
 		case LIB_INIT:
-			   rdprintf("Executing scif_lib_init() ... \n");
-			   //TODO: scif_lib_init call goes here...
-			   break;	
+			  rdprintf("Executing scif_lib_init() ... \n");
+			  //TODO: scif_lib_init call goes here...
+			  break;	
 	}
 
 	if(phi_result != PHI_SUCCESS)

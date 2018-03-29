@@ -142,7 +142,7 @@ void *malloc_safe_f(size_t size, const char *file, const int line);
 #define rcdprintf  
 #endif
 
-#ifdef MEMDEBUG
+#ifdef DEEP_DEBUG
 #define ddprintf printf
 #else 
 #define ddprintf
