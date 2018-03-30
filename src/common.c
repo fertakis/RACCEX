@@ -26,6 +26,7 @@
 
 char *server_ip;
 char *server_port;
+FILE *out_fd;
 
 void initialise_addr_map_list() {
 	maps.num_maps = 0;
@@ -240,11 +241,11 @@ void print_bytes(const void *object, size_t size)
 	  const unsigned char * const bytes = (const unsigned char *)object;
 	  size_t i;
 	  
-	  printf("[ ");
+	  fprintf(out_fd, "[ ");
 	  for(i = 0; i < size; i++)
 	  {
-	  	printf("%02x ", bytes[i]);
+	  	fprintf(out_fd, "%02x ", bytes[i]);
 	  }
-	  printf("]\n");
+	  fprintf(out_fd, "]\n");
 }
 

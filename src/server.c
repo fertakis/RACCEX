@@ -32,7 +32,7 @@ int init_server_net(const char *port, struct sockaddr_in *sa)
 {
 	int socket_fd;
 
-	rdprintf("Initialising server...\n");
+	ddprintf("Initialising server...\n");
 	/* Create TCP/IP socket, used as main chat channel */
 	if ((socket_fd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
@@ -139,11 +139,17 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (argc == 1) {
-		rdprintf("No port defined, trying env vars\n");
+		ddprintf("No port defined, trying env vars\n");
 		get_server_connection_config(&server, &server_port);
 		local_port = server_port;
 	} else {
 		local_port = argv[1];
+	}
+
+	out_fd = fopen("rphi_server.out", "w+");
+	if(out_fd == NULL) { 
+		perror("fopen");
+		exit(1);
 	}
 
 	initialise_addr_map_list(&maps);
