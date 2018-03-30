@@ -557,12 +557,12 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 						void *copy_from = mp->server_addr + (loffset - mp->offset);				
 
 						memcpy(extra_args, copy_from, extra_args_size);
-						if(extra_args_size <= 2100) {
+						//if(extra_args_size <= 2100) {
 #ifdef RSCIF_DEBUG
-							print_bytes(extra_args, extra_args_size);
+							//print_bytes(extra_args, extra_args_size);
 #endif	       
-							;
-						}
+						//	;
+						//}
 					}
 
 					break;
@@ -588,12 +588,12 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				       if(mp == NULL) {
 					       printf("scif_writeto: error while trying to obtain mapped srvr_addr\n");
 				       }
-				       if(len <= 2100) { 
+				       //if(len <= 2100) { 
 #ifdef RSCIF_DEBUG
-					       print_bytes(cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
+					       //print_bytes(cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
 #endif			
-						;
-					}
+			//			;
+			//		}
 				       void *copy_to = mp->server_addr + (loffset - mp->offset);
 
 				       //copy to server registered address space len bytes for dma
@@ -619,12 +619,12 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					 phi_result = exec_scif_vreadfrom((scif_epd_t)cmd->int_args[0],
 							 extra_args, len, *(off_t *)cmd->extra_args[0].data, 
 							 cmd->int_args[1], int_res);
-					if(extra_args_size <= 2100) {
+			//		if(extra_args_size <= 2100) {
 #ifdef RSCIF_DEBUG
-						 print_bytes(extra_args, extra_args_size);
+						 //print_bytes(extra_args, extra_args_size);
 #endif	
-						;
-					}
+			//			;
+			//		}
 					 break;
 				 }
 		case VWRITE_TO: {
@@ -637,12 +637,12 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 					off_t offset;
 					memcpy(&offset, cmd->extra_args[0].data + (size_t)cmd->uint_args[0], sizeof(off_t));
-					if( (size_t)cmd->uint_args[0] <= 2100) {
+			//		if( (size_t)cmd->uint_args[0] <= 2100) {
 #ifdef RSCIF_DEBUG
-						 print_bytes(cmd->extra_args[0].data, (size_t)cmd->uint_args[0]);
+						 //print_bytes(cmd->extra_args[0].data, (size_t)cmd->uint_args[0]);
 #endif					
-						;
-					}
+			//			;
+			//		}
 
 					phi_result = exec_scif_vwriteto((scif_epd_t)cmd->int_args[0],
 							(void *)cmd->extra_args[0].data, (size_t)cmd->uint_args[0], 
