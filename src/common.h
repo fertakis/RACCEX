@@ -14,7 +14,7 @@
 #define TCP_BACKLOG 5
 
 extern struct addr_map_list maps; 
-
+extern FILE *out_fd;
 typedef enum var_type_enum {
     INT,
     UINT,
@@ -131,7 +131,7 @@ void *malloc_safe_f(size_t size, const char *file, const int line);
 #define malloc_safe(size) malloc_safe_f(size, __FILE__, __LINE__)
 
 #ifdef RSCIF_DEBUG
-#define rdprintf printf
+#define rdprintf fprintf
 #else
 #define rdprintf  
 #endif
