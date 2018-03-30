@@ -638,12 +638,12 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 		ret = (int)result->int_args[0];
 		void *addr_to_write = mp->client_addr + (loffset - mp->offset);
 		memcpy(addr_to_write, result->extra_args[0].data, len);
-	//	if(len <= 2500) {
+		if(len <= 10000) {
 #ifdef RSCIF_DEBUG
-			print_bytes(addr_to_write, len);
+			print_ints(addr_to_write, len);
 #endif
-	//		;
-	//	}
+			;
+		}
 
 	}	
 	else {
@@ -705,12 +705,12 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	void *addr_to_copy_from = mp->client_addr + (loffset - mp->offset);
 	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), addr_to_copy_from, len); 
-	//	if(len <= 2500) {
+		if(len <= 10000) {
 #ifdef RSCIF_DEBUG
-			print_bytes(addr_to_copy_from, len);
+			print_ints(addr_to_copy_from, len);
 #endif
-	//		;
-	//	}
+			;
+		}
 
 	printf("data was succesfully wrapped\n");
 	
@@ -779,12 +779,12 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	if(res_code == SCIF_SUCCESS){
 		ret = (int)result->int_args[0];
 		memcpy(addr, result->extra_args[0].data, result->extra_args[0].len);
-	//	if(len <= 2500) {
+		if(len <= 2500) {
 #ifdef RSCIF_DEBUG
 			print_bytes(addr, len);
 #endif
-	//		;
-	//	}
+			;
+		}
 
 //#ifdef MEMDEBUG
 //	print_bytes(addr, len);
@@ -841,12 +841,12 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 //#ifdef MEMDEBUG
 //	print_bytes(addr, len);
 //#endif
-	//if(len <= 2500) {
+	if(len <= 2500) {
 #ifdef RSCIF_DEBUG
 			print_bytes(addr, len);
 #endif
-	//		;
-	//}
+			;
+	}
 
  	if(send_phi_cmd(uow->sockfd, args, 3, VWRITE_TO) < 0)
 	{

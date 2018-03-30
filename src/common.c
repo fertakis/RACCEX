@@ -250,3 +250,15 @@ void print_bytes(const void *object, size_t size)
 	  fprintf(out_fd, "]\n");
 }
 
+void print_ints(const void *object, size_t size)
+{
+	  const int *buff = (int *)object;
+	  int i, len = size/sizeof(int);
+	  
+	  fprintf(out_fd, "[ ");
+	  for(i = 0; i < len; i++) {
+	  	fprintf(out_fd, "%d", buff[i]);
+	  	//fprintf(out_fd, "%d ", bytes[i]);
+	  }
+	  fprintf(out_fd, "]\n");
+}

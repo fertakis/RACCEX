@@ -559,7 +559,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 						memcpy(extra_args, copy_from, extra_args_size);
 						if(extra_args_size <= 10000) {
 #ifdef RSCIF_DEBUG
-							print_bytes(extra_args, extra_args_size);
+							print_ints(extra_args, extra_args_size);
 #endif	       
 							;
 						}
@@ -590,7 +590,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				       }
 				       if(len <= 10000) { 
 #ifdef RSCIF_DEBUG
-					       print_bytes(cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
+					       print_ints(cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
 #endif			
 						;
 					}
