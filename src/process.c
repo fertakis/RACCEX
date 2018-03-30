@@ -557,7 +557,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 						void *copy_from = mp->server_addr + (loffset - mp->offset);				
 
 						memcpy(extra_args, copy_from, extra_args_size);
-						if(extra_args_size <= 4000) {
+						if(extra_args_size <= 10000) {
 #ifdef RSCIF_DEBUG
 							print_bytes(extra_args, extra_args_size);
 #endif	       
@@ -588,7 +588,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				       if(mp == NULL) {
 					       printf("scif_writeto: error while trying to obtain mapped srvr_addr\n");
 				       }
-				       if(len <= 4000) { 
+				       if(len <= 10000) { 
 #ifdef RSCIF_DEBUG
 					       print_bytes(cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
 #endif			

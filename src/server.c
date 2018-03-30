@@ -122,6 +122,7 @@ void *serve_client(void *arg)
 
 	}
 	close(client->sockfd);
+	fflush(out_fd);
 	free(client);
 	return NULL;
 }

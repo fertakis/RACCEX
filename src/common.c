@@ -245,6 +245,7 @@ void print_bytes(const void *object, size_t size)
 	  for(i = 0; i < size; i++)
 	  {
 	  	fprintf(out_fd, "%02x ", bytes[i]);
+	  	//fprintf(out_fd, "%d ", bytes[i]);
 	  }
 	  fprintf(out_fd, "]\n");
 }
