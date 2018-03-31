@@ -16,7 +16,7 @@
 #include <linux/errno.h>
 #include <stdint.h>
 #include <errno.h>
-
+#include <pthread.h>
 #include "scif.h"
 #include "scif_ioctl.h"
 #include "common.h"
@@ -26,7 +26,6 @@
 
 //unitofwork uow = { .socket_fd = -1, .endp = -1, .ref_count = 0};
 struct thread_mng_list threads;
-struct addr_map_list maps;
 static uint8_t scif_version_mismatch;
 
 	static	int
@@ -653,7 +652,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 
 	free_deserialised_message(des_msg);
 
-	printf("scif_readfrom ret= %d\n",ret);
+	ddprintf("scif_readfrom ret= %d\n",ret);
 end:
 	return ret;
 }
@@ -712,7 +711,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 			;
 		}
 
-	printf("data was succesfully wrapped\n");
+	ddprintf("data was succesfully wrapped\n");
 	
 	if(send_phi_cmd(uow->sockfd, args, 3, WRITE_TO) < 0)
 	{
@@ -730,7 +729,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	free_deserialised_message(des_msg);
 
-	printf("scif_writeto ret= %d\n",ret);
+	ddprintf("scif_writeto ret= %d\n",ret);
 end:
 	return ret;
 }
@@ -1135,9 +1134,12 @@ __attribute__ ((constructor)) static void scif_lib_init(void)
 	  scif_version_mismatch = 1;*/
 	initialise_thr_mng_list(&threads);
 	initialise_addr_map_list();
+	
+#ifdef RSCIF_DEBUG
 	out_fd = fopen("rphi_client.out", "w+");
 	if(out_fd == NULL) {
 		perror("fopen");
 		exit(1);
 	}
+#endif
 }

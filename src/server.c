@@ -26,8 +26,6 @@
 #include "process.h"
 #include "common.pb-c.h"
 
-struct addr_map_list maps;
-
 int init_server_net(const char *port, struct sockaddr_in *sa) 
 {
 	int socket_fd;

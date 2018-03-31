@@ -280,12 +280,11 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google \
-	-L/home/fertakis/repos/remotePhiExec/src/ $(DEBUG_CFLAGS) \
-	-I@builddir@
+	-L/home/fertakis/repos/remotePhiExec/src/ -I@builddir@
 BUILT_SOURCES = @srcdir@/common.pb-c.c @srcdir@/common.pb-c.h
 server_SOURCES = server.c process.c process.h common.h common.c \
 	protocol.c protocol.h common.pb-c.c common.pc-c.h
-libscifapiwrapper_so_CFLAGS = -fPIC -shared $(DEBUG_CFLAGS)
+libscifapiwrapper_so_CFLAGS = -fPIC -shared -DRSCIF_DEBUG #-DMEMDEBUG $(DEBUG_CFLAGS)
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h \
 	common.h common.c protocol.c protocol.h client.c client.h \
 	common.pb-c.c common.pb-c.h

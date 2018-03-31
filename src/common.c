@@ -28,6 +28,9 @@ char *server_ip;
 char *server_port;
 FILE *out_fd;
 
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+struct addr_map_list maps;
+
 void initialise_addr_map_list() {
 	maps.num_maps = 0;
 	maps.head = NULL;
@@ -37,6 +40,8 @@ addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr,
 				size_t len, off_t offt) 
 {
 	addr_map *ret = NULL;
+	
+	pthread_mutex_lock(&lock);
 
 	if(maps.head == NULL) {
 		//first mapping
@@ -81,14 +86,22 @@ addr_map * identify_map( pid_t pid, void *clnt_addr, void *srv_addr,
 			}
 		}
 	}
+
+	pthread_mutex_unlock(&lock);
+
 	return ret; 
 }
 
 addr_map * get_map(pid_t pid, off_t lofft) 
 {
 	addr_map *ret = NULL;
+	
+
+	pthread_mutex_lock(&lock);
 
 	if(maps.head == NULL) {
+
+		pthread_mutex_unlock(&lock);
 		return ret;	
 	}
 	else {
@@ -112,6 +125,9 @@ addr_map * get_map(pid_t pid, off_t lofft)
 				ret = it;
 			}
 	}
+
+
+	pthread_mutex_unlock(&lock);
 	return ret; 
 }
 
@@ -120,6 +136,9 @@ int remove_mapping(pid_t pid, off_t offset) {
 
 	addr_map *curr, *prev;
 
+
+	pthread_mutex_lock(&lock);
+	
 	curr = maps.head;
 	prev = maps.head;
 
@@ -144,6 +163,9 @@ int remove_mapping(pid_t pid, off_t offset) {
 			curr = curr->next;
 		}
 	}
+
+
+	pthread_mutex_unlock(&lock);
 	return ret; 
 }
 

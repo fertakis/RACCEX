@@ -13,7 +13,7 @@
 #define TCP_PORT    35001
 #define TCP_BACKLOG 5
 
-extern struct addr_map_list maps; 
+extern struct addr_map_list maps;
 extern FILE *out_fd;
 typedef enum var_type_enum {
     INT,
