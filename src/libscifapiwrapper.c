@@ -571,7 +571,7 @@ scif_mmap(void *addr, size_t len, int prot, int flags, scif_epd_t epd, off_t off
 {
 	//TODO: To be implemented;
 	printf("scif_mmap() was called\n");
-	return -1;
+	return NULL;
 }
 
 	int
@@ -876,7 +876,7 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	rdprintf(out_fd, "executing scif_fence_mark()..., epd=%d, flags=%d\n");
+	rdprintf(out_fd, "executing scif_fence_mark()..., epd=%d, flags=%d\n", epd, flags);
 	
 	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
@@ -1070,7 +1070,7 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	  uow->sockfd = -1;
 	  }*/
 	
-	rdprintf("scif_get_nodeIDS ret=%d\n",ret);
+	rdprintf(out_fd, "scif_get_nodeIDS ret=%d\n",ret);
 
 	return ret;
 }
