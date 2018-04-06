@@ -1,4 +1,4 @@
-bin_PROGRAMS = server libscifapiwrapper.so  test_client hello_world 
+bin_PROGRAMS = server libscifapiwrapper.so  #test_client hello_world 
 
 AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google -L/home/fertakis/repos/remotePhiExec/src/ #-DRSCIF_DEBUG -DRSCIF_COMM_DEBUG
 
@@ -14,11 +14,11 @@ libscifapiwrapper_so_SOURCES += common.c protocol.c protocol.h client.c client.h
 #test_server_SOURCES = test_server.c common.c common.h common.pb-c.c common.pb-c.h client.c client.h
 #test_server_SOURCES += protocol.c protocol.h
 
-test_client_SOURCES = test_client.c
-test_client_LDADD = -lscif
+#test_client_SOURCES = test_client.c
+#test_client_LDADD = -lscif
 
-hello_world_SOURCES = hello_world.c
-hello_world_CFLAGS = -fopenmp
+#hello_world_SOURCES = hello_world.c
+#hello_world_CFLAGS = -fopenmp
 
 common.pb-c.c: @srcdir@/common.proto
 	 $(PROTOC_C) --proto_path=@srcdir@ --c_out=. @srcdir@/common.proto
