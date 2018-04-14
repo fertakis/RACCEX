@@ -125,7 +125,7 @@ int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)
 	send_message(socket_fd, buf, len);
 
 	free(buf);
-
+	free(payload);
 	return 0;
 }
 
@@ -160,4 +160,10 @@ int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)
 	if(buf != NULL)
 		free(buf);
 	return res_code;
+}
+
+void free_arg_data(var **args, int len) {
+	for(int i=0; i < len ; i++) {
+		free(args[i]->data);
+	}
 }

@@ -22,4 +22,5 @@ int send_phi_cmd(int socket_fd, var **args, size_t arg_cnt, int cmd_type);
 
 int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd);
 
+void free_arg_data(var **args, int len);
 #endif /* CLIENT_H */

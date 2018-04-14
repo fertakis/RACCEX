@@ -82,6 +82,7 @@ size_t serialise_message(void **result, int msg_type, void *payload) {
 
 	*result = buffer;
 	ddprintf("serialisation completed\n");
+	free(msg_buffer);
 	return buf_size;
 }
 

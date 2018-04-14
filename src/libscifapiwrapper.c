@@ -230,6 +230,9 @@ scif_listen(scif_epd_t epd, int backlog)
 		exit(EXIT_FAILURE);	
 	}	
 
+	//free arg allocated memory
+	free(data);
+
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 
 	if(res_code != PHI_SUCCESS) {
@@ -238,7 +241,7 @@ scif_listen(scif_epd_t epd, int backlog)
 	}
 
 	free_deserialised_message(des_msg);
-
+	
 	//rdprintf(out_fd, "scif_listen ret = %d\n", ret);
 
 	return ret;
@@ -248,7 +251,8 @@ scif_listen(scif_epd_t epd, int backlog)
 scif_connect(scif_epd_t epd, struct scif_portID *dst)
 {
 	int res_code, ret =-1;
-	var arg_int = { .elements = 1}, arg_bytes = { .elements = 1}, *args[] = { &arg_int, &arg_bytes};
+	var arg_int = { .elements = 1}, arg_bytes = { .elements = 1}, 
+	    *args[] = { &arg_int, &arg_bytes};
 	PhiCmd *result; 
 	void *des_msg = NULL;
 	thr_mng *uow;
@@ -295,7 +299,8 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int flags)
 {
 	int res_code, ret = -1 ;
-	var arg_int = { .elements =2 }, arg_bytes = { .elements = 1}, *args[]= { &arg_int, &arg_bytes};
+	var arg_int = { .elements =2 }, arg_bytes = { .elements = 1}, 
+	    *args[]= { &arg_int, &arg_bytes};
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
@@ -325,6 +330,9 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 		exit(EXIT_FAILURE);	
 	}	
 
+	//free arg allocated memory
+	free(data);
+
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(newepd, &result->int_args[0], sizeof(scif_epd_t));
@@ -346,7 +354,8 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 scif_send(scif_epd_t epd, void *msg, int len, int flags)
 {
 	int res_code, ret = -1; 
-	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 1}, *args[] = { &arg_int, &arg_bytes}; 
+	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 1}, 
+	    *args[] = { &arg_int, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
@@ -377,6 +386,8 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
+
+	free(data);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
@@ -424,6 +435,8 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
+
+	free(data);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
@@ -490,6 +503,9 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 		exit(EXIT_FAILURE);
 	}
 
+	free(data);
+	free(arg_bytes.data);
+
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(&ret, result->extra_args[0].data, sizeof(off_t));
@@ -550,6 +566,9 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
+
+	free(data);
+	free(arg_bytes.data);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
@@ -638,6 +657,9 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
+	
+	free(data);
+	free(arg_bytes.data);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
@@ -728,6 +750,9 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 		exit(EXIT_FAILURE);
 	}
 
+	free(data);
+	free(arg_bytes.data);
+
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)	
 		ret = (int)result->int_args[0];
@@ -784,6 +809,8 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
+
+	free(data);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
@@ -864,6 +891,9 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 		exit(EXIT_FAILURE);
 	}
 
+	free(data);
+	free(arg_bytes.data);
+
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)	
 		ret = (int)result->int_args[0];
@@ -909,6 +939,8 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 		exit(EXIT_FAILURE);
 	}
 
+	free(data);
+	
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		memcpy(mark, &result->int_args[0], sizeof(int));	
@@ -954,6 +986,8 @@ scif_fence_wait(scif_epd_t epd, int mark)
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
+
+	free(data);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
@@ -1016,6 +1050,10 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
+
+	free(data);
+	free(u64ints);
+	free(arg_bytes.data);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
@@ -1121,6 +1159,8 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
+
+	free(uints);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
