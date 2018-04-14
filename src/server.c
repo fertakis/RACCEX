@@ -110,6 +110,16 @@ void *serve_client(void *arg)
 				// should be more freeing here...
 				free(result);
 				result = NULL;
+
+				PhiCmd *cmd = payload;
+				if(cmd->int_args != NULL)
+					free(cmd->int_args);
+				if(cmd->uint_args != NULL)
+					free(cmd->uint_args);
+				if(cmd->u64int_args != NULL)
+					free(cmd->u64int_args);
+				if(cmd->extra_args != NULL)
+					free(cmd->extra_args[0].data);
 			}
 		}
 		ddprintf(">>\nMessage processed, cleaning up...\n<<\n");
@@ -131,7 +141,7 @@ int main(int argc, char *argv[]) {
 	char *server, *server_port, *local_port, addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
 	thr_mng *client;
-		
+
 	if (argc > 2) {
 		printf("Usage: server <local_port>\n");
 		exit(EXIT_FAILURE);
@@ -171,7 +181,7 @@ int main(int argc, char *argv[]) {
 		}
 		fprintf(stderr, "Incoming connection from %s:%d\n",
 				addrstr, ntohs(sa.sin_port));	
-		
+
 		/*Allocate memory for thread management struct */
 		client = malloc_safe(sizeof(thr_mng));	
 		if(client == NULL) { 
@@ -187,7 +197,7 @@ int main(int argc, char *argv[]) {
 			close(client_sfd);
 			continue;
 		}
-		
+
 	}
 
 	//should never be here
