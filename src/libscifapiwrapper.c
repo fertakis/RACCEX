@@ -75,8 +75,6 @@ scif_open(void)
 	PhiCmd *result;
 	void *des_msg = NULL;
 	thr_mng *uow;
-
-	//rdprintf(out_fd, "scif_open... by thread=%d\n", pthread_self());
 	
 	uow = identify_thread(&threads);
 
@@ -101,7 +99,6 @@ scif_open(void)
 	}
 
 	free_deserialised_message(des_msg);
-	//rdprintf(out_fd, "scif_open returned end = %d\n", fd);
 	return fd;
 }
 
@@ -114,9 +111,6 @@ scif_close(scif_epd_t epd)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	//rdprintf(out_fd,"scif_close(epd=%d)\n",epd);
-	ddprintf("by thread %d\n", pthread_self());
-	
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -147,7 +141,6 @@ scif_close(scif_epd_t epd)
 		uow->sockfd = -1;
 	}*/
 
-	//rdprintf(out_fd, "scif_close ret=%d\n", ret);
 	return ret;
 }
 
@@ -161,9 +154,6 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	//rdprintf(out_fd, "scif_bind(epd=%d, pn %d)\n", epd, pn);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -194,8 +184,6 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 	}
 
 	free_deserialised_message(des_msg);
-	
-	//rdprintf(out_fd,"scif_bind ret=%d\n", ret);
 
 	return ret;
 }
@@ -209,9 +197,6 @@ scif_listen(scif_epd_t epd, int backlog)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	//rdprintf(out_fd, "scif_listen(epd=%d, backlog= %d)\n", epd, backlog);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -242,8 +227,6 @@ scif_listen(scif_epd_t epd, int backlog)
 
 	free_deserialised_message(des_msg);
 	
-	//rdprintf(out_fd, "scif_listen ret = %d\n", ret);
-
 	return ret;
 }
 
@@ -257,9 +240,6 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	//rdprintf(out_fd, "executing scif_connect(epd=%d,dst->node=%d, dst->port=%d\n",epd, dst->node, dst->port);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -290,9 +270,7 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 
 	free_deserialised_message(des_msg);
 
-	//rdprintf(out_fd, "scif_connect ret =%d\n", ret);
 	return ret;
-
 }
 
 	int
@@ -305,9 +283,6 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	//rdprintf(out_fd, "scif_accept(epd=%d...\n", epd);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -345,8 +320,6 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 
 	free_deserialised_message(des_msg);
 	
-	//rdprintf(out_fd, "scif_accept ret=%d and newepd=%d\n", ret, *newepd);
-
 	return ret;
 }
 
@@ -360,10 +333,6 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	//rdprintf(out_fd, "executing scif_send(endp=%d, len=%d, flags=%d\n", epd, len, flags);	
-	//print_bytes(msg, len);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 	
 	if(uow->sockfd < 0)
@@ -400,8 +369,6 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 
 	free_deserialised_message(des_msg);
 	
-	//rdprintf(out_fd, "scif_send ret =%d\n",ret);
-
 	return ret; 
 }
 
@@ -414,9 +381,6 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
-	//rdprintf(out_fd, "executing scif_recv() epd=%d, len=%d, flags=%d\n", epd, len, flags);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -450,9 +414,6 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 
 	free_deserialised_message(des_msg);
 	
-	//print_bytes(msg, len);
-	//rdprintf(out_fd, "scif_recv ret =%d\n", ret);
-
 	return ret;
 }
 
@@ -470,9 +431,6 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	thr_mng *uow;
 	pid_t pid = getpid();
 	
-	rdprintf(out_fd, "executing scif_register with epd %d, addr %p, len %d, offset %d, prot %d, flags %d\n", epd, addr, len, offset, prot, flags);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -520,8 +478,6 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 
 	free_deserialised_message(des_msg);
 
-	rdprintf(out_fd, "scif_register ret = %d\n", ret);
-
 	return ret;
 }
 
@@ -537,9 +493,6 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	thr_mng *uow;
 	pid_t pid = getpid();
 
-	rdprintf(out_fd, "executing scif_unregister() epd=%d, offset=%d, len =%d\n", epd, offset, len);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -582,8 +535,6 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	}
 
 	free_deserialised_message(des_msg);
-	
-	rdprintf(out_fd, "scif_unregister ret =%d\n", ret);
 
 	return ret;
 }
@@ -618,14 +569,11 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	addr_map *mp = get_map(pid, loffset);
 	
 	if(mp == NULL) {
-		fprintf(out_fd, "scif_writeto: error while acquiring map\n. Exiting.\n");
+		printf("scif_writeto: error while acquiring map\n. Exiting.\n");
 		ret = -1;
 		goto end;
 	}	
 
-	rdprintf(out_fd, "executing scif_readfrom()... epd = %d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -666,13 +614,6 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 		ret = (int)result->int_args[0];
 		void *addr_to_write = mp->client_addr + (loffset - mp->offset);
 		memcpy(addr_to_write, result->extra_args[0].data, len);
-		if(len <= 10000) {
-#ifdef RSCIF_DEBUG
-			print_bytes(addr_to_write, len);
-#endif
-			;
-		}
-
 	}	
 	else {
 		ret = -1;
@@ -681,7 +622,6 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 
 	free_deserialised_message(des_msg);
 
-	rdprintf(out_fd, "scif_readfrom ret= %d\n",ret);
 end:
 	return ret;
 }
@@ -699,15 +639,11 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	addr_map *mp = get_map(pid, loffset);
 
 	if(mp == NULL) {
-		fprintf(out_fd, "scif_writeto: error while acquiring map\n. Exiting.\n");
+		printf("scif_writeto: error while acquiring map\n. Exiting.\n");
 		ret = -1;
 		goto end;
 	}
 
-	rdprintf(out_fd, "executing scif_writeto()... epd=%d, loffset=%d, len =%d, roffset=%d, flags=%d\n", epd, loffset, len, roffset, flags);
-	ddprintf("addr to read data = %p \n", mp->client_addr);
-	
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -735,14 +671,6 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	void *addr_to_copy_from = mp->client_addr + (loffset - mp->offset);
 	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), addr_to_copy_from, len); 
-		if(len <= 10000) {
-#ifdef RSCIF_DEBUG
-			print_bytes(addr_to_copy_from, len);
-#endif
-			;
-		}
-
-	ddprintf("data was succesfully wrapped\n");
 	
 	if(send_phi_cmd(uow->sockfd, args, 3, WRITE_TO) < 0)
 	{
@@ -763,7 +691,6 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	free_deserialised_message(des_msg);
 
-	rdprintf(out_fd, "scif_writeto ret= %d\n",ret);
 end:
 	return ret;
 }
@@ -779,9 +706,6 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
-	rdprintf(out_fd, "executing scif_vreadfrom()... epd=%d, len=%d, offset=%d, flags=%d\n");
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -816,16 +740,6 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	if(res_code == SCIF_SUCCESS){
 		ret = (int)result->int_args[0];
 		memcpy(addr, result->extra_args[0].data, result->extra_args[0].len);
-		if(len <= 2500) {
-#ifdef RSCIF_DEBUG
-			print_bytes(addr, len);
-#endif
-			;
-		}
-
-//#ifdef MEMDEBUG
-//	print_bytes(addr, len);
-//#endif 
 	}
 	else {
 		ret = -1;
@@ -834,8 +748,6 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 
 	free_deserialised_message(des_msg);
 	
-	rdprintf(out_fd, "scif_vreadfrom ret =%d\n", ret);
-
 	return ret;
 }
 
@@ -848,10 +760,8 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 		*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
 	PhiCmd *result = NULL;
 	void *des_msg = NULL;
-	rdprintf(out_fd, "executing scif_vwriteto()... epd=%d, len=%d, offset=%d, flags=%d\n", epd, len, offset, flags);
 	thr_mng *uow;
 	
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -875,15 +785,6 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	arg_bytes.data = malloc_safe(arg_bytes.length);
 	memcpy(arg_bytes.data, addr, len);
 	memcpy(arg_bytes.data + len, &offset, sizeof(off_t));
-//#ifdef MEMDEBUG
-//	print_bytes(addr, len);
-//#endif
-	if(len <= 2500) {
-#ifdef RSCIF_DEBUG
-			print_bytes(addr, len);
-#endif
-			;
-	}
 
  	if(send_phi_cmd(uow->sockfd, args, 3, VWRITE_TO) < 0)
 	{
@@ -904,8 +805,6 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 
 	free_deserialised_message(des_msg);
 
-	fprintf(out_fd, "scif_vwriteto ret =%d\n", ret);
-
 	return ret;
 }
 
@@ -918,9 +817,6 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	rdprintf(out_fd, "executing scif_fence_mark()..., epd=%d, flags=%d\n", epd, flags);
-	
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -945,7 +841,6 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 	if(res_code == SCIF_SUCCESS){
 		memcpy(mark, &result->int_args[0], sizeof(int));	
 		ret = (int)result->int_args[1];
-		ddprintf("scif_fence_mark mark_ret=%d\n", mark);
 	}
 	else {
 		ret = -1;
@@ -954,7 +849,6 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 
 	free_deserialised_message(des_msg);
 
-	rdprintf(out_fd, "scif_fence_mark ret =%d and mark=%d\n", ret, *mark);
 	return ret;
 }
 
@@ -967,9 +861,6 @@ scif_fence_wait(scif_epd_t epd, int mark)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	rdprintf(out_fd, "executing scif_fence_wait()... epd=%d, mark%d\n", epd, mark);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -999,9 +890,6 @@ scif_fence_wait(scif_epd_t epd, int mark)
 
 	free_deserialised_message(des_msg);
 
-	rdprintf(out_fd,"scif_fence_wait ret = %d\n", ret);
-	
-	//sleep(1);
 	return ret;
 }
 
@@ -1017,9 +905,6 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
-	rdprintf(out_fd, "executing scif_fence_signal(epd=%d, loff=%ld, lval=%d, roff=%ld, rval=%d, flags=%d)...\n", epd, loff, lval, roff, rval, flags);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -1065,8 +950,6 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 
 	free_deserialised_message(des_msg);
 
-	rdprintf(out_fd, "scif_fence_signal ret =%d\n", ret);
-
 	return ret;
 }
 
@@ -1079,9 +962,6 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	void *des_msg = NULL;
 	thr_mng *uow;
 
-	//rdprintf(out_fd, "get_scif_nodes\n");
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -1105,8 +985,6 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 		else
 			memcpy(nodes, result->extra_args[0].data, ret*sizeof(uint16_t));
 		memcpy(self, result->extra_args[0].data+sizeof(uint16_t)*ret, sizeof(uint16_t));
-
-		ddprintf("scif_get_nodeIDs() completed succesfuly with #nodes=%d and node[0]=%d and node[1]=%d \n", ret, nodes[0], nodes[1]);
 	}
 	else {
 		ret = 1;
@@ -1120,8 +998,6 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	  uow->sockfd = -1;
 	  }*/
 	
-	//rdprintf(out_fd, "scif_get_nodeIDS ret=%d\n",ret);
-
 	return ret;
 }
 
@@ -1135,9 +1011,6 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
-	//rdprintf(out_fd, "executing scif_poll( nfds=%d timeout=%ld)\n", nfds, timeout_msecs);
-
-	ddprintf("by thread %d\n", pthread_self());
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -1168,13 +1041,11 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 		memcpy(ufds, result->extra_args[0].data, sizeof(struct scif_pollepd)*nfds);
 	}
 	else {
-		ddprintf("sci_poll error\n");
 		ret = -1;
 		errno = (int)result->phi_errorno;
 	}
 
 	free_deserialised_message(des_msg);
-	//rdprintf(out_fd, "scif_poll returning ret =%d by thread=%d\n",ret, pthread_self());
 	return ret;
 }
 
@@ -1185,12 +1056,4 @@ __attribute__ ((constructor)) static void scif_lib_init(void)
 	  scif_version_mismatch = 1;*/
 	initialise_thr_mng_list(&threads);
 	initialise_addr_map_list();
-	
-#ifdef RSCIF_DEBUG
-	out_fd = fopen("rphi_client.out", "w+");
-	if(out_fd == NULL) {
-		perror("fopen");
-		exit(1);
-	}
-#endif
 }
