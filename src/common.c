@@ -272,7 +272,7 @@ void print_bytes(const void *object, size_t size)
 	  fprintf(out_fd, "]\n");
 }
 
-void print_ints(const void *object, size_t size)
+/*void print_ints(const void *object, size_t size)
 {
 	  int *buff = object;
 	  int i, len = size/sizeof(int);
@@ -283,4 +283,4 @@ void print_ints(const void *object, size_t size)
 	  	//fprintf(out_fd, "%d ", bytes[i]);
 	  }
 	  fprintf(out_fd, "]\n");
-}
+}*/

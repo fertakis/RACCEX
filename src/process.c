@@ -71,7 +71,6 @@ int exec_scif_open(scif_epd_t *endp)
 	else {
 		ret = SCIF_SUCCESS;
 		*endp = t_endp;
-		rdprintf(out_fd, "current client initialised with endp = %d\n", *endp);
 	}
 	return ret; 
 }
@@ -92,14 +91,12 @@ int exec_scif_close(scif_epd_t endp)
 int exec_scif_bind(scif_epd_t endp, uint16_t pn, int *portno)
 {
 	int ret;
-	rdprintf(out_fd, "executing scif_bind(%d, %d)\n",endp, pn);
 	if((*portno = scif_bind(endp , pn)) < 0) {
 		perror("scif_bind");
 		ret = SCIF_BIND_FAIL;
 	}
 	else 
 		ret = SCIF_SUCCESS;
-	rdprintf(out_fd, "ret=%d\n", *portno);
 	return ret; 
 }
 
@@ -118,7 +115,6 @@ int exec_scif_listen(scif_epd_t endp, int backlog)
 int exec_scif_connect(scif_epd_t endp, struct scif_portID *dst, int *portID)
 {
 	int ret;
-	rdprintf(out_fd, "scif_connect(endp = %d, remote_node=%d, remote_port=%d\n", endp, dst->node, dst->port);
 	if((*portID = scif_connect(endp, dst)) < 0) {
 		perror("scif_connect");
 		ret = SCIF_CONNECT_FAIL;
@@ -146,14 +142,12 @@ int exec_scif_send(scif_epd_t endp, void *msg, int len, int flags,
 		int *send_count)
 {
 	int ret;
-	rdprintf(out_fd, "executing scif_send(endp = %d, len =%d, flags=%d\n", endp, len, flags);
 	if((*send_count = scif_send(endp, msg, len, flags)) < 0) {
 		perror("scif_send");
 		ret = SCIF_SEND_FAIL;
 	}
 	else
 		ret = SCIF_SUCCESS;
-	rdprintf(out_fd, "sended %d bytes\n", *send_count);
 	return ret; 
 }
 
@@ -358,8 +352,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 	ddprintf("Processing PHI_CMD\n");
 	switch(cmd->type) {
 		case GET_VERSION:
-			rdprintf(out_fd, "Executing get_driver_version...\n");
-
 			arg_count++;
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
@@ -368,7 +360,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 			break;
 		case OPEN:
-			rdprintf(out_fd, "Executing scif_open() ... \n");
 			arg_count++;
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1;
@@ -377,14 +368,12 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 			break;
 		case CLOSE:
-			rdprintf(out_fd, "Executing scif_close() ... \n");
 			//TODO: scif_close call goes here...
 
 			phi_result = exec_scif_close((scif_epd_t)cmd->int_args[0]);
 
 			break;
 		case BIND:
-			rdprintf(out_fd, "Executing scif_bind() ... \n");
 			//TODO: scif_bind call goes here...
 
 			arg_count++;
@@ -396,7 +385,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 			break;
 		case LISTEN:
-			rdprintf(out_fd, "Executing scif_listen() ... \n");
 			//TODO: scif_liste call goes here...
 
 			phi_result = exec_scif_listen((scif_epd_t)cmd->int_args[0], 
@@ -404,7 +392,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 			break;
 		case CONNECT:
-			rdprintf(out_fd, "Executing scif_connect() ... \n");
 			//TODO: scif_connect call goes here...
 
 			arg_count++;
@@ -415,7 +402,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					(struct scif_portID *)cmd->extra_args[0].data, int_res);
 			break;
 		case ACCEPT:
-			rdprintf(out_fd, "Executing scif_accept() ... \n");
 			//TODO: scif_accept call goes here...
 
 			arg_count++;
@@ -428,21 +414,17 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 			break;
 		case SEND:
-			rdprintf(out_fd, "Executing scif_send() ... \n");
 			//TODO: scif_send call goes here...
 
 			arg_count++;
 			int_res = malloc_safe(sizeof(int));
 			int_res_count = 1; 
-			rdprintf(out_fd, "executing scif_send with endp=%d, len-%d, flags=%d\n", (scif_epd_t)cmd->int_args[0],
-					(int)cmd->int_args[1], (int)cmd->int_args[2]);
 			phi_result = exec_scif_send((scif_epd_t)cmd->int_args[0], 
 					(void *)cmd->extra_args[0].data, (int)cmd->int_args[1], 
 					(int)cmd->int_args[2], int_res);	
 
 			break;
 		case RECV: { 
-				   rdprintf(out_fd, "Executing scif_recv() ... \n");
 				   //TODO: scif_recv call goes here...
 
 				   arg_count += 2;
@@ -457,7 +439,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				   break;
 			   }
 		case REGISTER: {
-				       rdprintf(out_fd, "Executing scif_register() ... \n");
 				       //TODO: scif_register call goes here...
 				       arg_count++;
 
@@ -497,7 +478,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				       break;
 			       }
 		case UNREGISTER: {
-					 rdprintf(out_fd, "Executing scif_unregister() ... \n");
 					 //TODO: scif_unregister call goes here...
 					 pid_t pid;
 					 off_t offset; 
@@ -518,15 +498,12 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					 break;
 				 }
 		case MMAP:
-				 rdprintf(out_fd, "Executing scif_mmap() ... \n");
 				 //TODO: scif_mmap call goes here...
 				 break;
 		case MUNMAP:
-				 rdprintf(out_fd, "Executing scif_munmap() ... \n");
 				 //TODO: scif_munmap call goes here...
 				 break;
 		case READ_FROM: { 
-					rdprintf(out_fd, "Executing scif_read_from() ... \n");
 					//TODO: scif_read_from call goes here...
 
 					arg_count++;
@@ -557,18 +534,11 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 						void *copy_from = mp->server_addr + (loffset - mp->offset);				
 
 						memcpy(extra_args, copy_from, extra_args_size);
-						if(extra_args_size <= 10000) {
-#ifdef RSCIF_DEBUG
-							print_ints(extra_args, extra_args_size);
-#endif	       
-							;
-						}
 					}
 
 					break;
 				}
 		case WRITE_TO: {
-				       rdprintf(out_fd, "Executing scif_write_to() ... \n");
 				       //TODO: scif_write_to call goes here...
 
 				       arg_count++;
@@ -588,12 +558,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				       if(mp == NULL) {
 					       printf("scif_writeto: error while trying to obtain mapped srvr_addr\n");
 				       }
-				       if(len <= 10000) { 
-#ifdef RSCIF_DEBUG
-					       print_ints(cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
-#endif			
-						;
-					}
 				       void *copy_to = mp->server_addr + (loffset - mp->offset);
 
 				       //copy to server registered address space len bytes for dma
@@ -604,7 +568,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				       break;
 			       }
 		case VREAD_FROM: {
-					 rdprintf(out_fd, "Executing scif_vread_from() ... \n");
 					 //TODO: scif_vread_from call goes here...
 
 					 arg_count += 2;
@@ -619,16 +582,9 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					 phi_result = exec_scif_vreadfrom((scif_epd_t)cmd->int_args[0],
 							 extra_args, len, *(off_t *)cmd->extra_args[0].data, 
 							 cmd->int_args[1], int_res);
-					if(extra_args_size <= 4000) {
-#ifdef RSCIF_DEBUG
-						 print_bytes(extra_args, extra_args_size);
-#endif	
-						;
-					}
 					 break;
 				 }
 		case VWRITE_TO: {
-					rdprintf(out_fd, "Executing scif_vwrite_to) ... \n");
 					//TODO: scif_vwrite_to call goes here...
 
 					arg_count++;
@@ -637,12 +593,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 					off_t offset;
 					memcpy(&offset, cmd->extra_args[0].data + (size_t)cmd->uint_args[0], sizeof(off_t));
-					if( (size_t)cmd->uint_args[0] <= 4000) {
-#ifdef RSCIF_DEBUG
-						 print_bytes(cmd->extra_args[0].data, (size_t)cmd->uint_args[0]);
-#endif					
-						;
-					}
 
 					phi_result = exec_scif_vwriteto((scif_epd_t)cmd->int_args[0],
 							(void *)cmd->extra_args[0].data, (size_t)cmd->uint_args[0], 
@@ -650,7 +600,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					break;
 				}
 		case FENCE_MARK: {
-					 rdprintf(out_fd, "Executing scif_fence_mark() ... \n");
 					 //TODO: scif_fence_mark call goes here...
 					 arg_count++;
 
@@ -662,7 +611,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					 break;
 				 }
 		case FENCE_WAIT: {
-					 rdprintf(out_fd, "Executing scif_fence_wait() ... \n");
 					 //TODO: scif_fence_wait call goes here...
 
 					 arg_count++;
@@ -675,7 +623,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					 break;
 				 }
 		case FENCE_SIGNAL: {
-					   rdprintf(out_fd, "Executing scif_fence_signal) ... \n");
 					   //TODO: scif_fence_signal call goes here...
 					   arg_count++;
 
@@ -693,7 +640,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					   break;
 				   }
 		case GET_NODE_IDS: {
-					   rdprintf(out_fd, "Executing scif_get_node_ids) ... \n");
 					   //TODO: scif_get_node_ids call goes here...
 					   arg_count += 2 ;
 
@@ -718,7 +664,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				   }
 		case POLL:{
 
-				  rdprintf(out_fd, "Executing scif_poll() ... \n");
 				  //TODO: scif_poll call goes here...
 
 				  arg_count += 2;
@@ -739,18 +684,15 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				  break;
 			  }
 		case LIB_INIT:
-			  rdprintf(out_fd, "Executing scif_lib_init() ... \n");
 			  //TODO: scif_lib_init call goes here...
 			  break;	
 	}
 
 	if(phi_result != PHI_SUCCESS)
 	{
-		rdprintf(out_fd, "phi_result not success\n");
 		errorno = malloc_safe(sizeof(int));
 		*errorno = errno;
 		arg_count++;
-		rdprintf(out_fd, "errorno was set!\nerrno=%d\n and errorno=%d", errno, *errorno);			
 	}
 
 	res = malloc_safe(sizeof(var *) * arg_count);
@@ -817,7 +759,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 		//error number
 		if(errorno != NULL)
 		{
-			rdprintf(out_fd,"wrapping the error, it =%d and arg_cnt=%d\n", it, arg_count);
 			res[it] = malloc_safe(sizeof(var));
 			res[it]->type = ERRORNO;
 			res[it]-> elements = 1;

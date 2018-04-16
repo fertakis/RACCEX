@@ -130,7 +130,6 @@ void *serve_client(void *arg)
 
 	}
 	close(client->sockfd);
-	fflush(out_fd);
 	free(client);
 	return NULL;
 }
@@ -153,12 +152,6 @@ int main(int argc, char *argv[]) {
 		local_port = server_port;
 	} else {
 		local_port = argv[1];
-	}
-
-	out_fd = fopen("rphi_server.out", "w+");
-	if(out_fd == NULL) { 
-		perror("fopen");
-		exit(1);
 	}
 
 	initialise_addr_map_list(&maps);
