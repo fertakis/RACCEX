@@ -9,7 +9,7 @@ do
 	while [ $val -lt 11 ]
 	do
 		echo iteration $val
-		./scif_send -r 1456 -s $i | tee results/run_localhost_${i}_$val.out
+		./scif_send -r 1456 -s $i | tee results/run_racex_${i}_$val.out
 		val=$[${val} + 1]
 		sleep 4
 	done
