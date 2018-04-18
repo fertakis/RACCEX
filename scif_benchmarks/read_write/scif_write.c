@@ -3,12 +3,11 @@
 //#include "include/common.h"
 #include "include/timer.h"
 
-
-
+#define PAGE_SIZE 0x1000
 #include <scif.h>
 
 #define DEFAULT_OFFSET 0x4000000000000000
-#define PEER_NODE 0
+#define PEER_NODE 1
 
 #define LOCAL_PORT 2150
 #define REMOTE_PORT 2050
@@ -22,7 +21,6 @@ int main(int argc, char *argv[])
 	int msg_size;
 	int local_port, remote_port;
 	void *rbuf = NULL;
-	char *end;
 
 	int page_size = sysconf(_SC_PAGESIZE);
 	scif_timers_t timer;
@@ -34,7 +32,7 @@ int main(int argc, char *argv[])
 	remote_port = REMOTE_PORT;
 
 	if (argc != 5) {
-		printf("usage: ./scif_send -r port -s <msg_size> \n");
+		printf("usage: ./scif_send -r port -n <no 4k pages> \n");
 						
 		exit(1);
 	}
@@ -42,7 +40,7 @@ int main(int argc, char *argv[])
 	local_port = remote_port + 100;
         portID.node = PEER_NODE;                                                                                                              
         portID.port = remote_port;
-	msg_size = (int)strtol(argv[4], &end, 10);
+	msg_size = atoi(argv[4]) * PAGE_SIZE;
 	if (msg_size <= 0 || msg_size > INT_MAX) {                                                                                            
 		printf("not valid msg size");
 		exit(1);
@@ -115,6 +113,7 @@ printf("OFFSET: 0x%lx\n", offset);
 //		}
 //	}
 
+	sleep(2);
 
 	//printf("TIME: %llu ms %lf sec\n", TIMER_TOTAL(&timer), TIMER_TOTAL(&timer)/1000000000.0);
 	//printf("TIME: %lf us %lf sec\n", TIMER_TO_USEC(&timer), TIMER_TO_SEC(&timer)/1000000000.0);

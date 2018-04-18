@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
 						
 		exit(1);
 	}
+
 	req_port = atoi(argv[2]);
 	msg_size = (int)strtol(argv[4], &end, 10);
 	if (msg_size <= 0 || msg_size > INT_MAX) {                                                                                            
@@ -42,7 +43,7 @@ int main(int argc, char *argv[])
 		printf("scif_open failed with error %d\n", (int)epd);
 		exit(1);
 	}
-
+	printf("epd = %d\n", epd);
 	/* scif_bind : binds an end pt to a port_no, when successful returns the port_no
 	 * to which the end pt is bound
 	 */
@@ -70,8 +71,10 @@ int main(int argc, char *argv[])
 		printf("scif_accept failed with error %d\n", errno);
 		exit(1);
 	}
-	printf("accepted connection request from node:%d port:%d\n", portID.node, portID.port);
+	printf("accepted connection request from node:%d port:%d\n, new epd=%d\n", portID.node, 
+	portID.port, newepd);
 
+	printf("page size is 0x%lx \n", page_size);	
 	err = posix_memalign(&reg_buf, page_size, msg_size);
         if (err) {
                 printf("reg mem allocation failed with errno : %d\n", errno);

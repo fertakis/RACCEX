@@ -3,10 +3,11 @@
 #include "include/common.h"
 
 
+#define VA_GEN_MIN 0x4000000000000000
 
 #include <scif.h>
 
-
+#define PAGE_SIZE 0x1000
 #define LOCAL_PORT 2050
 
 int main(int argc, char *argv[])
@@ -26,12 +27,13 @@ int main(int argc, char *argv[])
 	req_port = LOCAL_PORT;
 
 	if (argc != 5) {
-		printf("usage: ./scif_sendrecv -l port -s <msg_size> \n");
+		printf("usage: ./scif_sendrecv -l port -n <no 4k pages> \n");
 						
 		exit(1);
 	}
 	req_port = atoi(argv[2]);
-	msg_size = (int)strtol(argv[4], &end, 10);
+	//msg_size = (int)strtol(argv[4], &end, 10);
+	msg_size = atoi(argv[4]) * PAGE_SIZE;
 	if (msg_size <= 0 || msg_size > INT_MAX) {                                                                                            
 		printf("not valid msg size");
 		exit(1);
@@ -73,19 +75,22 @@ int main(int argc, char *argv[])
 	printf("accepted connection request from node:%d port:%d\n", portID.node, portID.port);
 
 	err = posix_memalign(&test_buf, page_size, msg_size);
-        if (err) {
-                printf("test mem allocation failed with errno : %d\n", errno);
+        if (err != 0) {
+                printf("test mem allocation failed with error : %d\n", err);
                 goto __end;
         }
+	printf("memalign returned %d\n", err);
         memset(test_buf, 0xcd, msg_size);
 
 	err = posix_memalign(&reg_buf, page_size, msg_size);
-        if (err) {
-                printf("reg mem allocation failed with errno : %d\n", errno);
+        if (err != 0) {
+                printf("reg mem allocation failed with error : %d\n", err);
                 goto __end;
         }
+	printf("memalign returned %d\n", err);
         memset(reg_buf, 0x0, msg_size);
 
+	printf("about to register epd=%d, reg_buf=%d, msg_size=%d\n", newepd, reg_buf, msg_size);
 	offset = scif_register(newepd,
 				reg_buf,
 				msg_size,

@@ -3,7 +3,7 @@ CFLAGS=-mmic -Wall -I.
 LDFLAGS=-lscif
 
 .PHONY: all
-all: scif_write scif_read
+all: scif_write_mic scif_read_mic scif_register_read_mic scif_register_write_mic
 
 scif_write_mic: scif_write.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
@@ -11,6 +11,11 @@ scif_write_mic: scif_write.o
 scif_read_mic: scif_read.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
 
+scif_register_read_mic: scif_register_read.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
+
+scif_register_write_mic: scif_register_write.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
 
 clean:
 	rm -v *.o
