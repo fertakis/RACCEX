@@ -1,0 +1,36 @@
+Running single precision test
+Initializing memory.
+Running Benchmark
+Passed
+Passed
+Passed
+Passed
+Passed
+Passed
+Passed
+Passed
+Passed
+Passed
+Running double precision test
+Initializing memory.
+Running Benchmark
+Passed
+Passed
+Passed
+Passed
+Passed
+Passed
+Passed
+Passed
+Passed
+Passed
+test	atts	units	median	mean	stddev	min	max	trial0	trial1	trial2	trial3	trial4	trial5	trial6	trial7	trial8	trial9	
+Reduction	8388608_items	GB/s	96.9508	92.9698	11.9174	57.222	97.1923	57.222	97.1923	97.0318	97.1197	96.7915	96.5063	96.9113	96.9903	97.0975	96.8349	
+Reduction-DP	4194304_items	GB/s	97.0899	97.1062	0.360857	96.4988	97.6284	96.7837	97.4115	97.2568	96.7226	97.1415	97.6218	97.0384	97.6284	96.9585	96.4988	
+Reduction-DP_PCIe	4194304_items	GB/s	3.0702	3.07131	0.0058298	3.06225	3.08127	3.08127	3.07067	3.07898	3.06972	3.06225	3.06861	3.07225	3.06915	3.06374	3.07647	
+Reduction-DP_Parity	4194304_items	N	30.6172	30.6174	0.147565	30.3667	30.8131	30.4103	30.7232	30.5873	30.5087	30.7222	30.8131	30.5855	30.8096	30.6471	30.3667	
+Reduction_PCIe	8388608_items	GB/s	3.07653	3.04436	0.0602539	2.89274	3.08627	2.99579	2.89274	3.06388	3.00002	3.08297	3.08389	3.08627	3.08344	3.07009	3.0845	
+Reduction_Parity	8388608_items	N	30.428	29.5308	3.86827	18.1008	32.5987	18.1008	32.5987	30.6696	31.373	30.3956	30.2937	30.4008	30.4553	30.6269	30.3941	
+
+Note: results marked with (*) had missing values such as
+might occur with a mixture of architectural capabilities.

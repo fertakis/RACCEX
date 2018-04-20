@@ -33,23 +33,31 @@ msg_size = 2**xx
 msg_size_labels = ["4K","8K","16K","32K","64K","128K","256K","512K","1M","2M","4M"]
 
 for t in msg_size:
-    f_native = open("/media/kepler/remotephiexec/scif_benchmarks/read_write/results/run_native_" + str(t//4096) + ".out", "r")
-    f_local = open("/media/kepler/remotephiexec/scif_benchmarks/read_write/results/run_localhost_" + str(t//4096) + ".out", "r")
-    f_racex = open("/media/kepler/remotephiexec/scif_benchmarks/read_write/results/run_racex_" + str(t//4096) + ".out", "r")
-    for i, line in enumerate(f_native):
-        if i == 5:
-            native_time.append(t/int(line.split(" ")[1]))
-    for i, line in enumerate(f_local):
-        if i == 5:
-            localhost_time.append(t/int(line.split(" ")[1]))
-    for i, line in enumerate(f_racex):
-        if i == 5:
-            racex_time.append(t/int(line.split(" ")[1]))
-    f_native.close()
-    f_local.close()
-    f_racex.close()
-
-
+    nat_ls=[]
+    loc_ls=[]
+    rac_ls=[]
+    for x in range(1,11):
+        f_native = open("/media/kepler/remotephiexec/scif_benchmarks/read_write/results/run_native_" + str(t//4096) +"_"+ str(x) +".out", "r")
+        f_local = open("/media/kepler/remotephiexec/scif_benchmarks/read_write/results/run_localhost_" + str(t//4096) +"_"+ str(x) +".out", "r")
+        f_racex = open("/media/kepler/remotephiexec/scif_benchmarks/read_write/results/run_racex_" + str(t//4096) +"_"+ str(x) +".out", "r")
+        for i, line in enumerate(f_native):
+            if i == 5:
+                nat_ls.append(int(line.split(" ")[1]))
+        for i, line in enumerate(f_local):
+            if i == 5:
+                loc_ls.append(int(line.split(" ")[1]))
+        for i, line in enumerate(f_racex):
+            if i == 5:
+                rac_ls.append(int(line.split(" ")[1]))
+        f_native.close()
+        f_local.close()
+        f_racex.close()
+    nat_ls.sort()
+    loc_ls.sort()
+    rac_ls.sort()
+    native_time.append(t/((nat_ls[4] + nat_ls[5])/2))
+    localhost_time.append(t/((loc_ls[4] + loc_ls[5])/2))
+    racex_time.append(t/((rac_ls[4] + rac_ls[5])/2))
 
 fig, ax = plt.subplots()
 fig.set_size_inches(13, 9, forward=True)
