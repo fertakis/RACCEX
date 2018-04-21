@@ -1,0 +1,2 @@
+[SOURCE][0xccd70700][2196149219106639][uproxy_host.cpp:152][COILOG_LEVEL_ERROR][WorkerThread]: Error: scif_recv failed: 104
+[SOURCE][0xc31f0700][2196149481825729][pipeline_source.cpp:448][COILOG_LEVEL_ERROR][ProcessMessages]: Error: The pipe is failing, assuming process died
