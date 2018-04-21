@@ -16,9 +16,9 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "common.h"
-#include "client.h"
-#include "common.pb-c.h"
+#include "include/common.h"
+#include "include/client.h"
+#include "include/common.pb-c.h"
 
 //static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER; 
 

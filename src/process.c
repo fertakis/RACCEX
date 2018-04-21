@@ -23,10 +23,10 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "common.h"
-#include "process.h"
-#include "phi_errors.h"
-#include "common.pb-c.h"
+#include "include/common.h"
+#include "include/process.h"
+#include "include/phi_errors.h"
+#include "include/common.pb-c.h"
 
 #define DEVICE_NODE "/dev/mic/scif"
 

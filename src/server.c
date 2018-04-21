@@ -21,10 +21,10 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "common.h"
-#include "protocol.h"
-#include "process.h"
-#include "common.pb-c.h"
+#include "include/common.h"
+#include "include/protocol.h"
+#include "include/process.h"
+#include "include/common.pb-c.h"
 
 int init_server_net(const char *port, struct sockaddr_in *sa) 
 {

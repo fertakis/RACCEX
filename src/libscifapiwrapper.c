@@ -19,10 +19,10 @@
 #include <pthread.h>
 #include "scif.h"
 #include "scif_ioctl.h"
-#include "common.h"
-#include "common.pb-c.h"
-#include "client.h"
-#include "protocol.h"
+#include "include/common.h"
+#include "include/common.pb-c.h"
+#include "include/client.h"
+#include "include/protocol.h"
 
 //unitofwork uow = { .socket_fd = -1, .endp = -1, .ref_count = 0};
 struct thread_mng_list threads;
@@ -569,7 +569,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	addr_map *mp = get_map(pid, loffset);
 	
 	if(mp == NULL) {
-		printf("scif_writeto: error while acquiring map\n. Exiting.\n");
+		printf("scif_readfrom: error while acquiring map\n. Exiting.\n");
 		ret = -1;
 		goto end;
 	}	

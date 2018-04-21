@@ -21,10 +21,10 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "common.h"
-#include "client.h"
-#include "common.pb-c.h"
-#include "protocol.h"
+#include "include/common.h"
+#include "include/client.h"
+#include "include/common.pb-c.h"
+#include "include/protocol.h"
 
 void initialise_thr_mng_list(struct thread_mng_list *list) {
 	list->num_threads = 1;

@@ -5,7 +5,7 @@ AC_CONFIG_SRCDIR([src])
 
 CFLAGS=-g
 CXXFLAGS=-g
-AM_INIT_AUTOMAKE([-Werror foreign])
+AM_INIT_AUTOMAKE([-Werror foreign subdir-objects])
 
 AC_ARG_WITH([protobuf-c-libdir],
     [AS_HELP_STRING([--with-protobuf-c-libdir=LIB_DIR],

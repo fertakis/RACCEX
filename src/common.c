@@ -21,8 +21,8 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "common.h"
-#include "common.pb-c.h"
+#include "include/common.h"
+#include "include/common.pb-c.h"
 
 char *server_ip;
 char *server_port;

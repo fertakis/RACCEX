@@ -86,8 +86,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = server$(EXEEXT) libscifapiwrapper.so$(EXEEXT) \
-	test_client$(EXEEXT) hello_world$(EXEEXT)
+bin_PROGRAMS = server$(EXEEXT) libscifapiwrapper.so$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -99,29 +98,23 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_hello_world_OBJECTS = hello_world-hello_world.$(OBJEXT)
-hello_world_OBJECTS = $(am_hello_world_OBJECTS)
-hello_world_LDADD = $(LDADD)
-hello_world_LINK = $(CCLD) $(hello_world_CFLAGS) $(CFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__dirstamp = $(am__leading_dot)dirstamp
 am_libscifapiwrapper_so_OBJECTS =  \
 	libscifapiwrapper_so-libscifapiwrapper.$(OBJEXT) \
 	libscifapiwrapper_so-process.$(OBJEXT) \
 	libscifapiwrapper_so-common.$(OBJEXT) \
 	libscifapiwrapper_so-protocol.$(OBJEXT) \
 	libscifapiwrapper_so-client.$(OBJEXT) \
-	libscifapiwrapper_so-common.pb-c.$(OBJEXT)
+	include/libscifapiwrapper_so-common.pb-c.$(OBJEXT)
 libscifapiwrapper_so_OBJECTS = $(am_libscifapiwrapper_so_OBJECTS)
 libscifapiwrapper_so_DEPENDENCIES =
 libscifapiwrapper_so_LINK = $(CCLD) $(libscifapiwrapper_so_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_server_OBJECTS = server.$(OBJEXT) process.$(OBJEXT) \
-	common.$(OBJEXT) protocol.$(OBJEXT) common.pb-c.$(OBJEXT)
+	common.$(OBJEXT) protocol.$(OBJEXT) \
+	include/common.pb-c.$(OBJEXT)
 server_OBJECTS = $(am_server_OBJECTS)
 server_DEPENDENCIES =
-am_test_client_OBJECTS = test_client.$(OBJEXT)
-test_client_OBJECTS = $(am_test_client_OBJECTS)
-test_client_DEPENDENCIES =
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -154,10 +147,8 @@ AM_V_CCLD = $(am__v_CCLD_$(V))
 am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(hello_world_SOURCES) $(libscifapiwrapper_so_SOURCES) \
-	$(server_SOURCES) $(test_client_SOURCES)
-DIST_SOURCES = $(hello_world_SOURCES) $(libscifapiwrapper_so_SOURCES) \
-	$(server_SOURCES) $(test_client_SOURCES)
+SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES)
+DIST_SOURCES = $(libscifapiwrapper_so_SOURCES) $(server_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -281,21 +272,13 @@ top_builddir = ..
 top_srcdir = ..
 AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google \
 	-L/home/fertakis/repos/remotePhiExec/src/ -I.
-BUILT_SOURCES = ./common.pb-c.c ./common.pb-c.h
-server_SOURCES = server.c process.c process.h common.h common.c \
-	protocol.c protocol.h common.pb-c.c common.pc-c.h
-libscifapiwrapper_so_CFLAGS = -fPIC -shared -DRSCIF_DEBUG #-DMEMDEBUG $(DEBUG_CFLAGS)
-libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c process.h \
-	common.h common.c protocol.c protocol.h client.c client.h \
-	common.pb-c.c common.pb-c.h
-
-#test_server_SOURCES = test_server.c common.c common.h common.pb-c.c common.pb-c.h client.c client.h
-#test_server_SOURCES += protocol.c protocol.h
-test_client_SOURCES = test_client.c
-test_client_LDADD = -lscif
-hello_world_SOURCES = hello_world.c
-hello_world_CFLAGS = -fopenmp
-CLEANFILES = ./common.pb-c.c ./common.pb-c.h
+BUILT_SOURCES = common.pb-c.c common.pb-c.h
+server_SOURCES = server.c process.c common.c protocol.c \
+	include/common.pb-c.c
+libscifapiwrapper_so_CFLAGS = -fPIC -shared #-DRSCIF_DEBUG #-DMEMDEBUG $(DEBUG_CFLAGS)
+libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c common.c \
+	protocol.c client.c include/common.pb-c.c
+CLEANFILES = ./common.pb-c.c ./include/common.pb-c.h
 server_LDADD = $(PROTOBUF_C_LIBS) -lpthread -L/home/fertakis/repos/remotePhiExec/src/ -lscif
 libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L/home/fertakis/repos/remotePhiExec/src/ -lscif -ldl
 EXTRA_DIST = common.proto
@@ -375,70 +358,59 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-
-hello_world$(EXEEXT): $(hello_world_OBJECTS) $(hello_world_DEPENDENCIES) $(EXTRA_hello_world_DEPENDENCIES) 
-	@rm -f hello_world$(EXEEXT)
-	$(AM_V_CCLD)$(hello_world_LINK) $(hello_world_OBJECTS) $(hello_world_LDADD) $(LIBS)
+include/$(am__dirstamp):
+	@$(MKDIR_P) include
+	@: > include/$(am__dirstamp)
+include/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) include/$(DEPDIR)
+	@: > include/$(DEPDIR)/$(am__dirstamp)
+include/libscifapiwrapper_so-common.pb-c.$(OBJEXT):  \
+	include/$(am__dirstamp) include/$(DEPDIR)/$(am__dirstamp)
 
 libscifapiwrapper.so$(EXEEXT): $(libscifapiwrapper_so_OBJECTS) $(libscifapiwrapper_so_DEPENDENCIES) $(EXTRA_libscifapiwrapper_so_DEPENDENCIES) 
 	@rm -f libscifapiwrapper.so$(EXEEXT)
 	$(AM_V_CCLD)$(libscifapiwrapper_so_LINK) $(libscifapiwrapper_so_OBJECTS) $(libscifapiwrapper_so_LDADD) $(LIBS)
+include/common.pb-c.$(OBJEXT): include/$(am__dirstamp) \
+	include/$(DEPDIR)/$(am__dirstamp)
 
 server$(EXEEXT): $(server_OBJECTS) $(server_DEPENDENCIES) $(EXTRA_server_DEPENDENCIES) 
 	@rm -f server$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(server_OBJECTS) $(server_LDADD) $(LIBS)
 
-test_client$(EXEEXT): $(test_client_OBJECTS) $(test_client_DEPENDENCIES) $(EXTRA_test_client_DEPENDENCIES) 
-	@rm -f test_client$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(test_client_OBJECTS) $(test_client_LDADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f include/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/common.Po
-include ./$(DEPDIR)/common.pb-c.Po
-include ./$(DEPDIR)/hello_world-hello_world.Po
 include ./$(DEPDIR)/libscifapiwrapper_so-client.Po
 include ./$(DEPDIR)/libscifapiwrapper_so-common.Po
-include ./$(DEPDIR)/libscifapiwrapper_so-common.pb-c.Po
 include ./$(DEPDIR)/libscifapiwrapper_so-libscifapiwrapper.Po
 include ./$(DEPDIR)/libscifapiwrapper_so-process.Po
 include ./$(DEPDIR)/libscifapiwrapper_so-protocol.Po
 include ./$(DEPDIR)/process.Po
 include ./$(DEPDIR)/protocol.Po
 include ./$(DEPDIR)/server.Po
-include ./$(DEPDIR)/test_client.Po
+include include/$(DEPDIR)/common.pb-c.Po
+include include/$(DEPDIR)/libscifapiwrapper_so-common.pb-c.Po
 
 .c.o:
-	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+	$(am__mv) $$depbase.Tpo $$depbase.Po
 #	$(AM_V_CC)source='$<' object='$@' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+	$(am__mv) $$depbase.Tpo $$depbase.Po
 #	$(AM_V_CC)source='$<' object='$@' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(AM_V_CC_no)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-hello_world-hello_world.o: hello_world.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hello_world_CFLAGS) $(CFLAGS) -MT hello_world-hello_world.o -MD -MP -MF $(DEPDIR)/hello_world-hello_world.Tpo -c -o hello_world-hello_world.o `test -f 'hello_world.c' || echo '$(srcdir)/'`hello_world.c
-	$(AM_V_at)$(am__mv) $(DEPDIR)/hello_world-hello_world.Tpo $(DEPDIR)/hello_world-hello_world.Po
-#	$(AM_V_CC)source='hello_world.c' object='hello_world-hello_world.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hello_world_CFLAGS) $(CFLAGS) -c -o hello_world-hello_world.o `test -f 'hello_world.c' || echo '$(srcdir)/'`hello_world.c
-
-hello_world-hello_world.obj: hello_world.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hello_world_CFLAGS) $(CFLAGS) -MT hello_world-hello_world.obj -MD -MP -MF $(DEPDIR)/hello_world-hello_world.Tpo -c -o hello_world-hello_world.obj `if test -f 'hello_world.c'; then $(CYGPATH_W) 'hello_world.c'; else $(CYGPATH_W) '$(srcdir)/hello_world.c'; fi`
-	$(AM_V_at)$(am__mv) $(DEPDIR)/hello_world-hello_world.Tpo $(DEPDIR)/hello_world-hello_world.Po
-#	$(AM_V_CC)source='hello_world.c' object='hello_world-hello_world.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hello_world_CFLAGS) $(CFLAGS) -c -o hello_world-hello_world.obj `if test -f 'hello_world.c'; then $(CYGPATH_W) 'hello_world.c'; else $(CYGPATH_W) '$(srcdir)/hello_world.c'; fi`
 
 libscifapiwrapper_so-libscifapiwrapper.o: libscifapiwrapper.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -MT libscifapiwrapper_so-libscifapiwrapper.o -MD -MP -MF $(DEPDIR)/libscifapiwrapper_so-libscifapiwrapper.Tpo -c -o libscifapiwrapper_so-libscifapiwrapper.o `test -f 'libscifapiwrapper.c' || echo '$(srcdir)/'`libscifapiwrapper.c
@@ -510,19 +482,19 @@ libscifapiwrapper_so-client.obj: client.c
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -c -o libscifapiwrapper_so-client.obj `if test -f 'client.c'; then $(CYGPATH_W) 'client.c'; else $(CYGPATH_W) '$(srcdir)/client.c'; fi`
 
-libscifapiwrapper_so-common.pb-c.o: common.pb-c.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -MT libscifapiwrapper_so-common.pb-c.o -MD -MP -MF $(DEPDIR)/libscifapiwrapper_so-common.pb-c.Tpo -c -o libscifapiwrapper_so-common.pb-c.o `test -f 'common.pb-c.c' || echo '$(srcdir)/'`common.pb-c.c
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libscifapiwrapper_so-common.pb-c.Tpo $(DEPDIR)/libscifapiwrapper_so-common.pb-c.Po
-#	$(AM_V_CC)source='common.pb-c.c' object='libscifapiwrapper_so-common.pb-c.o' libtool=no \
+include/libscifapiwrapper_so-common.pb-c.o: include/common.pb-c.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -MT include/libscifapiwrapper_so-common.pb-c.o -MD -MP -MF include/$(DEPDIR)/libscifapiwrapper_so-common.pb-c.Tpo -c -o include/libscifapiwrapper_so-common.pb-c.o `test -f 'include/common.pb-c.c' || echo '$(srcdir)/'`include/common.pb-c.c
+	$(AM_V_at)$(am__mv) include/$(DEPDIR)/libscifapiwrapper_so-common.pb-c.Tpo include/$(DEPDIR)/libscifapiwrapper_so-common.pb-c.Po
+#	$(AM_V_CC)source='include/common.pb-c.c' object='include/libscifapiwrapper_so-common.pb-c.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -c -o libscifapiwrapper_so-common.pb-c.o `test -f 'common.pb-c.c' || echo '$(srcdir)/'`common.pb-c.c
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -c -o include/libscifapiwrapper_so-common.pb-c.o `test -f 'include/common.pb-c.c' || echo '$(srcdir)/'`include/common.pb-c.c
 
-libscifapiwrapper_so-common.pb-c.obj: common.pb-c.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -MT libscifapiwrapper_so-common.pb-c.obj -MD -MP -MF $(DEPDIR)/libscifapiwrapper_so-common.pb-c.Tpo -c -o libscifapiwrapper_so-common.pb-c.obj `if test -f 'common.pb-c.c'; then $(CYGPATH_W) 'common.pb-c.c'; else $(CYGPATH_W) '$(srcdir)/common.pb-c.c'; fi`
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libscifapiwrapper_so-common.pb-c.Tpo $(DEPDIR)/libscifapiwrapper_so-common.pb-c.Po
-#	$(AM_V_CC)source='common.pb-c.c' object='libscifapiwrapper_so-common.pb-c.obj' libtool=no \
+include/libscifapiwrapper_so-common.pb-c.obj: include/common.pb-c.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -MT include/libscifapiwrapper_so-common.pb-c.obj -MD -MP -MF include/$(DEPDIR)/libscifapiwrapper_so-common.pb-c.Tpo -c -o include/libscifapiwrapper_so-common.pb-c.obj `if test -f 'include/common.pb-c.c'; then $(CYGPATH_W) 'include/common.pb-c.c'; else $(CYGPATH_W) '$(srcdir)/include/common.pb-c.c'; fi`
+	$(AM_V_at)$(am__mv) include/$(DEPDIR)/libscifapiwrapper_so-common.pb-c.Tpo include/$(DEPDIR)/libscifapiwrapper_so-common.pb-c.Po
+#	$(AM_V_CC)source='include/common.pb-c.c' object='include/libscifapiwrapper_so-common.pb-c.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -c -o libscifapiwrapper_so-common.pb-c.obj `if test -f 'common.pb-c.c'; then $(CYGPATH_W) 'common.pb-c.c'; else $(CYGPATH_W) '$(srcdir)/common.pb-c.c'; fi`
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscifapiwrapper_so_CFLAGS) $(CFLAGS) -c -o include/libscifapiwrapper_so-common.pb-c.obj `if test -f 'include/common.pb-c.c'; then $(CYGPATH_W) 'include/common.pb-c.c'; else $(CYGPATH_W) '$(srcdir)/include/common.pb-c.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -642,6 +614,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f include/$(DEPDIR)/$(am__dirstamp)
+	-rm -f include/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -652,7 +626,7 @@ clean: clean-am
 clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) include/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -698,7 +672,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) include/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -735,13 +709,23 @@ uninstall-am: uninstall-binPROGRAMS
 .PRECIOUS: Makefile
 
 
+#test_server_SOURCES = test_server.c common.c common.h common.pb-c.c common.pb-c.h client.c client.h
+#test_server_SOURCES += protocol.c protocol.h
+
+#test_client_SOURCES = test_client.c
+#test_client_LDADD = -lscif
+
+#hello_world_SOURCES = hello_world.c
+#hello_world_CFLAGS = -fopenmp
+
 common.pb-c.c: ./common.proto
-	 $(PROTOC_C) --proto_path=. --c_out=. ./common.proto
+	 $(PROTOC_C) --proto_path=. --c_out=include/ ./common.proto
 
 common.pb-c.h: ./common.pb-c.c
 	@if test ! -f $@; then \
 	  rm -f $<; \
 	  $(MAKE) $(AM_MAKEFLAGS) $<; \
+	  mv common.pb-c.h includes/; \
 	else :; fi
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
