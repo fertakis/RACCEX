@@ -23,10 +23,14 @@
 
 #include "include/common.h"
 #include "include/common.pb-c.h"
+#include "include/timer.h"
 
 char *server_ip;
 char *server_port;
 FILE *out_fd;
+
+//breakdown analysis
+scif_timers_t before, call, after;
 
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 struct addr_map_list maps;

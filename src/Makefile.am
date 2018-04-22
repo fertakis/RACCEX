@@ -27,10 +27,9 @@ common.pb-c.h: @srcdir@/common.pb-c.c
 	@if test ! -f $@; then \
 	  rm -f $<; \
 	  $(MAKE) $(AM_MAKEFLAGS) $<; \
-	  mv common.pb-c.h includes/; \
 	else :; fi
 
-CLEANFILES = @builddir@/common.pb-c.c @builddir@/include/common.pb-c.h
+CLEANFILES = @builddir@/include/common.pb-c.c @builddir@/include/common.pb-c.h
 
 
 server_LDADD = $(PROTOBUF_C_LIBS) -lpthread -L/home/fertakis/repos/remotePhiExec/src/ -lscif

@@ -278,7 +278,7 @@ server_SOURCES = server.c process.c common.c protocol.c \
 libscifapiwrapper_so_CFLAGS = -fPIC -shared #-DRSCIF_DEBUG #-DMEMDEBUG $(DEBUG_CFLAGS)
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c common.c \
 	protocol.c client.c include/common.pb-c.c
-CLEANFILES = ./common.pb-c.c ./include/common.pb-c.h
+CLEANFILES = ./include/common.pb-c.c ./include/common.pb-c.h
 server_LDADD = $(PROTOBUF_C_LIBS) -lpthread -L/home/fertakis/repos/remotePhiExec/src/ -lscif
 libscifapiwrapper_so_LDADD = $(PROTOBUF_C_LIBS) $(SCIF_LIBS) -L/home/fertakis/repos/remotePhiExec/src/ -lscif -ldl
 EXTRA_DIST = common.proto
@@ -725,7 +725,6 @@ common.pb-c.h: ./common.pb-c.c
 	@if test ! -f $@; then \
 	  rm -f $<; \
 	  $(MAKE) $(AM_MAKEFLAGS) $<; \
-	  mv common.pb-c.h includes/; \
 	else :; fi
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
