@@ -129,6 +129,7 @@ ssize_t send_message (int socket_fd, void *buffer, size_t len)
 	//pthread_mutex_lock(&lock);
 	ret =  insist_write(socket_fd, buffer, len);
 	//pthread_mutex_unlock(&lock);
+	
 	return ret;
 }
 

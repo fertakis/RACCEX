@@ -39,12 +39,13 @@ src/.deps/*
 #####################
 scif_tutorials/*
 
-src/common.pb-c.c
-src/common.pb-c.h
+src/include/common.pb-c.c
+src/include/common.pb-c.h
 
 aclocal.m4
 Makefile.in
 Makefile
+src/Makefile
 autom4te.cache/*
 compile
 config.log

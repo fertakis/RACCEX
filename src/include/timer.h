@@ -22,12 +22,7 @@ typedef struct timers {
         unsigned long cnt;
 } scif_timers_t;
 
-unsigned long long get_cycles(void)
-{
-        struct timeval tv;
-        gettimeofday(&tv,NULL);
-        return tv.tv_sec * 1000000 + tv.tv_usec;
-}
+unsigned long long get_cycles(void);
 
 #define TIMER_START(tp) do {( tp)->val = get_cycles(); } while (0)
 #define TIMER_STOP(tp) do { (tp)->total += get_cycles() - (tp)->val; ++(tp)->cnt; } while (0)
