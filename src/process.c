@@ -27,6 +27,7 @@
 #include "include/process.h"
 #include "include/phi_errors.h"
 #include "include/common.pb-c.h"
+#include "include/timer.h"
 
 #define DEVICE_NODE "/dev/mic/scif"
 
@@ -540,7 +541,6 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				}
 		case WRITE_TO: {
 				       //TODO: scif_write_to call goes here...
-
 				       arg_count++;
 				       int_res = malloc_safe(sizeof(int));
 				       int_res_count = 1;
@@ -562,9 +562,14 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 				       //copy to server registered address space len bytes for dma
 				       memcpy(copy_to, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
+				       TIMER_STOP(&s_bef);
+				       TIMER_START(&s_dur);
 				       phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
 						       loffset, len,
 						       roffset, cmd->int_args[1], int_res);
+				       TIMER_STOP(&s_dur);
+				       TIMER_START(&s_after);
+
 				       break;
 			       }
 		case VREAD_FROM: {

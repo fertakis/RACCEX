@@ -30,7 +30,7 @@ char *server_port;
 FILE *out_fd;
 
 //breakdown analysis
-scif_timers_t before, call, after;
+scif_timers_t before, call, after, s_bef, s_dur, s_after;
 
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 struct addr_map_list maps;
