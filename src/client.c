@@ -163,7 +163,8 @@ int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)
 }
 
 void free_arg_data(var **args, int len) {
-	for(int i=0; i < len ; i++) {
+	int i;
+	for(i=0; i < len ; i++) {
 		free(args[i]->data);
 	}
 }
