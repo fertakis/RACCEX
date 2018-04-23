@@ -638,14 +638,6 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	pid_t pid = getpid();
 	addr_map *mp = get_map(pid, loffset);
 
-	//breakdown analysis
-
-	TIMER_RESET(&before);
-	TIMER_RESET(&call);
-	TIMER_RESET(&after);
-
-	TIMER_START(&before);	
-
 	if(mp == NULL) {
 		printf("scif_writeto: error while acquiring map\n. Exiting.\n");
 		ret = -1;
@@ -690,9 +682,6 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	free(data);
 	free(arg_bytes.data);
 
-	TIMER_STOP(&before);
-	TIMER_START(&call);
-
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 
 	if(res_code == SCIF_SUCCESS)	
@@ -703,13 +692,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	}
 
 	free_deserialised_message(des_msg);
-
 end:
-	TIMER_STOP(&after);
-
-	printf("TIME BEFORE: %llu us %lf sec\n", TIMER_TOTAL(&before), TIMER_TOTAL(&before)/1000000.0);
-	printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&call), TIMER_TOTAL(&call)/1000000.0);
-	printf("TIME AFTER: %llu us %lf sec\n", TIMER_TOTAL(&after), TIMER_TOTAL(&after)/1000000.0);
 	return ret;
 }
 

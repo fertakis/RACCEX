@@ -138,8 +138,6 @@ int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)
 	ddprintf("Waiting result from PHI Server...\n");
 	len = receive_message(&buf, socket_fd);
 
-	TIMER_STOP(&call);
-	TIMER_START(&after);
 	if(len > 0)
 		deserialise_message(&deserialised_message, &payload, buf, len);
 	else {
