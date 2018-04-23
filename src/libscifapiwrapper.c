@@ -640,11 +640,16 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	//breakdown analysis
 
-	TIMER_RESET(&before);
+	TIMER_RESET(&b_fd);
+	TIMER_RESET(&b_cp);
+	TIMER_RESET(&snd);
+	TIMER_RESET(&pack);
+	TIMER_RESET(&ser);
+	TIMER_RESET(&smsg);
 	TIMER_RESET(&call);
 	TIMER_RESET(&after);
 
-	TIMER_START(&before);	
+	TIMER_START(&b_fd);	
 
 	if(mp == NULL) {
 		printf("scif_writeto: error while acquiring map\n. Exiting.\n");
@@ -656,7 +661,9 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
-
+	
+	TIMER_STOP(&b_fd);
+	TIMER_START(&b_cp);
 	//RMA_SYNC
 	flags = flags | SCIF_RMA_SYNC;
 
@@ -680,7 +687,10 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	void *addr_to_copy_from = mp->client_addr + (loffset - mp->offset);
 	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), addr_to_copy_from, len); 
-	
+	TIMER_STOP(&b_cp);
+
+	TIMER_START(&snd);
+
 	if(send_phi_cmd(uow->sockfd, args, 3, WRITE_TO) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
@@ -690,7 +700,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	free(data);
 	free(arg_bytes.data);
 
-	TIMER_STOP(&before);
+	TIMER_STOP(&snd);
 	TIMER_START(&call);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
@@ -707,7 +717,12 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 end:
 	TIMER_STOP(&after);
 
-	printf("TIME BEFORE: %llu us %lf sec\n", TIMER_TOTAL(&before), TIMER_TOTAL(&before)/1000000.0);
+	printf("TIME IDENTIFY: %llu us %lf sec\n", TIMER_TOTAL(&b_fd), TIMER_TOTAL(&b_fd)/1000000.0);
+	printf("TIME COPY: %llu us %lf sec\n", TIMER_TOTAL(&b_cp), TIMER_TOTAL(&b_cp)/1000000.0);
+	printf("TIME SEND: %llu us %lf sec\n", TIMER_TOTAL(&snd), TIMER_TOTAL(&snd)/1000000.0);
+	printf("TIME PACK: %llu us %lf sec\n", TIMER_TOTAL(&pack), TIMER_TOTAL(&pack)/1000000.0);
+	printf("TIME SERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&ser), TIMER_TOTAL(&ser)/1000000.0);
+	printf("TIME SEND_MESSAGE: %llu us %lf sec\n", TIMER_TOTAL(&smsg), TIMER_TOTAL(&smsg)/1000000.0);
 	printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&call), TIMER_TOTAL(&call)/1000000.0);
 	printf("TIME AFTER: %llu us %lf sec\n", TIMER_TOTAL(&after), TIMER_TOTAL(&after)/1000000.0);
 	return ret;

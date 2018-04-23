@@ -18,6 +18,7 @@
 # Dependencies Files #
 ######################
 src/.deps/*
+src/include/.deps/*
 
 # Compiled Source #
 ####################

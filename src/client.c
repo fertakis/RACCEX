@@ -117,12 +117,17 @@ int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)
 	size_t len;
 
 	ddprintf("Preparing and sending Phi cmd %d by thread %d\n", cmd_type, (int)pthread_self());
+	TIMER_START(&pack);
 	pack_phi_cmd(&payload, args, arg_cnt, cmd_type);
-
+	TIMER_STOP(&pack);
+	TIMER_START(&ser);
 	len = serialise_message(&buf, PHI_CMD, payload);
+	TIMER_STOP(&ser);
 	if(buf == NULL)
 		return -1;
+	TIMER_START(&smsg);
 	send_message(socket_fd, buf, len);
+	TIMER_STOP(&smsg);
 
 	free(buf);
 	free(payload);
