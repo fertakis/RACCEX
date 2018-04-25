@@ -24,7 +24,6 @@
 #include "include/client.h"
 #include "include/protocol.h"
 
-//unitofwork uow = { .socket_fd = -1, .endp = -1, .ref_count = 0};
 struct thread_mng_list threads;
 static uint8_t scif_version_mismatch;
 
@@ -72,7 +71,7 @@ scif_open(void)
 {
 	int res_code;
 	scif_epd_t fd;
-	PhiCmd *result;
+	PhiCmd *cmd, *result;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
@@ -83,7 +82,12 @@ scif_open(void)
 	uow->ref_count++;
 	ddprintf("ref_count=%d\n", uow->ref_count);
 
-	if(send_phi_cmd(uow->sockfd, NULL, 0, OPEN) < 0 )
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = OPEN;
+	cmd->arg_count = 0;
+
+	if(send_phi_cmd(uow->sockfd, cmd) < 0 )
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
@@ -106,8 +110,7 @@ scif_open(void)
 scif_close(scif_epd_t epd)
 {
 	int res_code, ret = 0;
-	var arg = { .elements = 1}, *args[] = { &arg };
-	PhiCmd *result;
+	PhiCmd *cmd,*result;
 	void *des_msg = NULL;
 	thr_mng *uow;
 
@@ -116,15 +119,20 @@ scif_close(scif_epd_t epd)
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg.type = INT;
-	arg.length = sizeof(int);
-	arg.data = &epd;
+	cmd = malloc_safe(sizeof(PhiCmd));	
+	phi_cmd__init(cmd);
+	cmd->type = CLOSE;
+	cmd->arg_count = 1;
+	cmd->n_int_args = 1;
+	cmd->int_args = &epd;
 
-	if(send_phi_cmd(uow->sockfd, args, 1, CLOSE) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
-	}	
+	}
+
+	free(cmd);	
 
 	res_code = get_phi_cmd_result(&result, &des_msg,  uow->sockfd);
 
@@ -135,12 +143,6 @@ scif_close(scif_epd_t epd)
 
 	free_deserialised_message(des_msg);
 
-	/*uow->ref_count--;
-	if(uow->ref_count == 0) {
-		close(uow->sockfd);
-		uow->sockfd = -1;
-	}*/
-
 	return ret;
 }
 
@@ -148,9 +150,7 @@ scif_close(scif_epd_t epd)
 scif_bind(scif_epd_t epd, uint16_t pn)
 {
 	int pni = pn, res_code, ret = -1;
-	var arg_int = { .elements =1 }, arg_uint = { .elements = 1}, 
-	    *args[] = { &arg_int, &arg_uint };
-	PhiCmd *result;  
+	PhiCmd *cmd, *result;  
 	void *des_msg = NULL;
 	thr_mng *uow;
 
@@ -159,19 +159,22 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int);
-	arg_int.data = &epd;
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = BIND;
+	cmd->arg_count = 2;
+	cmd->n_int_args = 1 ;
+	cmd->int_args = &epd;
+	cmd->n_uint_args = 1;
+	cmd->uint_args = &pn;
 
-	arg_uint.type = UINT;
-	arg_uint.length = sizeof(uint16_t);
-	arg_uint.data = &pn;
-
-	if(send_phi_cmd(uow->sockfd, args, 2, BIND) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
 	}	
+
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 
@@ -192,8 +195,7 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 scif_listen(scif_epd_t epd, int backlog)
 {
 	int res_code, ret = 0;
-	var arg = { .elements = 2 }, *args[] = { &arg };
-	PhiCmd *result;  
+	PhiCmd *cmd, *result;  
 	void *des_msg = NULL;
 	thr_mng *uow;
 
@@ -202,14 +204,17 @@ scif_listen(scif_epd_t epd, int backlog)
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg.type = INT;
-	arg.length = sizeof(int) * arg.elements;
-	int *data = (int *)malloc_safe(arg.length);
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = LISTEN;
+	cmd->arg_count = 1;
+	cmd->n_int_args = 2;
+	int *data = (int *)malloc_safe(sizeof(int)*2);
 	data[0] = epd;
 	data[1] = backlog;
-	arg.data = data;
+	cmd->int_args = data;
 
-	if(send_phi_cmd(uow->sockfd, args, 1, LISTEN) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
@@ -217,6 +222,7 @@ scif_listen(scif_epd_t epd, int backlog)
 
 	//free arg allocated memory
 	free(data);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 
@@ -234,9 +240,7 @@ scif_listen(scif_epd_t epd, int backlog)
 scif_connect(scif_epd_t epd, struct scif_portID *dst)
 {
 	int res_code, ret =-1;
-	var arg_int = { .elements = 1}, arg_bytes = { .elements = 1}, 
-	    *args[] = { &arg_int, &arg_bytes};
-	PhiCmd *result; 
+	PhiCmd *cmd,*result; 
 	void *des_msg = NULL;
 	thr_mng *uow;
 
@@ -244,20 +248,27 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
+	
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = CONNECT;
+	cmd->arg_count = 2;
+	cmd->n_int_args = 1;
+	cmd->int_args = &epd;
+	
+	cmd->n_extra_args = 1;
+	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
+	cmd->extra_args[0].len = sizeof(struct scif_portID);
+	cmd->extra_args[0].data = dst;
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int);
-	arg_int.data = &epd;
-
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(struct scif_portID);
-	arg_bytes.data = dst;
-
-	if(send_phi_cmd(uow->sockfd, args, 2, CONNECT) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
 	}	
+
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) 
@@ -277,9 +288,7 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int flags)
 {
 	int res_code, ret = -1 ;
-	var arg_int = { .elements =2 }, arg_bytes = { .elements = 1}, 
-	    *args[]= { &arg_int, &arg_bytes};
-	PhiCmd *result = NULL;
+	PhiCmd *cmd,*result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 
@@ -288,18 +297,22 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = ACCEPT;
+	cmd->arg_count = 2;
+	cmd->n_int_args = 2;
+	int *data = malloc_safe(sizeof(int)*2);
 	data[0] = epd;
 	data[1] = flags;
-	arg_int.data = data;
+	cmd->int_args = data;
 
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(struct scif_portID);
-	arg_bytes.data = peer;
+	cmd->n_extra_args = 1;
+	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
+	cmd->extra_args[0].len = sizeof(struct scif_portID);
+	cmd->extra_args[0].data = peer;
 
-	if(send_phi_cmd(uow->sockfd, args, 2, ACCEPT) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);	
@@ -307,6 +320,8 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 
 	//free arg allocated memory
 	free(data);
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
@@ -327,9 +342,7 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 scif_send(scif_epd_t epd, void *msg, int len, int flags)
 {
 	int res_code, ret = -1; 
-	var arg_int = { .elements = 3 }, arg_bytes = { .elements = 1}, 
-	    *args[] = { &arg_int, &arg_bytes}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd, *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 
@@ -338,25 +351,31 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = SEND;
+	cmd->arg_count = 2;
+	cmd->n_int_args = 3;
+	int *data = malloc_safe(sizeof(int));
 	data[0] = epd;
 	data[1] = len;
 	data[2] = flags;
-	arg_int.data = data;
+	cmd->int_args = data;
 
-	arg_bytes.type = BYTES;
-	arg_bytes.length = len;
-	arg_bytes.data = msg;
+	cmd->n_extra_args = 1;
+	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
+	cmd->extra_args[0].len = len;
+	cmd->extra_args[0].data = msg;
 
-	if(send_phi_cmd(uow->sockfd, args, 2, SEND) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	free(data);
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
@@ -376,8 +395,7 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 {
 	int res_code, ret = -1; 
-	var arg_int = { .elements = 3 }, *args[] = { &arg_int}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd,*result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
@@ -386,21 +404,25 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = RECV;
+	cmd->arg_count = 1;
+	cmd->n_int_args = 3;
+	int *data = malloc_safe(sizeof(int)*3);
 	data[0] = epd;
 	data[1] = len;
 	data[2] = flags;
-	arg_int.data = data;
+	cmd->int_args = data;
 
-	if(send_phi_cmd(uow->sockfd, args, 1, RECV) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	free(data);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
@@ -423,10 +445,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 {
 	int res_code;
 	off_t ret;
-	var arg_int = { .elements = 3 }, arg_uint = {.elements = 1},
-			arg_bytes = { .elements = 1 }, 
-			*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd, *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	pid_t pid = getpid();
@@ -435,34 +454,39 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
-
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+	
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = REGISTER;
+	cmd->arg_count = 3;
+	cmd->n_int_args = 3;
+	int *data = malloc_safe(sizeof(int)*3);
 	data[0] = epd;
 	data[1] = prot;
 	data[2] = flags;
-	arg_int.data = data;
+	cmd->int_args = data;
 
-	arg_uint.type = UINT;
-	arg_uint.length = sizeof(uint32_t)*arg_uint.elements;
-	arg_uint.data = &len;
+	cmd->n_uint_args = 1;
+	cmd->uint_args = &len;
 
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(void *) + sizeof(off_t) + sizeof(pid_t);
-	arg_bytes.data = malloc_safe(arg_bytes.length);
-	memcpy(arg_bytes.data, &addr, sizeof(void *));
-	memcpy(arg_bytes.data + sizeof(void *), &offset, sizeof(off_t));
-	memcpy(arg_bytes.data + sizeof(void *) + sizeof(off_t), &pid, sizeof(pid_t));
+	cmd->n_extra_args = 3;
+	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData)*3);
+	cmd->extra_args[0].len = sizeof(void *);
+	cmd->extra_args[0].data = &addr; 
+	cmd->extra_args[1].len = sizeof(off_t);
+	cmd->extra_args[1].data = &offset;
+	cmd->extra_args[2].len = sizeof(pid_t);
+	cmd->extra_args[2].data = &pid;
 
-	if(send_phi_cmd(uow->sockfd, args, 3, REGISTER) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	free(data);
-	free(arg_bytes.data);
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
@@ -485,10 +509,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 1 }, arg_uint = { .elements = 1}, 
-			arg_bytes = { .elements = 1 }, 
-			*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd, *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	pid_t pid = getpid();
@@ -498,30 +519,30 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
-	data[0] = epd;
-	arg_int.data = data;
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = UNREGISTER;
+	cmd->arg_count = 3;
+	cmd->n_int_args = 1;
+	cmd->int_args = &epd;
+	
+	cmd->n_uint_args = 1;
+	cmd->uint_args = &len;
+	cmd->n_extra_args = 2;
+	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData)*2);
+	cmd->extra_args[0].len = sizeof(off_t);
+	cmd->extra_args[0].data = &offset;
+	cmd->extra_args[1].len = sizeof(pid_t);
+	cmd->extra_args[1].data = &pid;
 
-	arg_uint.type = UINT;
-	arg_uint.length = sizeof(uint32_t)*arg_uint.elements;
-	arg_uint.data = &len;
-
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t) + sizeof(pid_t);
-	arg_bytes.data = malloc_safe(arg_bytes.length);
-	memcpy(arg_bytes.data, &offset, sizeof(off_t));
-	memcpy(arg_bytes.data + sizeof(off_t), &pid, sizeof(pid_t));
-
-	if(send_phi_cmd(uow->sockfd, args, 3, UNREGISTER) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	free(data);
-	free(arg_bytes.data);
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
@@ -559,10 +580,7 @@ scif_munmap(void *addr, size_t len)
 scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, arg_uint = { .elements = 1}, 
-			arg_bytes = { .elements = 1 }, 
-			*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd,*result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	pid_t pid = getpid();
@@ -582,32 +600,37 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	//RMA_SYNC
 	flags = flags | SCIF_RMA_SYNC;
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+	cmd = malloc_sage(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = READ_FROM;
+	cmd->arg_count = 3;
+	cmd->n_int_args = 2;
+	int *data = malloc_safe(sizeof(int)*2);
 	data[0] = epd;
 	data[1] = flags;
-	arg_int.data = data;
-	
-	arg_uint.type = UINT;
-	arg_uint.length = sizeof(size_t)*arg_uint.elements;
-	arg_uint.data = &len;
+	cmd->int_args = data;
 
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t)*2 + sizeof(pid_t);
-	arg_bytes.data = malloc_safe(arg_bytes.length);
-	memcpy(arg_bytes.data, &loffset, sizeof(off_t));
-	memcpy(arg_bytes.data + sizeof(off_t), &roffset, sizeof(off_t));
-	memcpy(arg_bytes.data + 2*sizeof(off_t), &pid, sizeof(pid_t));
+	cmd->n_uint_args = 1;
+	cmd->uint_args = &len;	
 
-	if(send_phi_cmd(uow->sockfd, args, 3, READ_FROM) < 0)
+	cmd->n_extra_args = 3;
+	cmd->extra_args  = malloc_safe(sizeof(ProtobufCBinaryData)*3);
+	cmd->extra_args[0].len = sizeof(off_t);
+	cmd->extra_args[0].data = &loffset;
+	cmd->extra_args[1].len = sizeof(off_t);
+	cmd->extra_args[1].data = &roffset;
+	cmd->extra_args[2].len = sizeof(pid_t);
+	cmd->extra_args[2].data = &pid;
+
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 	
 	free(data);
-	free(arg_bytes.data);
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
@@ -629,10 +652,7 @@ end:
 scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, arg_uint = { .elements = 1 }, 
-		arg_bytes = { .elements = 1 }, 
-		*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd, *result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	pid_t pid = getpid();
@@ -652,35 +672,41 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	//RMA_SYNC
 	flags = flags | SCIF_RMA_SYNC;
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = WRITE_TO;
+	cmd->arg_count = 3;
+	cmd->n_int_args = 2;
+	int *data = malloc_safe(sizeof(int)*2);
 	data[0] = epd;
 	data[1] = flags;
-	arg_int.data = data;
+	cmd->int_args = data;
 		
-	arg_uint.type = UINT;
-	arg_uint.length = sizeof(uint32_t)*arg_uint.elements;
-	arg_uint.data = &len;
+	cmd->n_uint_args = 1;
+	cmd->uint_args = &len;
 
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t)*2 + len + sizeof(pid_t);
-	arg_bytes.data = malloc_safe(arg_bytes.length);
-	memcpy(arg_bytes.data, &loffset, sizeof(off_t));
-	memcpy(arg_bytes.data + sizeof(off_t), &roffset, sizeof(off_t));
-	memcpy(arg_bytes.data + 2*sizeof(off_t), &pid, sizeof(pid_t));
+	cmd->n_extra_args = 4;
+	cmd->extra_args  = malloc_safe(sizeof(ProtobufCBinaryData)*4);
+	cmd->extra_args[0].len = sizeof(off_t);
+	cmd->extra_args[0].data = &loffset;
+	cmd->extra_args[1].len = sizeof(off_t);
+	cmd->extra_args[1].data = &roffset;
+	cmd->extra_args[2].len = sizeof(pid_t);
+	cmd->extra_args[2].data = &pid;
+	cmd->extra_args[3].len = len;
 
 	void *addr_to_copy_from = mp->client_addr + (loffset - mp->offset);
-	memcpy(arg_bytes.data + 2*sizeof(off_t) + sizeof(pid_t), addr_to_copy_from, len); 
-	
-	if(send_phi_cmd(uow->sockfd, args, 3, WRITE_TO) < 0)
+	cmd->extra_args[3].data = addr_to_copy_from;
+
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	free(data);
-	free(arg_bytes.data);
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 
@@ -700,10 +726,7 @@ end:
 scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, arg_uint = { .elements = 1}, 
-			arg_bytes = { .elements = 1 }, 
-			*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd,*result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
@@ -714,28 +737,33 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	//RMA_SYNC
 	flags = flags | SCIF_RMA_SYNC;
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = VREAD_FROM;
+	cmd->arg_count = 3;
+	cmd->n_int_args = 2;
+	int *data = malloc_safe(sizeof(int)*2);
 	data[0] = epd;
 	data[1] = flags;
-	arg_int.data = data;
+	cmd->int_args = data;
 
-	arg_uint.type = UINT;
-	arg_uint.length = sizeof(uint32_t)*arg_uint.elements;
-	arg_uint.data = &len;
+	cmd->n_uint_args = 1;
+	cmd->uint_args = &len;
 
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t);
-	arg_bytes.data = &offset;
+	cmd->n_extra_args = 1;
+	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
+	cmd->extra_args[0].len = sizeof(off_t);
+	cmd->extra_args[0].data = &offset;
 
-	if(send_phi_cmd(uow->sockfd, args, 3, VREAD_FROM) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	free(data);
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
@@ -756,10 +784,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, arg_uint = { .elements = 1},
-		arg_bytes = { .elements = 1 }, 
-		*args[] = { &arg_int, &arg_uint, &arg_bytes}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd,*result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
@@ -770,31 +795,35 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	//RMA_SYNC
 	flags = flags | SCIF_RMA_SYNC;
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = VWRITE_TO;
+	cmd->arg_count = 3;
+	cmd->n_int_args = 2;
+	int *data = malloc_safe(sizeof(int)*2);
 	data[0] = epd;
 	data[1] = flags;
-	arg_int.data = data;
+	cmd->int_args = data;
 
-	arg_uint.type = UINT;
-	arg_uint.length = sizeof(size_t)*arg_uint.elements;
-	arg_uint.data = &len;
+	cmd->n_uint_args = 1;
+	cmd->uint_args = &len;
 
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t) + len;
-	arg_bytes.data = malloc_safe(arg_bytes.length);
-	memcpy(arg_bytes.data, addr, len);
-	memcpy(arg_bytes.data + len, &offset, sizeof(off_t));
+	cmd->n_extra_args = 2;
+	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData)*2);
+	cmd->extra_args[0].len = sizeof(off_t);
+	cmd->extra_args[0].data = &offset;
+	cmd->extra_args[1].len = len;
+	cmd->extra_args[1].data = addr;
 
- 	if(send_phi_cmd(uow->sockfd, args, 3, VWRITE_TO) < 0)
+ 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	free(data);
-	free(arg_bytes.data);
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)	
@@ -813,8 +842,7 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, *args[] = { &arg_int }; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd,*result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 
@@ -823,20 +851,24 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = FENCE_MARK;
+	cmd->arg_count = 1;
+	cmd->n_int_args = 2;
+	int *data = malloc_safe(sizeof(int)*2);
 	data[0] = epd;
 	data[1] = flags;
-	arg_int.data = data;
+	cmd->int_args = data;
 
-	if(send_phi_cmd(uow->sockfd, args, 1, FENCE_MARK) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	free(data);
+	free(cmd);
 	
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
@@ -857,8 +889,7 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 scif_fence_wait(scif_epd_t epd, int mark)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, *args[] = { &arg_int}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd,*result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 
@@ -866,20 +897,26 @@ scif_fence_wait(scif_epd_t epd, int mark)
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+
+	cmd->type = FENCE_WAIT;
+	cmd->arg_count = 1;
+	cmd->n_int_args = 2;
+	int *data = malloc_safe(sizeof(int)*2);
 	data[0] = epd;
 	data[1] = mark;
-	arg_int.data = data;
+	cmd->int_args = data;
 
-	if(send_phi_cmd(uow->sockfd, args, 1, FENCE_WAIT) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	free(data);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
@@ -899,10 +936,7 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 		off_t roff, uint64_t rval, int flags)
 {
 	int res_code, ret = -1;
-	var arg_int = { .elements = 2 }, arg_u64int = { .elements = 2},
-			 arg_bytes = { .elements = 1},
-	    		*args[] = { &arg_int, &arg_u64int, &arg_bytes}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd,*result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
@@ -911,27 +945,30 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg_int.type = INT;
-	arg_int.length = sizeof(int)*arg_int.elements;
-	int *data = malloc_safe(arg_int.length);
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = FENCE_SIGNAL;
+	cmd->arg_count = 3;
+	cmd->n_int_args = 2;
+	int *data = malloc_safe(sizeof(int)*2);
 	data[0] = epd;
 	data[1] = flags;
-	arg_int.data = data;
+	cmd->int_args = data;
 
-	arg_u64int.type = U64INT;
-	arg_u64int.length = sizeof(uint64_t)*arg_u64int.elements;
-	uint64_t *u64ints  = malloc_safe(arg_u64int.length);
+	cmd->n_u64int_args = 2;
+	uint64_t *u64ints  = malloc_safe(sizeof(uint64_t)*2);
 	u64ints[0] = lval;
 	u64ints[1] = rval;
-	arg_u64int.data = u64ints;
+	cmd->u64int_args= u64ints;
 
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(off_t)*2;
-	arg_bytes.data = malloc_safe(arg_bytes.length);
-	memcpy(arg_bytes.data, &loff, sizeof(off_t));
-	memcpy(arg_bytes.data + sizeof(off_t), &roff, sizeof(off_t));
+	cmd->n_extra_args = 2; 
+	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData)*2);
+	cmd->extra_args[0].len = sizeof(off_t);
+	cmd->extra_args[0].data = &loff;
+	cmd->extra_args[1].len = sizeof(off_t);
+	cmd->extra_args[1].data = &roff;
 
-	if(send_phi_cmd(uow->sockfd, args, 3, FENCE_SIGNAL) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
@@ -939,7 +976,8 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 
 	free(data);
 	free(u64ints);
-	free(arg_bytes.data);
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
@@ -958,8 +996,7 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 {
 	int res_code, ret = 1; 
-	var arg = { .elements = 1 }, *args[] = { &arg };
-	PhiCmd *result;
+	PhiCmd *cmd, *result;
 	void *des_msg = NULL;
 	thr_mng *uow;
 
@@ -968,15 +1005,20 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg.type = INT;
-	arg.length = sizeof(int);
-	arg.data = &len;
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = GET_NODE_IDS;
+	cmd->arg_count = 1;
+	cmd->n_int_args = 1;
+	cmd->int_args = &len;
 
-	if(send_phi_cmd(uow->sockfd, args, 1, GET_NODE_IDS) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	} 	
+
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
@@ -994,11 +1036,6 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 
 	free_deserialised_message(des_msg);
 
-	/*if(uow.ref_count == 0) {
-	  close(uow->sockfd);
-	  uow->sockfd = -1;
-	  }*/
-	
 	return ret;
 }
 
@@ -1006,9 +1043,7 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 {
 	int res_code, ret = -1;
-	var arg_uint = { .elements = 2}, arg_bytes = { .elements = 1},
-	    *args[] = { &arg_uint, &arg_bytes}; 
-	PhiCmd *result = NULL;
+	PhiCmd *cmd,*result = NULL;
 	void *des_msg = NULL;
 	thr_mng *uow;
 	
@@ -1017,24 +1052,30 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	if(uow->sockfd < 0)
 		establish_connection(uow);
 
-	arg_uint.type = UINT;
-	arg_uint.length = sizeof(uint32_t)*arg_uint.elements;
-	uint32_t *uints  = malloc_safe(arg_uint.length);
+	cmd = malloc_safe(sizeof(PhiCmd));
+	phi_cmd__init(cmd);
+	cmd->type = POLL;
+	cmd->arg_count = 2;
+	cmd->n_uint_args = 2;
+	uint32_t *uints  = malloc_safe(sizeof(uint32_t)*2);
 	uints[0] = nfds;
 	uints[1] = timeout_msecs;
-	arg_uint.data = uints;
+	cmd->uint_args = uints;
 
-	arg_bytes.type = BYTES;
-	arg_bytes.length = sizeof(struct scif_pollepd)*nfds;
-	arg_bytes.data = ufds;
+	cmd->n_extra_args = 1;
+	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
+	cmd->extra_args[0].len = sizeof(struct scif_pollepd)*nfds;
+	cmd->extra_args[0].data= ufds;
 
-	if(send_phi_cmd(uow->sockfd, args, 2, POLL) < 0)
+	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	free(uints);
+	free(cmd->extra_args);
+	free(cmd);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){

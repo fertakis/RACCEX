@@ -1,7 +1,8 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
+#include "common.pb-c.h"
 
-size_t serialise_message(void **result, int msg_type, void *payload);
+size_t serialise_message(void **result, int msg_type, PhiCmd *cmd);
 
 int deserialise_message(void **result, void **payload, void *serialised_msg, uint32_t ser_msg_len);
 

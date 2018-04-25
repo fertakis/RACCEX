@@ -111,15 +111,16 @@ void establish_connection(thr_mng *uow) {
 	rcdprintf("Connected to server %s on port %s...\n", server, server_port);
 }
 
-int send_phi_cmd(int socket_fd, var ** args, size_t arg_cnt, int cmd_type)
+int send_phi_cmd(int socket_fd, PhiCmd *cmd)
 {
 	void *buf = NULL, *payload = NULL;
 	size_t len;
 
-	ddprintf("Preparing and sending Phi cmd %d by thread %d\n", cmd_type, (int)pthread_self());
-	pack_phi_cmd(&payload, args, arg_cnt, cmd_type);
+	ddprintf("Preparing and sending Phi cmd %d by thread %d\n", cmd->type, (int)pthread_self());
+	
+	//pack_phi_cmd(&payload, args, arg_cnt, cmd_type);
 
-	len = serialise_message(&buf, PHI_CMD, payload);
+	len = serialise_message(&buf, PHI_CMD, cmd);
 	if(buf == NULL)
 		return -1;
 	send_message(socket_fd, buf, len);

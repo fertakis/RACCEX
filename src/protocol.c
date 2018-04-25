@@ -54,7 +54,7 @@ ssize_t insist_write(int fd, const void *buf, size_t cnt)
 	return orig_cnt;
 }
 
-size_t serialise_message(void **result, int msg_type, void *payload) {
+size_t serialise_message(void **result, int msg_type, PhiCmd *payload) {
 	size_t buf_size;
 	uint32_t msg_length, msg_len_n;
 	Cookie message = COOKIE__INIT;

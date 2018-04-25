@@ -18,7 +18,7 @@ int init_client_connection(const char *s_ip, const char *s_port);
 
 void establish_connection(thr_mng *uow);
 
-int send_phi_cmd(int socket_fd, var **args, size_t arg_cnt, int cmd_type);
+int send_phi_cmd(int socket_fd, PhiCmd *cmd);
 
 int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd);
 

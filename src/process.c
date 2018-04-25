@@ -338,11 +338,10 @@ int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, 
 	return ret;
 }
 
-int process_phi_cmd(void **result, void *cmd_ptr) {
+int process_phi_cmd(void **result, PhiCmd *cmd) {
 	int phi_result = 0, int_res_count = 0, uint_res_count = 0 , 
 	    u64int_res_count = 0, arg_count = 1;
 	int *int_res = NULL, *errorno = NULL;
-	PhiCmd *cmd = cmd_ptr;
 	uint32_t *uint_res = NULL; 
 	uint64_t *u64int_res = NULL;
 	void *extra_args = NULL;
@@ -449,10 +448,10 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				       void *addr, *client_addr;
 				       pid_t client_pid;
 				       addr_map *map_slot = NULL;
-
+					
 				       memcpy(&client_addr, cmd->extra_args[0].data, sizeof(void *));
-				       memcpy(&client_offset, cmd->extra_args[0].data + sizeof(void *), sizeof(off_t));
-				       memcpy(&client_pid, cmd->extra_args[0].data + sizeof(void *) + sizeof(off_t), sizeof(pid_t));
+				       memcpy(&client_offset, cmd->extra_args[1].data, sizeof(off_t));
+				       memcpy(&client_pid, cmd->extra_args[2].data, sizeof(pid_t));
 
 				       //addr = mmap(NULL, (size_t)cmd->uint_args[0],  PROT_READ | PROT_WRITE,
 				       //MAP_ANON | MAP_SHARED, -1, 0);
@@ -487,7 +486,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					 int_res_count = 1;
 
 					 memcpy(&offset, cmd->extra_args[0].data, sizeof(off_t));
-					 memcpy(&pid, cmd->extra_args[0].data + sizeof(off_t), sizeof(pid_t));
+					 memcpy(&pid, cmd->extra_args[1].data, sizeof(pid_t));
 
 					 phi_result = exec_scif_unregister((scif_epd_t)cmd->int_args[0],
 							 offset,
@@ -516,8 +515,8 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					pthread_t tid;
 
 					memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
-					memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
-					memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));
+					memcpy(&roffset, cmd->extra_args[1].data, sizeof(off_t));
+					memcpy(&pid, cmd->extra_args[2].data, sizeof(pid_t));
 
 					phi_result = exec_scif_readfrom((scif_epd_t)cmd->int_args[0], 
 							loffset, (size_t)cmd->uint_args[0],
@@ -551,8 +550,8 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				       size_t len = (size_t)cmd->uint_args[0];
 
 				       memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
-				       memcpy(&roffset, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
-				       memcpy(&pid, cmd->extra_args[0].data + 2*sizeof(off_t), sizeof(pid_t));			
+				       memcpy(&roffset, cmd->extra_args[1].data, sizeof(off_t));
+				       memcpy(&pid, cmd->extra_args[2].data, sizeof(pid_t));			
 
 				       addr_map *mp = get_map(pid, loffset);
 				       if(mp == NULL) {
@@ -561,7 +560,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 				       void *copy_to = mp->server_addr + (loffset - mp->offset);
 
 				       //copy to server registered address space len bytes for dma
-				       memcpy(copy_to, cmd->extra_args[0].data + 2*sizeof(off_t) + sizeof(pid_t), len);
+				       memcpy(copy_to, cmd->extra_args[3].data, len);
 				       phi_result = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
 						       loffset, len,
 						       roffset, cmd->int_args[1], int_res);
@@ -592,10 +591,10 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 					int_res_count = 1;
 
 					off_t offset;
-					memcpy(&offset, cmd->extra_args[0].data + (size_t)cmd->uint_args[0], sizeof(off_t));
+					memcpy(&offset, cmd->extra_args[0].data, sizeof(off_t));
 
 					phi_result = exec_scif_vwriteto((scif_epd_t)cmd->int_args[0],
-							(void *)cmd->extra_args[0].data, (size_t)cmd->uint_args[0], 
+							(void *)cmd->extra_args[1].data, (size_t)cmd->uint_args[0], 
 							offset, cmd->int_args[1], int_res);
 					break;
 				}
@@ -631,7 +630,7 @@ int process_phi_cmd(void **result, void *cmd_ptr) {
 
 					   off_t loff, roff;
 					   memcpy(&loff, cmd->extra_args[0].data, sizeof(off_t));
-					   memcpy(&roff, cmd->extra_args[0].data + sizeof(off_t), sizeof(off_t));
+					   memcpy(&roff, cmd->extra_args[1].data,, sizeof(off_t));
 
 					   phi_result = exec_scif_fence_signal((scif_epd_t)cmd->int_args[0],
 							   loff, cmd->u64int_args[0],
