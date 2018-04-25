@@ -2,6 +2,7 @@
 #define PROCESS_H
 
 #include <scif.h>
+#include "common.pb-c.h"
 
 typedef struct client_node_s {
 	int id;
@@ -29,6 +30,6 @@ int exec_scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval, off_t roff
 int exec_scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self, int *online_nodes);
 int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, int *poll_res);
 
-int process_phi_cmd(void **result, void *cmd_ptr);
+int process_phi_cmd(void **result, PhiCmd *cmd);
 
 #endif /* PROCESS_H */
