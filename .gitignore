@@ -41,7 +41,7 @@ scif_tutorials/*
 
 src/include/common.pb-c.c
 src/include/common.pb-c.h
-
+src/Makefile
 aclocal.m4
 Makefile.in
 Makefile

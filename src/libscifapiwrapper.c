@@ -600,7 +600,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	//RMA_SYNC
 	flags = flags | SCIF_RMA_SYNC;
 
-	cmd = malloc_sage(sizeof(PhiCmd));
+	cmd = malloc_safe(sizeof(PhiCmd));
 	phi_cmd__init(cmd);
 	cmd->type = READ_FROM;
 	cmd->arg_count = 3;
