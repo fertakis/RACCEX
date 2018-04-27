@@ -259,7 +259,7 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 	cmd->n_extra_args = 1;
 	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
 	cmd->extra_args[0].len = sizeof(struct scif_portID);
-	cmd->extra_args[0].data = dst;
+	cmd->extra_args[0].data = (uint8_t *)dst;
 
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
@@ -310,7 +310,7 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 	cmd->n_extra_args = 1;
 	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
 	cmd->extra_args[0].len = sizeof(struct scif_portID);
-	cmd->extra_args[0].data = peer;
+	cmd->extra_args[0].data = (uint8_t *)peer;
 
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
@@ -472,11 +472,11 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	cmd->n_extra_args = 3;
 	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData)*3);
 	cmd->extra_args[0].len = sizeof(void *);
-	cmd->extra_args[0].data = &addr; 
+	cmd->extra_args[0].data = (uint8_t *)&addr; 
 	cmd->extra_args[1].len = sizeof(off_t);
-	cmd->extra_args[1].data = &offset;
+	cmd->extra_args[1].data = (uint8_t *)&offset;
 	cmd->extra_args[2].len = sizeof(pid_t);
-	cmd->extra_args[2].data = &pid;
+	cmd->extra_args[2].data = (uint8_t *)&pid;
 
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
@@ -531,9 +531,9 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	cmd->n_extra_args = 2;
 	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData)*2);
 	cmd->extra_args[0].len = sizeof(off_t);
-	cmd->extra_args[0].data = &offset;
+	cmd->extra_args[0].data = (uint8_t *)&offset;
 	cmd->extra_args[1].len = sizeof(pid_t);
-	cmd->extra_args[1].data = &pid;
+	cmd->extra_args[1].data = (uint8_t *)&pid;
 
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
@@ -616,11 +616,11 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	cmd->n_extra_args = 3;
 	cmd->extra_args  = malloc_safe(sizeof(ProtobufCBinaryData)*3);
 	cmd->extra_args[0].len = sizeof(off_t);
-	cmd->extra_args[0].data = &loffset;
+	cmd->extra_args[0].data = (uint8_t *)&loffset;
 	cmd->extra_args[1].len = sizeof(off_t);
-	cmd->extra_args[1].data = &roffset;
+	cmd->extra_args[1].data = (uint8_t *)&roffset;
 	cmd->extra_args[2].len = sizeof(pid_t);
-	cmd->extra_args[2].data = &pid;
+	cmd->extra_args[2].data = (uint8_t *)&pid;
 
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
@@ -703,15 +703,15 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	cmd->n_extra_args = 4;
 	cmd->extra_args  = malloc_safe(sizeof(ProtobufCBinaryData)*4);
 	cmd->extra_args[0].len = sizeof(off_t);
-	cmd->extra_args[0].data = &loffset;
+	cmd->extra_args[0].data = (uint8_t *)&loffset;
 	cmd->extra_args[1].len = sizeof(off_t);
-	cmd->extra_args[1].data = &roffset;
+	cmd->extra_args[1].data = (uint8_t *)&roffset;
 	cmd->extra_args[2].len = sizeof(pid_t);
-	cmd->extra_args[2].data = &pid;
+	cmd->extra_args[2].data = (uint8_t *)&pid;
 	cmd->extra_args[3].len = len;
 
 	void *addr_to_copy_from = mp->client_addr + (loffset - mp->offset);
-	cmd->extra_args[3].data = addr_to_copy_from;
+	cmd->extra_args[3].data = (uint8_t *)addr_to_copy_from;
 	TIMER_STOP(&b_cp);
 
 	TIMER_START(&snd);
@@ -783,7 +783,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	cmd->n_extra_args = 1;
 	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
 	cmd->extra_args[0].len = sizeof(off_t);
-	cmd->extra_args[0].data = &offset;
+	cmd->extra_args[0].data = (uint8_t *)&offset;
 
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
@@ -841,9 +841,9 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	cmd->n_extra_args = 2;
 	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData)*2);
 	cmd->extra_args[0].len = sizeof(off_t);
-	cmd->extra_args[0].data = &offset;
+	cmd->extra_args[0].data = (uint8_t *)offset;
 	cmd->extra_args[1].len = len;
-	cmd->extra_args[1].data = addr;
+	cmd->extra_args[1].data = (uint8_t *)addr;
 
  	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
@@ -994,9 +994,9 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	cmd->n_extra_args = 2; 
 	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData)*2);
 	cmd->extra_args[0].len = sizeof(off_t);
-	cmd->extra_args[0].data = &loff;
+	cmd->extra_args[0].data = (uint8_t * )&loff;
 	cmd->extra_args[1].len = sizeof(off_t);
-	cmd->extra_args[1].data = &roff;
+	cmd->extra_args[1].data = (uint8_t * )&roff;
 
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
@@ -1100,7 +1100,7 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	cmd->n_extra_args = 1;
 	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
 	cmd->extra_args[0].len = sizeof(struct scif_pollepd)*nfds;
-	cmd->extra_args[0].data= ufds;
+	cmd->extra_args[0].data= (uint8_t *)ufds;
 
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{

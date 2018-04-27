@@ -63,8 +63,9 @@ void *serve_client(void *arg)
 {
 	int  msg_type, resp_type = -1, arg_cnt;
 	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL;
-	//client_node *cur_client = NULL;
 	uint32_t msg_length;
+ 	int type;
+
 	thr_mng *client = arg; 
 	
 	for(;;) {
@@ -83,7 +84,7 @@ void *serve_client(void *arg)
 			break;
 		}
 
-
+		type = ((PhiCmd *)payload)->type;
 		ddprintf("Processing message\n");
 		switch (msg_type) {
 			case PHI_CMD:
@@ -115,9 +116,11 @@ void *serve_client(void *arg)
 			
 			//breakdown
 			TIMER_STOP(&s_after);
-			printf("TIME BEFORE: %llu us %lf sec\n", TIMER_TOTAL(&s_bef), TIMER_TOTAL(&s_bef)/1000000.0);
-			printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
-			printf("TIME AFTER CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_after), TIMER_TOTAL(&s_after)/1000000.0);
+			if(type == WRITE_TO) { 
+				printf("TIME BEFORE: %llu us %lf sec\n", TIMER_TOTAL(&s_bef), TIMER_TOTAL(&s_bef)/1000000.0);
+				printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
+				printf("TIME AFTER CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_after), TIMER_TOTAL(&s_after)/1000000.0);
+			}
 
 			if (result != NULL) {
 				// should be more freeing here...
