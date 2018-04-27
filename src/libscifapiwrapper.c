@@ -658,6 +658,19 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	pid_t pid = getpid();
 	addr_map *mp = get_map(pid, loffset);
 
+	//breakdown analysis
+
+	TIMER_RESET(&b_fd);
+	TIMER_RESET(&b_cp);
+	TIMER_RESET(&snd);
+	TIMER_RESET(&pack);
+	TIMER_RESET(&ser);
+	TIMER_RESET(&smsg);
+	TIMER_RESET(&call);
+	TIMER_RESET(&after);
+
+	TIMER_START(&b_fd);	
+
 	if(mp == NULL) {
 		printf("scif_writeto: error while acquiring map\n. Exiting.\n");
 		ret = -1;
@@ -668,7 +681,9 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
-
+	
+	TIMER_STOP(&b_fd);
+	TIMER_START(&b_cp);
 	//RMA_SYNC
 	flags = flags | SCIF_RMA_SYNC;
 
@@ -697,7 +712,9 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	void *addr_to_copy_from = mp->client_addr + (loffset - mp->offset);
 	cmd->extra_args[3].data = addr_to_copy_from;
+	TIMER_STOP(&b_cp);
 
+	TIMER_START(&snd);
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
@@ -707,6 +724,8 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	free(data);
 	free(cmd->extra_args);
 	free(cmd);
+	TIMER_STOP(&snd);
+	TIMER_START(&call);
 
 	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
 
@@ -718,7 +737,18 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	}
 
 	free_deserialised_message(des_msg);
+
 end:
+	TIMER_STOP(&after);
+
+	printf("TIME IDENTIFY: %llu us %lf sec\n", TIMER_TOTAL(&b_fd), TIMER_TOTAL(&b_fd)/1000000.0);
+	printf("TIME COPY: %llu us %lf sec\n", TIMER_TOTAL(&b_cp), TIMER_TOTAL(&b_cp)/1000000.0);
+	printf("TIME SEND: %llu us %lf sec\n", TIMER_TOTAL(&snd), TIMER_TOTAL(&snd)/1000000.0);
+	printf("TIME PACK: %llu us %lf sec\n", TIMER_TOTAL(&pack), TIMER_TOTAL(&pack)/1000000.0);
+	printf("TIME SERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&ser), TIMER_TOTAL(&ser)/1000000.0);
+	printf("TIME SEND_MESSAGE: %llu us %lf sec\n", TIMER_TOTAL(&smsg), TIMER_TOTAL(&smsg)/1000000.0);
+	printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&call), TIMER_TOTAL(&call)/1000000.0);
+	printf("TIME AFTER: %llu us %lf sec\n", TIMER_TOTAL(&after), TIMER_TOTAL(&after)/1000000.0);
 	return ret;
 }
 
@@ -1036,6 +1066,11 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 
 	free_deserialised_message(des_msg);
 
+	/*if(uow.ref_count == 0) {
+	  close(uow->sockfd);
+	  uow->sockfd = -1;
+	  }*/
+	
 	return ret;
 }
 

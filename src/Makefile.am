@@ -5,7 +5,7 @@ AM_CFLAGS = -L$(PROTOBUF_C_LIBDIR) -I/usr/include/google -L/home/fertakis/repos/
 BUILT_SOURCES =common.pb-c.c common.pb-c.h
 
 server_SOURCES = server.c process.c common.c protocol.c
-server_SOURCES += include/common.pb-c.c
+server_SOURCES += include/common.pb-c.c timer.c
 
 libscifapiwrapper_so_CFLAGS = -fPIC -shared #-DRSCIF_DEBUG #-DMEMDEBUG $(DEBUG_CFLAGS)
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c

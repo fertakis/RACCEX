@@ -17,7 +17,7 @@
 extern struct addr_map_list maps;
 extern FILE *out_fd;
 
-extern scif_timers_t before, call, after;
+extern scif_timers_t b_fd, b_cp, snd, pack, ser, smsg, call, after, s_bef, s_dur, s_after;
 typedef enum var_type_enum {
     INT,
     UINT,

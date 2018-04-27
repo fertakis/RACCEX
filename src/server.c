@@ -66,9 +66,16 @@ void *serve_client(void *arg)
 	//client_node *cur_client = NULL;
 	uint32_t msg_length;
 	thr_mng *client = arg; 
-
+	
 	for(;;) {
+
+		TIMER_RESET(&s_bef);
+		TIMER_RESET(&s_dur);
+		TIMER_RESET(&s_after);
+
 		msg_length = receive_message(&msg, client->sockfd);
+		TIMER_START(&s_bef);
+
 		if (msg_length > 0)
 			msg_type = deserialise_message(&des_msg, &payload, msg, msg_length);
 		else {
@@ -105,6 +112,12 @@ void *serve_client(void *arg)
 			pack_phi_cmd(&payload, result, arg_cnt, PHI_CMD_RESULT);
 			msg_length = serialise_message(&msg, resp_type, payload);
 			send_message(client->sockfd, msg, msg_length);
+			
+			//breakdown
+			TIMER_STOP(&s_after);
+			printf("TIME BEFORE: %llu us %lf sec\n", TIMER_TOTAL(&s_bef), TIMER_TOTAL(&s_bef)/1000000.0);
+			printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
+			printf("TIME AFTER CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_after), TIMER_TOTAL(&s_after)/1000000.0);
 
 			if (result != NULL) {
 				// should be more freeing here...

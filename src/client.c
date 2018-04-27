@@ -117,13 +117,16 @@ int send_phi_cmd(int socket_fd, PhiCmd *cmd)
 	size_t len;
 
 	ddprintf("Preparing and sending Phi cmd %d by thread %d\n", cmd->type, (int)pthread_self());
-	
-	//pack_phi_cmd(&payload, args, arg_cnt, cmd_type);
 
+	//pack_phi_cmd(&payload, args, arg_cnt, cmd_type);
+	TIMER_START(&ser);
 	len = serialise_message(&buf, PHI_CMD, cmd);
+	TIMER_STOP(&ser);
 	if(buf == NULL)
 		return -1;
+	TIMER_START(&smsg);
 	send_message(socket_fd, buf, len);
+	TIMER_STOP(&smsg);
 
 	free(buf);
 	free(payload);
@@ -139,6 +142,8 @@ int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)
 	ddprintf("Waiting result from PHI Server...\n");
 	len = receive_message(&buf, socket_fd);
 
+	TIMER_STOP(&call);
+	TIMER_START(&after);
 	if(len > 0)
 		deserialise_message(&deserialised_message, &payload, buf, len);
 	else {
