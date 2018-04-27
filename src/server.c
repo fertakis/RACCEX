@@ -128,11 +128,11 @@ void *serve_client(void *arg)
 			if (result != NULL) {
 				// should be more freeing here...
 				if(result->int_args != NULL)
-					free(cmd->int_args);
+					free(result->int_args);
 				if(result->uint_args != NULL)
-					free(cmd->uint_args);
+					free(result->uint_args);
 				if(result->u64int_args != NULL)
-					free(cmd->u64int_args);
+					free(result->u64int_args);
 				if(result->extra_args != NULL) {
 					int j;
 					for(j=0; j< result->n_extra_args; j++)
