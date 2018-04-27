@@ -4,9 +4,9 @@
 
 size_t serialise_message(void **result, int msg_type, PhiCmd *cmd);
 
-int deserialise_message(void **result, void **payload, void *serialised_msg, uint32_t ser_msg_len);
+int deserialise_message(Cookie **result, PhiCmd **payload, void *serialised_msg, uint32_t ser_msg_len);
 
-void free_deserialised_message(void *msg);
+void free_deserialised_message(Cookie *msg);
 
 ssize_t send_message(int socket_fd, void *buffer, size_t len);
 

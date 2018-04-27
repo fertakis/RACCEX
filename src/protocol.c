@@ -86,7 +86,7 @@ size_t serialise_message(void **result, int msg_type, PhiCmd *payload) {
 	return buf_size;
 }
 
-int deserialise_message(void **result, void **payload, void *serialised_msg, uint32_t ser_msg_len)
+int deserialise_message(Cookie **result, PhiCmd **payload, void *serialised_msg, uint32_t ser_msg_len)
 {
 	Cookie *msg;
 
@@ -116,7 +116,7 @@ int deserialise_message(void **result, void **payload, void *serialised_msg, uin
 
 }
 
-void free_deserialised_message(void *msg) {
+void free_deserialised_message(Cookie *msg) {
 	ddprintf("Freeing allocated memory for message...\n");
 	cookie__free_unpacked((Cookie *)msg, NULL);
 }

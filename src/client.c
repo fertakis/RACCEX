@@ -133,10 +133,12 @@ int send_phi_cmd(int socket_fd, PhiCmd *cmd)
 	return 0;
 }
 
-int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)
+int get_phi_cmd_result(PhiCmd **result, Cookie **cookie, int socket_fd)
 {
 	size_t len;
-	void *buf = NULL, *payload = NULL, *deserialised_message=NULL;
+	void *buf = NULL;
+	PhiCmd *res;
+	Cookie *ck;
 	int res_code;
 
 	ddprintf("Waiting result from PHI Server...\n");
@@ -145,23 +147,23 @@ int get_phi_cmd_result(PhiCmd **result, void **des_msg, int socket_fd)
 	TIMER_STOP(&call);
 	TIMER_START(&after);
 	if(len > 0)
-		deserialise_message(&deserialised_message, &payload, buf, len);
+		deserialise_message(&ck, &res, buf, len);
 	else {
 		fprintf(stderr, "Problem receiving server response.\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if(payload == NULL) {
+	if(res == NULL) {
 		fprintf(stderr, "Problem deserialising message.\n");
 		exit(EXIT_FAILURE);
 	} else {
-		*result = (PhiCmd *)payload;
-		res_code = ((PhiCmd *)*result)->phi_result_code;
+		*result = res;
+		res_code = res->phi_result_code;
 		ddprintf("Server responded: \n| result code: %d\n", res_code);
 		if(res_code != 0)
-			ddprintf("error detected ! errno=%d\n", ((PhiCmd *)payload)->phi_errorno);
+			ddprintf("error detected ! errno=%d\n", res->phi_errorno);
 
-		*des_msg = deserialised_message;
+		*cookie = ck;
 	}
 
 	if(buf != NULL)

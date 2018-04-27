@@ -62,7 +62,9 @@ int init_server_net(const char *port, struct sockaddr_in *sa)
 void *serve_client(void *arg)
 {
 	int  msg_type, resp_type = -1, arg_cnt;
-	void *msg=NULL, *payload=NULL, *result=NULL, *des_msg=NULL;
+	void *msg=NULL;
+	Cookie *cookie;
+	PhiCmd *result, *cmd;
 	uint32_t msg_length;
  	int type;
 
@@ -70,25 +72,27 @@ void *serve_client(void *arg)
 	
 	for(;;) {
 
-		TIMER_RESET(&s_bef);
+		TIMER_RESET(&s_des);
 		TIMER_RESET(&s_dur);
 		TIMER_RESET(&s_after);
 
 		msg_length = receive_message(&msg, client->sockfd);
-		TIMER_START(&s_bef);
+		TIMER_START(&s_des);
 
 		if (msg_length > 0)
-			msg_type = deserialise_message(&des_msg, &payload, msg, msg_length);
+			msg_type = deserialise_message(&cookie, &cmd, msg, msg_length);
 		else {
 			printf("\n--------------\nClient finished.\n\n");
 			break;
 		}
+		TIMER_STOP(&s_des);
 
-		type = ((PhiCmd *)payload)->type;
+		type = cmd->type;
+
 		ddprintf("Processing message\n");
 		switch (msg_type) {
 			case PHI_CMD:
-				arg_cnt = process_phi_cmd(&result, payload);
+				arg_cnt = process_phi_cmd(&result, cmd);
 				resp_type = PHI_CMD_RESULT;
 				break;
 			default:
@@ -101,41 +105,41 @@ void *serve_client(void *arg)
 			free(msg);
 			msg = NULL;
 		}
-		if (des_msg != NULL) {
-			free_deserialised_message(des_msg);
-			des_msg = NULL;
-			// payload should be invalid now
-			payload = NULL;
+		if (cookie != NULL) {
+			free_deserialised_message(cookie);
+			cookie = NULL;
+			// cmd should be invalid now
+			cmd = NULL;
 		}
 
 		if (resp_type != -1) {
 			ddprintf("Packing and Sending result\n");
-			pack_phi_cmd(&payload, result, arg_cnt, PHI_CMD_RESULT);
-			msg_length = serialise_message(&msg, resp_type, payload);
+			msg_length = serialise_message(&msg, resp_type, result);
 			send_message(client->sockfd, msg, msg_length);
 			
 			//breakdown
 			TIMER_STOP(&s_after);
 			if(type == WRITE_TO) { 
-				printf("TIME BEFORE: %llu us %lf sec\n", TIMER_TOTAL(&s_bef), TIMER_TOTAL(&s_bef)/1000000.0);
+				printf("TIME BEFORE: %llu us %lf sec\n", TIMER_TOTAL(&s_des), TIMER_TOTAL(&s_des)/1000000.0);
 				printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
 				printf("TIME AFTER CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_after), TIMER_TOTAL(&s_after)/1000000.0);
 			}
 
 			if (result != NULL) {
 				// should be more freeing here...
-				free(result);
-				result = NULL;
-
-				PhiCmd *cmd = payload;
-				if(cmd->int_args != NULL)
+				if(result->int_args != NULL)
 					free(cmd->int_args);
-				if(cmd->uint_args != NULL)
+				if(result->uint_args != NULL)
 					free(cmd->uint_args);
-				if(cmd->u64int_args != NULL)
+				if(result->u64int_args != NULL)
 					free(cmd->u64int_args);
-				if(cmd->extra_args != NULL)
-					free(cmd->extra_args[0].data);
+				if(result->extra_args != NULL) {
+					int j;
+					for(j=0; j< result->n_extra_args; j++)
+						if(type != READ_FROM)
+							free(result->extra_args[j].data);
+					free(result->extra_args);
+				}
 			}
 		}
 		ddprintf(">>\nMessage processed, cleaning up...\n<<\n");

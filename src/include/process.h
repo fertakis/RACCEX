@@ -15,7 +15,7 @@ int exec_scif_listen(scif_epd_t endp, int backlog);
 int exec_scif_connect(scif_epd_t endp, struct scif_portID *dst, int *portID);
 int exec_scif_accept(scif_epd_t endp, struct scif_portID *peer, scif_epd_t *newepd, int flags);
 int exec_scif_send(scif_epd_t epd, void *msg, int len, int flags, int *send_count);
-int exec_scif_recv(scif_epd_t epd, void *msg, int len, int flags, int *read_count, int *arg_count);
+int exec_scif_recv(scif_epd_t epd, void *msg, int len, int flags, int *read_count);
 int exec_scif_register(scif_epd_t endp, void *addr, size_t len, off_t offset, int prot_flags, int map_flags, off_t *resulted_off_t);
 int exec_scif_unregister(scif_epd_t endp, off_t offset, size_t len, int *result);
 int exec_scif_mmap(void *addr, size_t len, int prot_flags, int map_flags, scif_epd_t epd, off_t offset, void *result);
@@ -30,6 +30,6 @@ int exec_scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval, off_t roff
 int exec_scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self, int *online_nodes);
 int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, int *poll_res);
 
-int process_phi_cmd(void **result, PhiCmd *cmd);
+int process_phi_cmd(PhiCmd **result, PhiCmd *cmd);
 
 #endif /* PROCESS_H */

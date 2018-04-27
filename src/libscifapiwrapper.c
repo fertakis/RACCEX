@@ -58,7 +58,7 @@ scif_get_driver_version(void)
 	}
 
 	printf(" scif_get_driver_version executed \n");
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	//close connection
 	close(uow->sockfd);*/
@@ -72,7 +72,7 @@ scif_open(void)
 	int res_code;
 	scif_epd_t fd;
 	PhiCmd *cmd, *result;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 	
 	uow = identify_thread(&threads);
@@ -93,7 +93,7 @@ scif_open(void)
 		exit(EXIT_FAILURE);	
 	}
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == PHI_SUCCESS) {
 		fd = (scif_epd_t)result->int_args[0];
 	}
@@ -102,7 +102,7 @@ scif_open(void)
 		errno  = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 	return fd;
 }
 
@@ -111,7 +111,7 @@ scif_close(scif_epd_t epd)
 {
 	int res_code, ret = 0;
 	PhiCmd *cmd,*result;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 
 	uow = identify_thread(&threads);
@@ -134,14 +134,14 @@ scif_close(scif_epd_t epd)
 
 	free(cmd);	
 
-	res_code = get_phi_cmd_result(&result, &des_msg,  uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck,  uow->sockfd);
 
 	if(res_code != PHI_SUCCESS) {
 		ret = -1;
 		errno  = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	return ret;
 }
@@ -151,7 +151,7 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 {
 	int pni = pn, res_code, ret = -1;
 	PhiCmd *cmd, *result;  
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 
 	uow = identify_thread(&threads);
@@ -176,7 +176,7 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 
 	if(res_code == PHI_SUCCESS) {
 		ret = (uint16_t)result->int_args[0];
@@ -186,7 +186,7 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	return ret;
 }
@@ -195,8 +195,8 @@ scif_bind(scif_epd_t epd, uint16_t pn)
 scif_listen(scif_epd_t epd, int backlog)
 {
 	int res_code, ret = 0;
-	PhiCmd *cmd, *result;  
-	void *des_msg = NULL;
+	PhiCmd *cmd, *result; 
+	Cookie *ck;	
 	thr_mng *uow;
 
 	uow = identify_thread(&threads);
@@ -224,14 +224,14 @@ scif_listen(scif_epd_t epd, int backlog)
 	free(data);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 
 	if(res_code != PHI_SUCCESS) {
 		ret = -1;
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 	
 	return ret;
 }
@@ -240,8 +240,8 @@ scif_listen(scif_epd_t epd, int backlog)
 scif_connect(scif_epd_t epd, struct scif_portID *dst)
 {
 	int res_code, ret =-1;
-	PhiCmd *cmd,*result; 
-	void *des_msg = NULL;
+	PhiCmd *cmd,*result;
+       	Cookie *ck;	
 	thr_mng *uow;
 
 	uow = identify_thread(&threads);
@@ -270,7 +270,7 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 	free(cmd->extra_args);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) 
 		ret = (int)result->int_args[0];
 	else {
@@ -279,7 +279,7 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 		ddprintf("Error detected : %s\n", strerror(errno));
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	return ret;
 }
@@ -288,8 +288,8 @@ scif_connect(scif_epd_t epd, struct scif_portID *dst)
 scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int flags)
 {
 	int res_code, ret = -1 ;
-	PhiCmd *cmd,*result = NULL;
-	void *des_msg = NULL;
+	PhiCmd *cmd,*result;
+	Cookie *ck;
 	thr_mng *uow;
 
 	uow = identify_thread(&threads);
@@ -323,7 +323,7 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 	free(cmd->extra_args);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(newepd, &result->int_args[0], sizeof(scif_epd_t));
 		ret = 0;
@@ -333,7 +333,7 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 		errno = (int)result->phi_errorno;	
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 	
 	return ret;
 }
@@ -342,8 +342,8 @@ scif_accept(scif_epd_t epd, struct scif_portID *peer, scif_epd_t *newepd, int fl
 scif_send(scif_epd_t epd, void *msg, int len, int flags)
 {
 	int res_code, ret = -1; 
-	PhiCmd *cmd, *result = NULL;
-	void *des_msg = NULL;
+	PhiCmd *cmd, *result;
+	Cookie *ck;
 	thr_mng *uow;
 
 	uow = identify_thread(&threads);
@@ -377,7 +377,7 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	free(cmd->extra_args);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		ret = (int)result->int_args[0];
 	}
@@ -386,7 +386,7 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 	
 	return ret; 
 }
@@ -396,7 +396,7 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 {
 	int res_code, ret = -1; 
 	PhiCmd *cmd,*result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 	
 	uow = identify_thread(&threads);
@@ -424,7 +424,7 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 	free(data);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(msg, result->extra_args[0].data, result->extra_args[0].len);
 		ret = (int)result->int_args[0];
@@ -434,7 +434,7 @@ scif_recv(scif_epd_t epd, void *msg, int len, int flags)
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 	
 	return ret;
 }
@@ -446,7 +446,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	int res_code;
 	off_t ret;
 	PhiCmd *cmd, *result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 	pid_t pid = getpid();
 	
@@ -488,7 +488,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 	free(cmd->extra_args);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		memcpy(&ret, result->extra_args[0].data, sizeof(off_t));
 		addr_map *entry = identify_map(pid, addr, NULL, len, ret); 
@@ -500,7 +500,7 @@ scif_register(scif_epd_t epd, void *addr, size_t len, off_t offset,
 		errno = (int)result->phi_errorno; 
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	return ret;
 }
@@ -510,7 +510,7 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 {
 	int res_code, ret = -1;
 	PhiCmd *cmd, *result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 	pid_t pid = getpid();
 
@@ -544,7 +544,7 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 	free(cmd->extra_args);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		ret = (int)result->int_args[0];
 		if(remove_mapping(pid, offset) < 0)
@@ -555,7 +555,7 @@ scif_unregister(scif_epd_t epd, off_t offset, size_t len)
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	return ret;
 }
@@ -581,7 +581,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 {
 	int res_code, ret = -1;
 	PhiCmd *cmd,*result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 	pid_t pid = getpid();
 	addr_map *mp = get_map(pid, loffset);
@@ -632,7 +632,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 	free(cmd->extra_args);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		ret = (int)result->int_args[0];
 		void *addr_to_write = mp->client_addr + (loffset - mp->offset);
@@ -643,7 +643,7 @@ scif_readfrom(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flag
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 end:
 	return ret;
@@ -653,7 +653,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 {
 	int res_code, ret = -1;
 	PhiCmd *cmd, *result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 	pid_t pid = getpid();
 	addr_map *mp = get_map(pid, loffset);
@@ -721,13 +721,13 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 		exit(EXIT_FAILURE);
 	}
 
+	TIMER_STOP(&snd);
 	free(data);
 	free(cmd->extra_args);
 	free(cmd);
-	TIMER_STOP(&snd);
 	TIMER_START(&call);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 
 	if(res_code == SCIF_SUCCESS)	
 		ret = (int)result->int_args[0];
@@ -736,7 +736,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 end:
 	TIMER_STOP(&after);
@@ -757,7 +757,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
 	int res_code, ret = -1;
 	PhiCmd *cmd,*result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 	
 	uow = identify_thread(&threads);
@@ -795,7 +795,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	free(cmd->extra_args);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		ret = (int)result->int_args[0];
 		memcpy(addr, result->extra_args[0].data, result->extra_args[0].len);
@@ -805,7 +805,7 @@ scif_vreadfrom(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 	
 	return ret;
 }
@@ -815,7 +815,7 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 {
 	int res_code, ret = -1;
 	PhiCmd *cmd,*result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 	
 	uow = identify_thread(&threads);
@@ -855,7 +855,7 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	free(cmd->extra_args);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)	
 		ret = (int)result->int_args[0];
 	else {
@@ -863,7 +863,7 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	return ret;
 }
@@ -873,7 +873,7 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 {
 	int res_code, ret = -1;
 	PhiCmd *cmd,*result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 
 	uow = identify_thread(&threads);
@@ -900,7 +900,7 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 	free(data);
 	free(cmd);
 	
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		memcpy(mark, &result->int_args[0], sizeof(int));	
 		ret = (int)result->int_args[1];
@@ -910,7 +910,7 @@ scif_fence_mark(scif_epd_t epd, int flags, int *mark)
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	return ret;
 }
@@ -920,7 +920,7 @@ scif_fence_wait(scif_epd_t epd, int mark)
 {
 	int res_code, ret = -1;
 	PhiCmd *cmd,*result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 
 	uow = identify_thread(&threads);
@@ -948,7 +948,7 @@ scif_fence_wait(scif_epd_t epd, int mark)
 	free(data);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
 		ret = (int)result->int_args[0];
 	else {
@@ -956,7 +956,7 @@ scif_fence_wait(scif_epd_t epd, int mark)
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	return ret;
 }
@@ -967,7 +967,7 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 {
 	int res_code, ret = -1;
 	PhiCmd *cmd,*result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 	
 	uow = identify_thread(&threads);
@@ -1009,7 +1009,7 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 	free(cmd->extra_args);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS)
 		ret = (int)result->int_args[0];
 	else {
@@ -1017,7 +1017,7 @@ scif_fence_signal(scif_epd_t epd, off_t loff, uint64_t lval,
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	return ret;
 }
@@ -1027,7 +1027,7 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 {
 	int res_code, ret = 1; 
 	PhiCmd *cmd, *result;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 
 	uow = identify_thread(&threads);
@@ -1050,21 +1050,21 @@ scif_get_nodeIDs(uint16_t *nodes, int len, uint16_t *self)
 
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS) {
 		ret = result->int_args[0];
 		if (ret > len)
 			memcpy(nodes, result->extra_args[0].data, len*sizeof(uint16_t));
 		else
 			memcpy(nodes, result->extra_args[0].data, ret*sizeof(uint16_t));
-		memcpy(self, result->extra_args[0].data+sizeof(uint16_t)*ret, sizeof(uint16_t));
+		memcpy(self, result->extra_args[1].data, sizeof(uint16_t));
 	}
 	else {
 		ret = 1;
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 
 	/*if(uow.ref_count == 0) {
 	  close(uow->sockfd);
@@ -1079,7 +1079,7 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 {
 	int res_code, ret = -1;
 	PhiCmd *cmd,*result = NULL;
-	void *des_msg = NULL;
+	Cookie *ck;
 	thr_mng *uow;
 	
 	uow = identify_thread(&threads);
@@ -1112,7 +1112,7 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 	free(cmd->extra_args);
 	free(cmd);
 
-	res_code = get_phi_cmd_result(&result, &des_msg, uow->sockfd);
+	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 	if(res_code == SCIF_SUCCESS){
 		ret = result->int_args[0];
 		memcpy(ufds, result->extra_args[0].data, sizeof(struct scif_pollepd)*nfds);
@@ -1122,7 +1122,7 @@ scif_poll(struct scif_pollepd *ufds, unsigned int nfds, long timeout_msecs)
 		errno = (int)result->phi_errorno;
 	}
 
-	free_deserialised_message(des_msg);
+	free_deserialised_message(ck);
 	return ret;
 }
 
