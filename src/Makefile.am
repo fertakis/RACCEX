@@ -7,7 +7,7 @@ BUILT_SOURCES =common.pb-c.c common.pb-c.h
 server_SOURCES = server.c process.c common.c protocol.c
 server_SOURCES += include/common.pb-c.c timer.c
 
-libscifapiwrapper_so_CFLAGS = -fPIC -shared #-DRSCIF_DEBUG #-DMEMDEBUG $(DEBUG_CFLAGS)
+libscifapiwrapper_so_CFLAGS = -fPIC -shared #-DDEEP_DEBUG#-DRSCIF_DEBUG #-DMEMDEBUG $(DEBUG_CFLAGS)
 libscifapiwrapper_so_SOURCES = libscifapiwrapper.c process.c
 libscifapiwrapper_so_SOURCES += common.c protocol.c client.c include/common.pb-c.c 
 

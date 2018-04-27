@@ -71,13 +71,15 @@ void *serve_client(void *arg)
 	thr_mng *client = arg; 
 	
 	for(;;) {
-
+#ifdef BREAKDOWN
 		TIMER_RESET(&s_des);
 		TIMER_RESET(&s_dur);
 		TIMER_RESET(&s_after);
-
+#endif
 		msg_length = receive_message(&msg, client->sockfd);
+#ifdef BREAKDOWN
 		TIMER_START(&s_des);
+#endif
 
 		if (msg_length > 0)
 			msg_type = deserialise_message(&cookie, &cmd, msg, msg_length);
@@ -85,7 +87,9 @@ void *serve_client(void *arg)
 			printf("\n--------------\nClient finished.\n\n");
 			break;
 		}
+#ifdef BREAKDOWN
 		TIMER_STOP(&s_des);
+#endif
 
 		type = cmd->type;
 
@@ -118,13 +122,14 @@ void *serve_client(void *arg)
 			send_message(client->sockfd, msg, msg_length);
 			
 			//breakdown
+#ifdef BREAKDOWN
 			TIMER_STOP(&s_after);
 			if(type == WRITE_TO) { 
 				printf("TIME BEFORE: %llu us %lf sec\n", TIMER_TOTAL(&s_des), TIMER_TOTAL(&s_des)/1000000.0);
 				printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
 				printf("TIME AFTER CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_after), TIMER_TOTAL(&s_after)/1000000.0);
 			}
-
+#endif
 			if (result != NULL) {
 				// should be more freeing here...
 				if(result->int_args != NULL)

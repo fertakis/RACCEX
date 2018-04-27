@@ -659,7 +659,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	addr_map *mp = get_map(pid, loffset);
 
 	//breakdown analysis
-
+#ifdef BREAKDOWN
 	TIMER_RESET(&b_fd);
 	TIMER_RESET(&b_cp);
 	TIMER_RESET(&snd);
@@ -670,7 +670,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	TIMER_RESET(&after);
 
 	TIMER_START(&b_fd);	
-
+#endif
 	if(mp == NULL) {
 		printf("scif_writeto: error while acquiring map\n. Exiting.\n");
 		ret = -1;
@@ -681,9 +681,10 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	if(uow->sockfd < 0)
 		establish_connection(uow);
-	
+#ifdef BREAKDOWN	
 	TIMER_STOP(&b_fd);
 	TIMER_START(&b_cp);
+#endif
 	//RMA_SYNC
 	flags = flags | SCIF_RMA_SYNC;
 
@@ -712,20 +713,25 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 
 	void *addr_to_copy_from = mp->client_addr + (loffset - mp->offset);
 	cmd->extra_args[3].data = (uint8_t *)addr_to_copy_from;
+#ifdef BREAKDOWN
 	TIMER_STOP(&b_cp);
 
 	TIMER_START(&snd);
+#endif
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
-
+#ifdef BREAKDOWN
 	TIMER_STOP(&snd);
+#endif
 	free(data);
 	free(cmd->extra_args);
 	free(cmd);
+#ifdef BREAKDOWN
 	TIMER_START(&call);
+#endif
 
 	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
 
@@ -739,6 +745,7 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	free_deserialised_message(ck);
 
 end:
+#ifdef BREAKDOWN
 	TIMER_STOP(&after);
 
 	printf("TIME IDENTIFY: %llu us %lf sec\n", TIMER_TOTAL(&b_fd), TIMER_TOTAL(&b_fd)/1000000.0);
@@ -749,6 +756,8 @@ end:
 	printf("TIME SEND_MESSAGE: %llu us %lf sec\n", TIMER_TOTAL(&smsg), TIMER_TOTAL(&smsg)/1000000.0);
 	printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&call), TIMER_TOTAL(&call)/1000000.0);
 	printf("TIME AFTER: %llu us %lf sec\n", TIMER_TOTAL(&after), TIMER_TOTAL(&after)/1000000.0);
+
+#endif
 	return ret;
 }
 

@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include "common.pb-c.h"
+#ifdef BREAKDOWN
 #include "timer.h"
+#endif
 
 #define DEFAULT_SERVER_IP "localhost"
 #define DEFAULT_SERVER_PORT "8888"
@@ -17,7 +19,10 @@
 extern struct addr_map_list maps;
 extern FILE *out_fd;
 
+#ifdef BREAKDOWN
 extern scif_timers_t b_fd, b_cp, snd, pack, ser, smsg, call, after, s_des, s_unpack, s_dur, s_after;
+#endif
+
 typedef enum var_type_enum {
     INT,
     UINT,
