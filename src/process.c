@@ -681,7 +681,7 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 				res->n_extra_args = 2;
 				res->extra_args = malloc_safe(sizeof(ProtobufCBinaryData)*2);
 				
-				res->extra_args[0].len = sizeof(uint16_t)*(res->int_args[1]);
+				res->extra_args[0].len = sizeof(uint16_t)*(res->int_args[0]);
 				res->extra_args[0].data = nodes;
 				res->extra_args[1].len = sizeof(uint16_t);
 				res->extra_args[1].data = self;
