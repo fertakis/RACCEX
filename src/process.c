@@ -707,7 +707,7 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 			break;	
 	}
 
-	if(res->int_args[0] != PHI_SUCCESS)
+	if(res->phi_result_code != PHI_SUCCESS)
 	{
 		res->arg_count++;
 		res->has_phi_errorno = 1;
