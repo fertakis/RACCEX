@@ -850,7 +850,7 @@ scif_vwriteto(scif_epd_t epd, void *addr, size_t len, off_t offset, int flags)
 	cmd->n_extra_args = 2;
 	cmd->extra_args = malloc_safe(sizeof(ProtobufCBinaryData)*2);
 	cmd->extra_args[0].len = sizeof(off_t);
-	cmd->extra_args[0].data = (uint8_t *)offset;
+	cmd->extra_args[0].data = (uint8_t *)&offset;
 	cmd->extra_args[1].len = len;
 	cmd->extra_args[1].data = (uint8_t *)addr;
 
