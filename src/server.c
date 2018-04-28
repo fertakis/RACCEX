@@ -63,8 +63,8 @@ void *serve_client(void *arg)
 {
 	int  msg_type, resp_type = -1, arg_cnt;
 	void *msg=NULL;
-	Cookie *cookie;
-	PhiCmd *result, *cmd;
+	Cookie *cookie = NULL;
+	PhiCmd *result = NULL, *cmd = NULL;
 	uint32_t msg_length;
  	int type;
 
@@ -145,6 +145,7 @@ void *serve_client(void *arg)
 							free(result->extra_args[j].data);
 					free(result->extra_args);
 				}
+				result = NULL;
 			}
 		}
 		ddprintf(">>\nMessage processed, cleaning up...\n<<\n");
