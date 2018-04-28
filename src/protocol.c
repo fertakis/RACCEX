@@ -153,7 +153,6 @@ uint32_t receive_message(void **serialised_msg, int socket_fd) {
 	ddprintf("Going to read a message of %u bytes..., pthreadid %d \n", msg_len, (int)pthread_self());
 
 	buf = realloc(buf, msg_len);
-
 	// read message
 	if((ret = insist_read(socket_fd, buf, msg_len)) <= 0) {
 		free(buf);

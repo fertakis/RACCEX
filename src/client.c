@@ -132,7 +132,7 @@ int send_phi_cmd(int socket_fd, PhiCmd *cmd)
 	TIMER_START(&smsg);
 #endif
 	send_message(socket_fd, buf, len);
-#ifdef BREAKDOWn
+#ifdef BREAKDOWN
 	TIMER_STOP(&smsg);
 #endif
 	free(buf);
