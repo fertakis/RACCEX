@@ -104,11 +104,15 @@ void *serve_client(void *arg)
 				break;
 		}
 
-
+		ddprintf("free msg\n");
+		
 		if (msg != NULL) {
+			ddprintf("msg not null\n");
 			free(msg);
 			msg = NULL;
 		}
+
+		ddprintf("free cookie\n");
 		if (cookie != NULL) {
 			free_deserialised_message(cookie);
 			cookie = NULL;
@@ -130,6 +134,7 @@ void *serve_client(void *arg)
 				printf("TIME AFTER CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_after), TIMER_TOTAL(&s_after)/1000000.0);
 			}
 #endif
+			ddprintf("about to free phicmd\n");
 			if (result != NULL) {
 				// should be more freeing here...
 				if(result->int_args != NULL)
@@ -141,7 +146,7 @@ void *serve_client(void *arg)
 				if(result->extra_args != NULL) {
 					int j;
 					for(j=0; j< result->n_extra_args; j++)
-						if(type != READ_FROM)
+						if(type != READ_FROM && type != POLL)
 							free(result->extra_args[j].data);
 					free(result->extra_args);
 				}

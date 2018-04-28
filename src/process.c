@@ -345,7 +345,7 @@ int exec_scif_poll(struct scif_pollepd *epds, unsigned int nepds, long timeout, 
 int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 	PhiCmd *res;
 
-	ddprintf("Processing PHI_CMD\n");
+	ddprintf("Processing PHI_CMD %d\n", cmd->type);
 
 	res = malloc_safe(sizeof(PhiCmd));
 	phi_cmd__init(res);
@@ -392,6 +392,8 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 		case LISTEN:
 			//TODO: scif_liste call goes here...
 			res->arg_count = 1;
+			
+			printf("scif_listen with endp%d and bcklog %d\n", cmd->int_args[0], cmd->int_args[1]);
 
 			res->phi_result_code = exec_scif_listen((scif_epd_t)cmd->int_args[0], 
 					cmd->int_args[1]);
@@ -422,6 +424,7 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 			break;
 		case SEND:
 			//TODO: scif_send call goes here...
+			ddprintf("scif_send..\n");
 			res->arg_count = 2;
 
 			res->n_int_args = 1;
@@ -434,6 +437,7 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 			break;
 		case RECV:
 			//TODO: scif_recv call goes here...
+			ddprintf("recv\n");
 			res->arg_count = 3;
 
 			res->n_int_args = 1;
@@ -442,12 +446,14 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 			res->n_extra_args = 1;
 			res->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
 
-			res->extra_args[0].len = (size_t)cmd->int_args[1];
+			res->extra_args[0].len = cmd->int_args[1];
+			ddprintf("to read %d\n", cmd->int_args[1]);
 			res->extra_args[0].data = malloc_safe(res->extra_args[0].len);
-
+			ddprintf("about to call recv\n");
 			res->phi_result_code = exec_scif_recv((scif_epd_t)cmd->int_args[0], 
 					res->extra_args[0].data, cmd->int_args[1], cmd->int_args[2],
 					&(res->int_args[0]));
+			ddprintf("finished rcv while read %d\n", res->int_args[0]);
 			break;
 		case REGISTER: 
 			//TODO: scif_register call goes here...
@@ -505,7 +511,7 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 				res->phi_result_code = exec_scif_unregister((scif_epd_t)cmd->int_args[0],
 						offset,
 						cmd->uint_args[0], &(res->int_args[0]));		
-				if(res->int_args[0] == SCIF_SUCCESS)
+				if(res->phi_result_code == SCIF_SUCCESS)
 					if(remove_mapping(pid, offset) < 0)
 						printf("error freeing mapping\n");
 				break;
@@ -535,7 +541,7 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 				res->phi_result_code = exec_scif_readfrom((scif_epd_t)cmd->int_args[0], 
 						loffset, (size_t)cmd->uint_args[0],
 						roffset, cmd->int_args[1], &(res->int_args[0]));
-				if(res->int_args[0] == SCIF_SUCCESS) {
+				if(res->phi_result_code == SCIF_SUCCESS) {
 					//addr_map *mp = identify_map(pid, NULL, NULL, loffset);
 					addr_map *mp = get_map(pid, loffset);
 	
@@ -625,28 +631,28 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 							offset, cmd->int_args[1], &(res->int_args[0]));
 				break;
 		}
-		case FENCE_MARK: 
-			//TODO: scif_fence_mark call goes here...
-			res->arg_count = 2;
-
-			res->n_int_args = 2;
-			res->int_args = malloc_safe(sizeof(int)*2);
-
-			res->phi_result_code = exec_scif_fence_mark((scif_epd_t)cmd->int_args[0],
-					cmd->int_args[1], &(res->int_args[0]), &(res->int_args[1]));
+		case FENCE_MARK: { 
+				//TODO: scif_fence_mark call goes here...
+				res->arg_count = 2;
+		
+				res->n_int_args = 2;
+				res->int_args = malloc_safe(sizeof(int)*2);
+	
+				res->phi_result_code = exec_scif_fence_mark((scif_epd_t)cmd->int_args[0],
+						cmd->int_args[1], &(res->int_args[0]), &(res->int_args[1]));
 			break;
+		}
+		case FENCE_WAIT: {
+				//TODO: scif_fence_wait call goes here...
+				res->arg_count = 2;
 
-		case FENCE_WAIT: 
-			//TODO: scif_fence_wait call goes here...
-			res->arg_count = 2;
+				res->n_int_args = 1;
+				res->int_args = malloc_safe(sizeof(int));
 
-			res->n_int_args = 1;
-			res->int_args = malloc_safe(sizeof(int));
-
-			res->phi_result_code = exec_scif_fence_wait((scif_epd_t)cmd->int_args[0],
-					cmd->int_args[1], &(res->int_args[0]));
-			break;
-
+				res->phi_result_code = exec_scif_fence_wait((scif_epd_t)cmd->int_args[0],
+						cmd->int_args[1], &(res->int_args[0]));
+				break;
+		}
 		case FENCE_SIGNAL: {
 				//TODO: scif_fence_signal call goes here...
 				res->arg_count = 2;
@@ -705,7 +711,8 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 				res->n_extra_args = 1;
 				res->extra_args = malloc_safe(sizeof(ProtobufCBinaryData));
 				res->extra_args[0].len = sizeof(struct scif_pollepd) * cmd->uint_args[0];
-				res->extra_args[0].data = epds;
+				res->extra_args[0].data = malloc_safe(res->extra_args[0].len);
+				memcpy(res->extra_args[0].data, epds, res->extra_args[0].len);
 	
 				break;
 		}
@@ -722,6 +729,6 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 	}
 
 	*result = res;	
-
+	ddprintf("process finished\n");
 	return res->arg_count;
 }
