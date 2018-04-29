@@ -23,6 +23,7 @@
 #include "include/common.pb-c.h"
 #include "include/client.h"
 #include "include/protocol.h"
+#include "include/timer.h"
 
 struct thread_mng_list threads;
 static uint8_t scif_version_mismatch;

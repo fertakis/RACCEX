@@ -20,7 +20,8 @@ extern struct addr_map_list maps;
 extern FILE *out_fd;
 
 #ifdef BREAKDOWN
-extern scif_timers_t b_fd, b_cp, snd, pack, ser, smsg, call, after, s_des, s_unpack, s_dur, s_after;
+extern scif_timers_t b_fd, b_cp, snd, pack, ser, smsg, call, after, 
+	      s_des, s_unpack, s_dur, s_ser, s_send, s_after;
 #endif
 
 typedef enum var_type_enum {

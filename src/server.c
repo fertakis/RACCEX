@@ -73,6 +73,7 @@ void *serve_client(void *arg)
 	for(;;) {
 #ifdef BREAKDOWN
 		TIMER_RESET(&s_des);
+		TIMER_RESET(&s_unpack);
 		TIMER_RESET(&s_dur);
 		TIMER_RESET(&s_after);
 #endif
@@ -122,15 +123,27 @@ void *serve_client(void *arg)
 
 		if (resp_type != -1) {
 			ddprintf("Packing and Sending result\n");
+#ifdef BREAKDOWN
+			TIMER_START(&s_ser);
+#endif
 			msg_length = serialise_message(&msg, resp_type, result);
+#ifdef BREAKDOWN
+			TIMER_START(&s_send);
+#endif 
 			send_message(client->sockfd, msg, msg_length);
+#ifdef BREAKDOWN
+			TIMER_STOP(&s_send);
+#endif
 			
 			//breakdown
 #ifdef BREAKDOWN
 			TIMER_STOP(&s_after);
 			if(type == WRITE_TO) { 
-				printf("TIME BEFORE: %llu us %lf sec\n", TIMER_TOTAL(&s_des), TIMER_TOTAL(&s_des)/1000000.0);
-				printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
+				printf("TIME DESERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_des), TIMER_TOTAL(&s_des)/1000000.0);
+				printf("TIME UNPACK: %llu us %lf sec\n", TIMER_TOTAL(&s_unpack), TIMER_TOTAL(&s_unpack)/1000000.0);
+				printf("TIME DURING: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
+				printf("TIME SERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_ser), TIMER_TOTAL(&s_ser)/1000000.0);
+				printf("TIME SEND CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_send), TIMER_TOTAL(&s_send)/1000000.0);
 				printf("TIME AFTER CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_after), TIMER_TOTAL(&s_after)/1000000.0);
 			}
 #endif
