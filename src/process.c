@@ -593,7 +593,6 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 						roffset, cmd->int_args[1], &(res->int_args[0]));
 #ifdef BREAKDOWN
 				TIMER_STOP(&s_dur);
-				TIMER_START(&s_after);
 #endif
 				break;
 		}

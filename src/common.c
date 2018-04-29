@@ -32,7 +32,7 @@ FILE *out_fd;
 //breakdown analysis
 #ifdef BREAKDOWN
 scif_timers_t b_fd, b_cp, snd, pack, ser, smsg, call, after, 
-	      s_des, s_unpack, s_dur, s_ser, s_send, s_after;
+	      s_des, s_unpack, s_dur, s_ser, s_send, s_free;
 #endif
 
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;

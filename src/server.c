@@ -75,7 +75,9 @@ void *serve_client(void *arg)
 		TIMER_RESET(&s_des);
 		TIMER_RESET(&s_unpack);
 		TIMER_RESET(&s_dur);
-		TIMER_RESET(&s_after);
+		TIMER_RESET(&s_ser);
+		TIMER_RESET(&s_send);
+		TIMER_RESET(&s_free);
 #endif
 		msg_length = receive_message(&msg, client->sockfd);
 #ifdef BREAKDOWN
@@ -106,7 +108,9 @@ void *serve_client(void *arg)
 		}
 
 		ddprintf("free msg\n");
-		
+#ifdef BREAKDOWN
+		TIMER_START(&s_free);
+#endif	
 		if (msg != NULL) {
 			ddprintf("msg not null\n");
 			free(msg);
@@ -120,7 +124,9 @@ void *serve_client(void *arg)
 			// cmd should be invalid now
 			cmd = NULL;
 		}
-
+#ifdef BREAKDOWN
+		TIMER_STOP(&s_free);
+#endif
 		if (resp_type != -1) {
 			ddprintf("Packing and Sending result\n");
 #ifdef BREAKDOWN
@@ -128,6 +134,7 @@ void *serve_client(void *arg)
 #endif
 			msg_length = serialise_message(&msg, resp_type, result);
 #ifdef BREAKDOWN
+			TIMER_STOP(&s_ser);
 			TIMER_START(&s_send);
 #endif 
 			send_message(client->sockfd, msg, msg_length);
@@ -137,14 +144,13 @@ void *serve_client(void *arg)
 			
 			//breakdown
 #ifdef BREAKDOWN
-			TIMER_STOP(&s_after);
 			if(type == WRITE_TO) { 
 				printf("TIME DESERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_des), TIMER_TOTAL(&s_des)/1000000.0);
 				printf("TIME UNPACK: %llu us %lf sec\n", TIMER_TOTAL(&s_unpack), TIMER_TOTAL(&s_unpack)/1000000.0);
 				printf("TIME DURING: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
+				printf("TIME FREEING: %llu us %lf sec\n", TIMER_TOTAL(&s_free), TIMER_TOTAL(&s_free)/1000000.0);
 				printf("TIME SERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_ser), TIMER_TOTAL(&s_ser)/1000000.0);
 				printf("TIME SEND CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_send), TIMER_TOTAL(&s_send)/1000000.0);
-				printf("TIME AFTER CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_after), TIMER_TOTAL(&s_after)/1000000.0);
 			}
 #endif
 			ddprintf("about to free phicmd\n");
