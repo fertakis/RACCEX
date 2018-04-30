@@ -190,19 +190,20 @@ int main(int argc, char *argv[]) {
 	char *server, *server_port, *local_port, addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
 	thr_mng *client;
-
+#ifndef BREAKDOWN
 	if (argc > 2) {
 		printf("Usage: server <local_port>\n");
 		exit(EXIT_FAILURE);
 	}
+#endif
 
-	if (argc == 1) {
+//	if (argc == 1) {
 		ddprintf("No port defined, trying env vars\n");
 		get_server_connection_config(&server, &server_port);
 		local_port = server_port;
-	} else {
-		local_port = argv[1];
-	}
+//	} else {
+//		local_port = argv[1];
+//	}
 #ifdef BREAKDOWN
 	char path[200];
 	strcpy(path,"/home/users/kfertak/racex_benchmarks/read_write/breakdown_results/run_server_racex_");
