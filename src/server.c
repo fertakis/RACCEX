@@ -145,12 +145,12 @@ void *serve_client(void *arg)
 			//breakdown
 #ifdef BREAKDOWN
 			if(type == WRITE_TO) { 
-				printf("TIME DESERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_des), TIMER_TOTAL(&s_des)/1000000.0);
-				printf("TIME UNPACK: %llu us %lf sec\n", TIMER_TOTAL(&s_unpack), TIMER_TOTAL(&s_unpack)/1000000.0);
-				printf("TIME DURING: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
-				printf("TIME FREEING: %llu us %lf sec\n", TIMER_TOTAL(&s_free), TIMER_TOTAL(&s_free)/1000000.0);
-				printf("TIME SERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_ser), TIMER_TOTAL(&s_ser)/1000000.0);
-				printf("TIME SEND CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_send), TIMER_TOTAL(&s_send)/1000000.0);
+				fprintf(out_fd, "TIME DESERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_des), TIMER_TOTAL(&s_des)/1000000.0);
+				fprintf(out_fd, "TIME UNPACK: %llu us %lf sec\n", TIMER_TOTAL(&s_unpack), TIMER_TOTAL(&s_unpack)/1000000.0);
+				fprintf(out_fd, "TIME DURING: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
+				fprintf(out_fd, "TIME FREEING: %llu us %lf sec\n", TIMER_TOTAL(&s_free), TIMER_TOTAL(&s_free)/1000000.0);
+				fprintf(out_fd, "TIME SERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_ser), TIMER_TOTAL(&s_ser)/1000000.0);
+				fprintf(out_fd, "TIME SEND CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_send), TIMER_TOTAL(&s_send)/1000000.0);
 			}
 #endif
 			ddprintf("about to free phicmd\n");
@@ -203,7 +203,15 @@ int main(int argc, char *argv[]) {
 	} else {
 		local_port = argv[1];
 	}
-
+#ifdef BREAKDOWN
+	char path[200];
+	strcpy(path,"/home/users/kfertak/racex_benchmarks/read_write/breakdown_results/run_server_racex_");
+	strcat(path, argv[1]);
+	strcat(path,"_");
+	strcat(path, argv[2]);
+	strcat(path, ".out");
+	out_fd = fopen(path, "r+");
+#endif
 	initialise_addr_map_list(&maps);
 
 	server_sfd = init_server_net(local_port, &sa);

@@ -663,8 +663,6 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 #ifdef BREAKDOWN
 	TIMER_RESET(&b_fd);
 	TIMER_RESET(&b_cp);
-	TIMER_RESET(&snd);
-	TIMER_RESET(&pack);
 	TIMER_RESET(&ser);
 	TIMER_RESET(&smsg);
 	TIMER_RESET(&call);
@@ -716,17 +714,12 @@ scif_writeto(scif_epd_t epd, off_t loffset, size_t len, off_t roffset, int flags
 	cmd->extra_args[3].data = (uint8_t *)addr_to_copy_from;
 #ifdef BREAKDOWN
 	TIMER_STOP(&b_cp);
-
-	TIMER_START(&snd);
 #endif
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
 		exit(EXIT_FAILURE);
 	}
-#ifdef BREAKDOWN
-	TIMER_STOP(&snd);
-#endif
 	free(data);
 	free(cmd->extra_args);
 	free(cmd);
@@ -751,8 +744,6 @@ end:
 
 	printf("TIME IDENTIFY: %llu us %lf sec\n", TIMER_TOTAL(&b_fd), TIMER_TOTAL(&b_fd)/1000000.0);
 	printf("TIME COPY: %llu us %lf sec\n", TIMER_TOTAL(&b_cp), TIMER_TOTAL(&b_cp)/1000000.0);
-	printf("TIME SEND: %llu us %lf sec\n", TIMER_TOTAL(&snd), TIMER_TOTAL(&snd)/1000000.0);
-	printf("TIME PACK: %llu us %lf sec\n", TIMER_TOTAL(&pack), TIMER_TOTAL(&pack)/1000000.0);
 	printf("TIME SERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&ser), TIMER_TOTAL(&ser)/1000000.0);
 	printf("TIME SEND_MESSAGE: %llu us %lf sec\n", TIMER_TOTAL(&smsg), TIMER_TOTAL(&smsg)/1000000.0);
 	printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&call), TIMER_TOTAL(&call)/1000000.0);
