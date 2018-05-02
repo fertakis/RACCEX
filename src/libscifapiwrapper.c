@@ -346,12 +346,27 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	PhiCmd *cmd, *result;
 	Cookie *ck;
 	thr_mng *uow;
+	
+	//breakdown analysis
+#ifdef BREAKDOWN
+	TIMER_RESET(&b_fd);
+	TIMER_RESET(&b_cp);
+	TIMER_RESET(&ser);
+	TIMER_RESET(&smsg);
+	TIMER_RESET(&call);
+	TIMER_RESET(&after);
+
+	TIMER_START(&b_fd);	
+#endif
 
 	uow = identify_thread(&threads);
 	
 	if(uow->sockfd < 0)
 		establish_connection(uow);
-
+#ifdef BREAKDOWN	
+	TIMER_STOP(&b_fd);
+	TIMER_START(&b_cp);
+#endif
 	cmd = malloc_safe(sizeof(PhiCmd));
 	phi_cmd__init(cmd);
 	cmd->type = SEND;
@@ -368,6 +383,10 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	cmd->extra_args[0].len = len;
 	cmd->extra_args[0].data = msg;
 
+#ifdef BREAKDOWN
+	TIMER_STOP(&b_cp);
+#endif
+
 	if(send_phi_cmd(uow->sockfd, cmd) < 0)
 	{
 		fprintf(stderr, "Problem sending PHI cmd!\n");
@@ -378,7 +397,12 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	free(cmd->extra_args);
 	free(cmd);
 
+#ifdef BREAKDOWN
+	TIMER_START(&call);
+#endif
+
 	res_code = get_phi_cmd_result(&result, &ck, uow->sockfd);
+
 	if(res_code == SCIF_SUCCESS) {
 		ret = (int)result->int_args[0];
 	}
@@ -388,7 +412,17 @@ scif_send(scif_epd_t epd, void *msg, int len, int flags)
 	}
 
 	free_deserialised_message(ck);
-	
+#ifdef BREAKDOWN
+	TIMER_STOP(&after);
+
+	printf("TIME IDENTIFY: %llu us %lf sec\n", TIMER_TOTAL(&b_fd), TIMER_TOTAL(&b_fd)/1000000.0);
+	printf("TIME COPY: %llu us %lf sec\n", TIMER_TOTAL(&b_cp), TIMER_TOTAL(&b_cp)/1000000.0);
+	printf("TIME SERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&ser), TIMER_TOTAL(&ser)/1000000.0);
+	printf("TIME SEND_MESSAGE: %llu us %lf sec\n", TIMER_TOTAL(&smsg), TIMER_TOTAL(&smsg)/1000000.0);
+	printf("TIME DURING CALL: %llu us %lf sec\n", TIMER_TOTAL(&call), TIMER_TOTAL(&call)/1000000.0);
+	printf("TIME AFTER: %llu us %lf sec\n", TIMER_TOTAL(&after), TIMER_TOTAL(&after)/1000000.0);
+#endif
+
 	return ret; 
 }
 
