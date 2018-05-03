@@ -393,8 +393,6 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 			//TODO: scif_liste call goes here...
 			res->arg_count = 1;
 			
-			printf("scif_listen with endp%d and bcklog %d\n", cmd->int_args[0], cmd->int_args[1]);
-
 			res->phi_result_code = exec_scif_listen((scif_epd_t)cmd->int_args[0], 
 					cmd->int_args[1]);
 

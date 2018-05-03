@@ -144,13 +144,14 @@ void *serve_client(void *arg)
 			
 			//breakdown
 #ifdef BREAKDOWN
-			if(type == WRITE_TO) { 
+			if(type == WRITE_TO || type == SEND) { 
 				fprintf(out_fd, "TIME DESERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_des), TIMER_TOTAL(&s_des)/1000000.0);
 				fprintf(out_fd, "TIME UNPACK: %llu us %lf sec\n", TIMER_TOTAL(&s_unpack), TIMER_TOTAL(&s_unpack)/1000000.0);
 				fprintf(out_fd, "TIME DURING: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
 				fprintf(out_fd, "TIME FREEING: %llu us %lf sec\n", TIMER_TOTAL(&s_free), TIMER_TOTAL(&s_free)/1000000.0);
 				fprintf(out_fd, "TIME SERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_ser), TIMER_TOTAL(&s_ser)/1000000.0);
 				fprintf(out_fd, "TIME SEND CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_send), TIMER_TOTAL(&s_send)/1000000.0);
+				fflush(out_fd);
 			}
 #endif
 			ddprintf("about to free phicmd\n");
@@ -197,21 +198,26 @@ int main(int argc, char *argv[]) {
 	}
 #endif
 
-//	if (argc == 1) {
+	if (argc == 1) {
 		ddprintf("No port defined, trying env vars\n");
 		get_server_connection_config(&server, &server_port);
 		local_port = server_port;
-//	} else {
-//		local_port = argv[1];
-//	}
+	} else {
+		local_port = argv[1];
+	}
 #ifdef BREAKDOWN
 	char path[200];
-	strcpy(path,"/home/users/kfertak/racex_benchmarks/read_write/breakdown_results/run_server_racex_");
+	strcpy(path,"/home/users/kfertak/racex_benchmarks/send_recv/breakdown_results/run_server_racex_");
 	strcat(path, argv[1]);
 	strcat(path,"_");
 	strcat(path, argv[2]);
 	strcat(path, ".out");
-	out_fd = fopen(path, "r+");
+	out_fd = fopen(path, "w+");
+	if(out_fd == NULL) {
+		printf("error opening write file\n");
+		exit(EXIT_FAILURE);
+	} else
+		printf("file opened succesfully\n");
 #endif
 	initialise_addr_map_list(&maps);
 
