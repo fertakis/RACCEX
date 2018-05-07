@@ -515,9 +515,12 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 				res->phi_result_code = exec_scif_unregister((scif_epd_t)cmd->int_args[0],
 						offset,
 						cmd->uint_args[0], &(res->int_args[0]));		
-				if(res->phi_result_code == SCIF_SUCCESS)
+				if(res->phi_result_code == SCIF_SUCCESS || errno == 104 ) {
+					addr_map *mp = get_map(pid, offset);
+					free(mp->server_addr);
 					if(remove_mapping(pid, offset) < 0)
 						printf("error freeing mapping\n");
+				}
 				break;
 		}
 		case MMAP:

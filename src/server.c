@@ -166,10 +166,11 @@ void *serve_client(void *arg)
 				if(result->extra_args != NULL) {
 					int j;
 					for(j=0; j< result->n_extra_args; j++)
-						if(type != READ_FROM && type != POLL)
+						if(type != READ_FROM)
 							free(result->extra_args[j].data);
 					free(result->extra_args);
 				}
+				free(result);
 				result = NULL;
 			}
 		}
