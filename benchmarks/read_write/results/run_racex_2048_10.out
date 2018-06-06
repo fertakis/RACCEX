@@ -1,7 +1,0 @@
-scif_bind to port 1556 success
-conect to node 1 success
-OFFSET: 0x4000000000000000
-About to wrote 8388608 bytes
-Just wrote 8388608 bytes
-TIME: 98953 us 0.098953 sec
-======== Program Success ========

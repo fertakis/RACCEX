@@ -1,9 +1,0 @@
-__libc_start_main(0x5615302a1980, 2, 0x7ffffc036f98, 0x5615302a5f80 <unfinished ...>
-_ZNSt8ios_base4InitC1Ev(0x5615304a905c, 0x7ffffc036f98, 0x7ffffc036fb0, 704)                            = 33
-__cxa_atexit(0x7fc4a0af40b0, 0x5615304a905c, 0x5615304a8aa0, 704)                                       = 0
-_ZNSt8ios_base4InitC1Ev(0x5615304a9028, 0x5615319c7f10, 24, 736)                                        = 34
-__cxa_atexit(0x7fc4a0af40b0, 0x5615304a9028, 0x5615304a8aa0, 736)                                       = 0
-COIEngineGetCount(2, 0x7ffffc036e78, 0x7ffffc0387d1, 768)                                               = 0
-__printf_chk(1, 0x5615302a6890, 0x7fc4a1158ce0, 0)                                                      = 46
-__cxa_finalize(0x5615304a8aa0, 0, 0x7fc4a198e948, 12)                                                   = 0x7fc4a0316050
-+++ exited (status 255) +++

@@ -1,4 +1,0 @@
-27/1/2018:	problem with sending error, is wrapped but is not received
-		by the other side...
-		TODO: check protobuf has_value boolean field in PhiCmd
-		
