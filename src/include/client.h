@@ -1,0 +1,26 @@
+#ifndef CLIENT_H
+#define CLIENT_H
+
+#include "common.pb-c.h"
+#include "common.h"
+
+typedef struct _unitofwork {
+	int endp;
+ 	int socket_fd;
+	int ref_count;
+} unitofwork ;
+
+void initialise_thr_mng_list(struct thread_mng_list *list);
+
+thr_mng * identify_thread(struct thread_mng_list *threads);
+
+int init_client_connection(const char *s_ip, const char *s_port);
+
+void establish_connection(thr_mng *uow);
+
+int send_phi_cmd(int socket_fd, PhiCmd *cmd);
+
+int get_phi_cmd_result(PhiCmd **result, Cookie **des_msg, int socket_fd);
+
+void free_arg_data(var **args, int len);
+#endif /* CLIENT_H */

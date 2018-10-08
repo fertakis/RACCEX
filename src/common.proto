@@ -1,0 +1,15 @@
+message PhiCmd {
+    required uint32 type = 1;
+    required uint32 arg_count = 2;
+    required int32 phi_result_code = 3;
+    optional int32 phi_errorno = 4;
+    repeated int32 int_args = 5;
+    repeated uint32 uint_args = 6;
+    repeated uint64 u64int_args = 7; 
+    repeated bytes extra_args = 8;
+}
+
+message Cookie {
+    required uint32 type = 1;
+    optional PhiCmd phi_cmd = 3;
+}

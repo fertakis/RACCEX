@@ -1,0 +1,59 @@
+# Ignore all #
+####################
+*
+
+# Unignore all with extension#
+####################
+!*.*
+
+# Unignore all dir #
+####################
+!*/
+
+# Unignore all Makefiles
+#######################
+!Makefile
+!Makefile_mic
+
+# Dependencies Files #
+######################
+src/.deps/*
+src/include/.deps/*
+
+# Compiled Source #
+####################
+*.o
+*.com
+*.so
+
+# Unignore Files #
+##################
+!tags
+!helloWorld
+!configure
+!install-sh
+!compile
+!depcomp
+!missing
+
+# Unignore binaries #
+#####################
+scif_tutorials/*
+
+src/include/common.pb-c.c
+src/include/common.pb-c.h
+src/Makefile
+aclocal.m4
+Makefile.in
+Makefile
+src/Makefile
+autom4te.cache/*
+compile
+config.log
+config.status
+depcomp
+missing
+src/Makefile
+src/Makefile.in
+configure
+*.scan
