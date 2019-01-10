@@ -72,10 +72,11 @@ scif_open(void)
 {
 	int res_code;
 	scif_epd_t fd;
-	PhiCmd *cmd, *result;
-	Cookie *ck;
+	//PhiCmd *cmd, *result;
+	//Cookie *ck;
 	thr_mng *uow;
-	
+	struct mmsghdr *cmd;
+	struct iovec *iov;
 	uow = identify_thread(&threads);
 
 	if(uow->sockfd < 0)
@@ -83,10 +84,16 @@ scif_open(void)
 	uow->ref_count++;
 	ddprintf("ref_count=%d\n", uow->ref_count);
 
-	cmd = malloc_safe(sizeof(PhiCmd));
-	phi_cmd__init(cmd);
-	cmd->type = OPEN;
-	cmd->arg_count = 0;
+	cmd = malloc_safe(sizeof(struct mmsghdr));
+	cmd->msg_name = NULL;
+	cmd->msg_namelen = 0;
+
+	cmd->msg_iovlen = 1;
+	cmd->msg_iov = malloc_safe(sizeof(struct iovec)*cmd->msg_iov);
+
+	//phi_cmd__init(cmd);
+	//cmd->type = OPEN;
+	//cmd->arg_count = 0;
 
 	if(send_phi_cmd(uow->sockfd, cmd) < 0 )
 	{
