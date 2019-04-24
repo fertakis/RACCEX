@@ -71,18 +71,7 @@ void *serve_client(void *arg)
 	thr_mng *client = arg; 
 	
 	for(;;) {
-#ifdef BREAKDOWN
-		TIMER_RESET(&s_des);
-		TIMER_RESET(&s_unpack);
-		TIMER_RESET(&s_dur);
-		TIMER_RESET(&s_ser);
-		TIMER_RESET(&s_send);
-		TIMER_RESET(&s_free);
-#endif
 		msg_length = receive_message(&msg, client->sockfd);
-#ifdef BREAKDOWN
-		TIMER_START(&s_des);
-#endif
 
 		if (msg_length > 0)
 			msg_type = deserialise_message(&cookie, &cmd, msg, msg_length);
@@ -90,9 +79,6 @@ void *serve_client(void *arg)
 			printf("\n--------------\nClient finished.\n\n");
 			break;
 		}
-#ifdef BREAKDOWN
-		TIMER_STOP(&s_des);
-#endif
 
 		type = cmd->type;
 
@@ -108,9 +94,7 @@ void *serve_client(void *arg)
 		}
 
 		ddprintf("free msg\n");
-#ifdef BREAKDOWN
-		TIMER_START(&s_free);
-#endif	
+
 		if (msg != NULL) {
 			ddprintf("msg not null\n");
 			free(msg);
@@ -124,36 +108,14 @@ void *serve_client(void *arg)
 			// cmd should be invalid now
 			cmd = NULL;
 		}
-#ifdef BREAKDOWN
-		TIMER_STOP(&s_free);
-#endif
+
 		if (resp_type != -1) {
 			ddprintf("Packing and Sending result\n");
-#ifdef BREAKDOWN
-			TIMER_START(&s_ser);
-#endif
+
 			msg_length = serialise_message(&msg, resp_type, result);
-#ifdef BREAKDOWN
-			TIMER_STOP(&s_ser);
-			TIMER_START(&s_send);
-#endif 
+
 			send_message(client->sockfd, msg, msg_length);
-#ifdef BREAKDOWN
-			TIMER_STOP(&s_send);
-#endif
 			
-			//breakdown
-#ifdef BREAKDOWN
-			if(type == WRITE_TO || type == SEND) { 
-				fprintf(out_fd, "TIME DESERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_des), TIMER_TOTAL(&s_des)/1000000.0);
-				fprintf(out_fd, "TIME UNPACK: %llu us %lf sec\n", TIMER_TOTAL(&s_unpack), TIMER_TOTAL(&s_unpack)/1000000.0);
-				fprintf(out_fd, "TIME DURING: %llu us %lf sec\n", TIMER_TOTAL(&s_dur), TIMER_TOTAL(&s_dur)/1000000.0);
-				fprintf(out_fd, "TIME FREEING: %llu us %lf sec\n", TIMER_TOTAL(&s_free), TIMER_TOTAL(&s_free)/1000000.0);
-				fprintf(out_fd, "TIME SERIALIZE: %llu us %lf sec\n", TIMER_TOTAL(&s_ser), TIMER_TOTAL(&s_ser)/1000000.0);
-				fprintf(out_fd, "TIME SEND CALL: %llu us %lf sec\n", TIMER_TOTAL(&s_send), TIMER_TOTAL(&s_send)/1000000.0);
-				fflush(out_fd);
-			}
-#endif
 			ddprintf("about to free phicmd\n");
 			if (result != NULL) {
 				// should be more freeing here...
@@ -192,12 +154,11 @@ int main(int argc, char *argv[]) {
 	char *server, *server_port, *local_port, addrstr[INET_ADDRSTRLEN];
 	socklen_t len;
 	thr_mng *client;
-#ifndef BREAKDOWN
+
 	if (argc > 2) {
 		printf("Usage: server <local_port>\n");
 		exit(EXIT_FAILURE);
 	}
-#endif
 
 	if (argc == 1) {
 		ddprintf("No port defined, trying env vars\n");
@@ -206,20 +167,6 @@ int main(int argc, char *argv[]) {
 	} else {
 		local_port = argv[1];
 	}
-#ifdef BREAKDOWN
-	char path[200];
-	strcpy(path,"/home/users/kfertak/racex_benchmarks/send_recv/breakdown_results/run_server_racex_");
-	strcat(path, argv[1]);
-	strcat(path,"_");
-	strcat(path, argv[2]);
-	strcat(path, ".out");
-	out_fd = fopen(path, "w+");
-	if(out_fd == NULL) {
-		printf("error opening write file\n");
-		exit(EXIT_FAILURE);
-	} else
-		printf("file opened succesfully\n");
-#endif
 	initialise_addr_map_list(&maps);
 
 	server_sfd = init_server_net(local_port, &sa);

@@ -28,9 +28,6 @@
 #include "include/phi_errors.h"
 #include "include/common.pb-c.h"
 
-#ifdef BREAKDOWN
-#include "include/timer.h"
-#endif
 
 #define DEVICE_NODE "/dev/mic/scif"
 
@@ -427,16 +424,10 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 
 			res->n_int_args = 1;
 			res->int_args = malloc_safe(sizeof(int));
-#ifdef BREAKDOWN
-			TIMER_START(&s_dur);
-#endif
 
 			res->phi_result_code = exec_scif_send((scif_epd_t)cmd->int_args[0], 
 					(void *)cmd->extra_args[0].data, (int)cmd->int_args[1], 
 					(int)cmd->int_args[2], &(res->int_args[0]));	
-#ifdef BREAKDOWN
-			TIMER_STOP(&s_dur);
-#endif
 
 			break;
 		case RECV:
@@ -574,9 +565,6 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 				off_t loffset, roffset;
 				pid_t pid;
 				pthread_t tid;
-#ifdef BREAKDOWN	
-				TIMER_START(&s_unpack);
-#endif
 				size_t len = (size_t)cmd->uint_args[0];
 	
 				memcpy(&loffset, cmd->extra_args[0].data, sizeof(off_t));
@@ -591,16 +579,10 @@ int process_phi_cmd(PhiCmd **result, PhiCmd *cmd) {
 	
 				//copy to server registered address space len bytes for dma
 				memcpy(copy_to, cmd->extra_args[3].data, len);
-#ifdef BREAKDOWN
-				TIMER_STOP(&s_unpack);
-				TIMER_START(&s_dur);
-#endif
+
 				res->phi_result_code = exec_scif_writeto((scif_epd_t)cmd->int_args[0],
 						loffset, len,
 						roffset, cmd->int_args[1], &(res->int_args[0]));
-#ifdef BREAKDOWN
-				TIMER_STOP(&s_dur);
-#endif
 				break;
 		}
 		case VREAD_FROM: {

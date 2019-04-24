@@ -119,22 +119,12 @@ int send_phi_cmd(int socket_fd, PhiCmd *cmd)
 	ddprintf("Preparing and sending Phi cmd %d by thread %d\n", cmd->type, (int)pthread_self());
 
 	//pack_phi_cmd(&payload, args, arg_cnt, cmd_type);
-#ifdef BREAKDOWN
-	TIMER_START(&ser);
-#endif
 	len = serialise_message(&buf, PHI_CMD, cmd);
-#ifdef BREAKDOWN
-	TIMER_STOP(&ser);
-#endif
+
 	if(buf == NULL)
 		return -1;
-#ifdef BREAKDOWN
-	TIMER_START(&smsg);
-#endif
+
 	send_message(socket_fd, buf, len);
-#ifdef BREAKDOWN
-	TIMER_STOP(&smsg);
-#endif
 	free(buf);
 	free(payload);
 	return 0;
@@ -150,10 +140,7 @@ int get_phi_cmd_result(PhiCmd **result, Cookie **cookie, int socket_fd)
 
 	ddprintf("Waiting result from PHI Server...\n");
 	len = receive_message(&buf, socket_fd);
-#ifdef BREAKDOWN
-	TIMER_STOP(&call);
-	TIMER_START(&after);
-#endif
+	
 	if(len > 0)
 		deserialise_message(&ck, &res, buf, len);
 	else {
